@@ -4,7 +4,6 @@ import static dcpu.DcpuConstants.*;
 import java.util.*;
 
 public class Dcpu {
-	public long debug = 0;
 	public Registers regs;
 	public IOperand[] operands;
 	public IOperation[] operations;
@@ -41,15 +40,14 @@ public class Dcpu {
 		}
 	}
 	
-	private void debug(String message) {
-		if (debug > 0) {
-			System.out.println(message);
-		}
-	}
-	
 	//run for at least cycles cp cycles, leaving the extra
 	//to shorten the next run
 	public void step_cycles(long cycles) {
+		synchronized(cpuTodo) {
+			while(!cpuTodo.isEmpty()) {
+				cpuTodo.poll().run();
+			}
+		}
 		while (cyclecnt < cycles) {
 			step();
 		}
@@ -57,11 +55,6 @@ public class Dcpu {
 	}
 	
 	public void step() {
-		synchronized(cpuTodo) {
-			while(!cpuTodo.isEmpty()) {
-				cpuTodo.poll().run();
-			}
-		}
 		
 		if (ifFailed) {
 			Instruction inst = new Instruction(memory.get(regs.pc++));
@@ -88,7 +81,6 @@ public class Dcpu {
 				interrupts.poll();
 			}
 		} else {
-			debug(String.format("PC:%04x(%04x)", (int)regs.pc,(int)memory.get(regs.pc)));
 			Instruction inst = new Instruction(memory.get(regs.pc++));
 			if (inst.opcode() == ADV) {
 				char a_pc = regs.pc;
@@ -122,9 +114,6 @@ public class Dcpu {
 		}
 		for (CpuWatcher watcher : watchers) {
 			watcher.cpu_changed(this);
-		}
-		if (debug > 0) {
-			debug -= 1;
 		}
 	}
 	

@@ -52,8 +52,8 @@ public class Main {
 			if (timeout!=null) {
 				timeout.cancel();
 			}
-			timeout = new Timeout(5000);
-			timeout.start();
+			//timeout = new Timeout(5000);
+			//timeout.start();
 		}
 	}
 	
@@ -307,7 +307,6 @@ public class Main {
 				s.me.x = 0f;
 				s.me.y = 0f;
 				s.me.rot = 0f;
-				s.cpu.debug = 30;
 				return;
 			}
 		});

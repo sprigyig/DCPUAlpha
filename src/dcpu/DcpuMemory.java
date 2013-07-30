@@ -25,11 +25,15 @@ public class DcpuMemory {
 	}
 	
 	public char get(char addr) {
-		for (MemoryPlugin pl : mapped) {
-			if (pl.contains(addr))
-				return pl.get(addr);
+		if (mapped.isEmpty()) {
+			return physical_memory[addr];
+		} else {
+			for (MemoryPlugin pl : mapped) {
+				if (pl.contains(addr))
+					return pl.get(addr);
+			}
+			return physical_memory[addr];
 		}
-		return physical_memory[addr];
 	}
 	
 	public void notifyOfChange(char start, char end) {
