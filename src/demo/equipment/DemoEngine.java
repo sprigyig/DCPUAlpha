@@ -22,21 +22,24 @@ public class DemoEngine implements Equipment, ForceSource {
 	
 	private float t2Adjust;
 	private BodyForce force;
+	
+	float onness;
 
 	public DemoEngine(float r, float t1, float t2, float pmaxForce) {
+		onness = 0;
 		this.render = new RTTRenderNode(this) {
 			public void draw(Graphics2D g) {
 				g.setColor(new Color(255, 255, 255));
 				g.fillRect(-25, -15, 20, 30);
 				g.setColor(new Color(110, 0, 0));
 				g.fillRect(-5, -10, 5, 20);
-				if (pctOn > 0.01) {
-					g.setColor(new Color(180,180,255));
-					g.fillPolygon(new int[]{0,0,16}, new int[]{-8,8,0}, 3);
-					g.setColor(new Color(220,220,255));
-					g.fillPolygon(new int[]{0,0,22}, new int[]{-4,4,0}, 3);
-					
-				}
+				
+				g.setColor(new Color(180,180,255));
+				g.fillPolygon(new int[]{0,0,(int)(16*Math.sqrt(onness))}, new int[]{-8,8,0}, 3);
+				g.setColor(new Color(220,220,255));
+				g.fillPolygon(new int[]{0,0,(int)(22*Math.sqrt(onness))}, new int[]{-4,4,0}, 3);
+				
+			
 			}
 		};
 		this.maxForce = pmaxForce;
@@ -90,6 +93,10 @@ public class DemoEngine implements Equipment, ForceSource {
 	}
 
 	public void physicsTick() {
-		
+		float add = 0;
+		if (pctOn > 0.001f) {
+			add = 1;
+		}
+		onness = ((onness * 3)+add)/4;
 	}
 }

@@ -4,13 +4,13 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 public abstract class RenderNode {
 	
 	private static final boolean debug = false;
 	protected Image img;
-	protected List<RenderNode> children;
+	protected Collection<RenderNode> children;
 	
 	public RenderNode() {
 		children = new ArrayList<RenderNode>();

@@ -1,16 +1,26 @@
 package demo;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.AffineTransform;
-import java.io.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
-import javax.swing.*;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
-import demo.equipment.*;
-
-import render.*;
-import ships.*;
+import render.SpaceViewPanel;
+import render.XYTRenderNode;
+import ships.Ship;
+import demo.equipment.DemoEngine;
+import demo.equipment.DemoSensor;
+import demo.equipment.DemoStructure;
+import env.Space;
 
 public class Main {
 	private static class StatusBar extends JPanel {
@@ -57,77 +67,10 @@ public class Main {
 		}
 	}
 	
-	private static class Viewport extends XYTRenderNode {
-		private double zoom;
-		public Viewport(double x, double y, double theta, double zoom) {
-			super(x, y, theta);
-			this.zoom = zoom;
-		}
-		public void transform(AffineTransform at) {
-			super.transform(at);
-			at.scale(zoom, zoom);
-		}
-		public void zoom(double amt, double x, double y) {
-			double oldworldx = (x-this.x)/zoom;
-			double oldworldy = (y-this.y)/zoom;
-			zoom += amt * (zoom/10);
-			double newworldx = (x-this.x)/zoom;
-			double newworldy = (y-this.y)/zoom;
-			
-			
-			this.x -= (oldworldx-newworldx)*zoom;
-			this.y -= (oldworldy-newworldy)*zoom;
 	
-		}
-		public void moveCenter(double x, double y) {
-			this.x -= x;
-			this.y -= y;
-		}
-	}
-	
-	private static class ViewportMouseDrag implements MouseListener, MouseMotionListener {
-		int lx, ly;
-		private Viewport vp;
-		
-		public ViewportMouseDrag(Viewport vp) {
-			this.vp = vp;
-			lx = ly = -1;
-		}
-		
-		public void mouseDragged(MouseEvent e) {
-			if (lx!=-1) {
-				vp.moveCenter(lx-e.getX(), ly+e.getY());
-				lx = e.getX();
-				ly = -e.getY();
-			}
-		}
 
-		public void mouseMoved(MouseEvent e) {
-		}
-
-		public void mouseClicked(MouseEvent e) {
-		}
-
-		public void mouseEntered(MouseEvent e) {
-		}
-
-		public void mouseExited(MouseEvent e) {
-		}
-
-		public void mousePressed(MouseEvent e) {
-			if (e.getButton() == MouseEvent.BUTTON1) {
-				lx = e.getX();
-				ly = -e.getY();
-			}
-		}
-
-		public void mouseReleased(MouseEvent e) {
-			ly = lx = -1;
-		}
-		
-	}
 	public static void main(String[] args) {
-		final Ship ship = new Ship(50, 20000);
+		final Ship ship = new Ship(1000, 200000);
 		
 		final DemoEngine torque1 = new DemoEngine(100, (float)(Math.PI/8), (float)(Math.PI/2), 100);
 		final DemoEngine torque2 = new DemoEngine(100, (float)(-Math.PI/8), (float)(-Math.PI/2), 100);
@@ -136,7 +79,7 @@ public class Main {
 		
 		final DemoEngine forward = new DemoEngine(30, (float)(Math.PI/2), 0, 100);
 		final DemoEngine back = new DemoEngine(30, (float)(-Math.PI/2), 0, 100);
-		
+		final Space s = new Space();
 		ship.addEquipment(torque1);//1
 		ship.addEquipment(torque2);//2
 		ship.addEquipment(torque3);//3
@@ -151,83 +94,40 @@ public class Main {
 		ship.addEquipment(new DemoStructure(50, 0, 0));
 		ship.addEquipment(new DemoStructure(100, 0, 0));	
 
-		final Viewport vp = new Viewport(200, -200, 0, 1);
-		vp.addChild(ship.getVisuals());
 		JFrame jf = new JFrame();
 		jf.getContentPane().setLayout(new BorderLayout());
-		final JPanel jp;
-		jf.add(jp = new JPanel() {
-			private static final long serialVersionUID = 1L;
-
-			public void paint(Graphics g) {
-				int gray = 65;
-				setBackground(new Color(gray,gray,(int)(gray*1.3)));
-				super.paint(g);
-				Graphics2D g2 = (Graphics2D) g;
-				
-				
-				RenderNode rootWindow = new XYTRenderNode(0,0,0);
-				
-				rootWindow.addChild(vp);
-				rootWindow.addChild(new RenderNode() {
-					public void draw(Graphics2D g) {
-						g.setColor(Color.yellow.darker());
-						g.drawString(String.format("x:%.03f", ship.me.x), 10, 10);
-						g.drawString(String.format("y:%.03f", ship.me.y), 10, 25);
-						g.drawString(String.format("deg:%d", ((int)(ship.me.rot/Math.PI*180))%360), 10, 40);
-						
-						g.drawString(String.format("vx:%.03f", ship.me.xspeed()*33), 10, 55);
-						g.drawString(String.format("vy:%.03f", ship.me.yspeed()*33), 10, 70);
-						g.drawString(String.format("deg/s:%d", ((int)(ship.me.rotspeed()/Math.PI*180*33))%360), 10, 85);
-					}
-					protected void transform(AffineTransform root) {
-						root.scale(1, -1);
-					}
-				});
-				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-				AffineTransform cart = new AffineTransform();
-				cart.scale(1, -1);
-				rootWindow.render(g2,cart);
-				
-			}
-		}, BorderLayout.CENTER);
+		
 		final StatusBar bar;
 		jf.add(bar = new StatusBar(), BorderLayout.SOUTH);
 		jf.setVisible(true);
 		jf.setSize(400, 400);
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		new Timer(30, new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				ship.stepPhysics();
-				ship.stepCpu(100000/30);
-				jp.repaint();
+		final SpaceViewPanel jp = new SpaceViewPanel(s);
+		jp.addOverlay(new XYTRenderNode(10, 10, 0) {
+			public void draw(Graphics2D g) {
+				g.setColor(Color.yellow.darker());
+				g.drawString(String.format("x:%.03f", ship.me.x), 10, 10);
+				g.drawString(String.format("y:%.03f", ship.me.y), 10, 25);
+				g.drawString(String.format("deg:%d", ((int)(ship.me.rot/Math.PI*180))%360), 10, 40);
+				
+				g.drawString(String.format("vx:%.03f", ship.me.xspeed()*33), 10, 55);
+				g.drawString(String.format("vy:%.03f", ship.me.yspeed()*33), 10, 70);
+				g.drawString(String.format("deg/s:%d", ((int)(ship.me.rotspeed()/Math.PI*180*33))%360), 10, 85);
 			}
-		}).start();
+		});
+		jf.getContentPane().add(jp, BorderLayout.CENTER);
+		s.addEntity(ship);
+		s.start();
+
 		
-		jp.addMouseListener(new MouseListener() {
-			public void mouseReleased(MouseEvent e) {
-				
-			}
-			
-			public void mousePressed(MouseEvent e) {
-				
-			}
-			
-			public void mouseExited(MouseEvent e) {
-				
-			}
-			
-			public void mouseEntered(MouseEvent e) {
-				
-			}
-			
+		jp.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				if (e.getButton() != MouseEvent.BUTTON1) {
 					new Thread() {
 						public void run() {
 							bar.setStatus("");
 							File f = null;
-							JFileChooser jfc = new JFileChooser();
+							JFileChooser jfc = new JFileChooser(new File("./"));
 							jfc.showOpenDialog(jp);
 							f = jfc.getSelectedFile();
 							
@@ -272,14 +172,7 @@ public class Main {
 			}
 		});
 		
-		jp.addMouseWheelListener(new MouseWheelListener() {
-			public void mouseWheelMoved(MouseWheelEvent e) {
-				vp.zoom(-e.getPreciseWheelRotation(), e.getX(), -e.getY());
-			}
-		});
-		ViewportMouseDrag drag = new ViewportMouseDrag(vp);
-		jp.addMouseMotionListener(drag);
-		jp.addMouseListener(drag);
+		
 		bar.setStatus("Right Click to load DCPU Binary");
 	}
 	public static void reset(final Ship s, final char[] memory_contents) {
@@ -295,12 +188,8 @@ public class Main {
 					s.cpu.regs.gp[i]=0;
 				}
 				
-				s.me.rotnrg = 0f;
-				s.me.xnrg = 0f;
-				s.me.ynrg = 0f;
-				s.me.x = 0f;
-				s.me.y = 0f;
-				s.me.rot = 0f;
+				
+				s.reset();
 				return;
 			}
 		});

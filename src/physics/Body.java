@@ -5,12 +5,12 @@ import java.util.List;
 public class Body {
 	public float x, y, rot, xnrg, ynrg, rotnrg;
 	public float mass, ri;
-	public void apply(List<BodyForce>forces) {
+	public void apply(List<BodyForce>forces, int msPerTick) {
 		float fx = 0, fy=0, torque=0;
 		for (BodyForce f : forces) {
-			fx += f.forceX(rot);
-			fy += f.forceY(rot);
-			torque += f.torque();
+			fx += f.forceX(rot)*msPerTick;
+			fy += f.forceY(rot)*msPerTick;
+			torque += f.torque()*msPerTick;
 		}
 		
 		xnrg += (fx/mass);

@@ -10,8 +10,9 @@ import render.BodyRenderNode;
 import render.RenderNode;
 import dcpu.Dcpu;
 import dcpu.Hardware;
+import env.Entity;
 
-public class Ship {
+public class Ship implements Entity {
 	List<Equipment> equipment;
 	List<BodyForce> forces;
 	RenderNode renderParts;
@@ -23,19 +24,10 @@ public class Ship {
 		cpu = new Dcpu();
 		renderParts = new BodyRenderNode(me) {
 			public void draw(Graphics2D g) {
-				
 			}
 		};
 		forces = new ArrayList<BodyForce>();
 		equipment = new ArrayList<Equipment>();
-	}
-	
-	public void stepCpu(int cycles) {
-		cpu.step_cycles(cycles);
-	}
-	
-	public void stepPhysics() {
-		me.apply(forces);
 	}
 	
 	public void addEquipment(Equipment e) {
@@ -45,6 +37,17 @@ public class Ship {
 	
 	public RenderNode getVisuals() {
 		return renderParts;
+	}
+
+	public void tickInternals(int msPerTick) {
+		cpu.step_cycles(msPerTick*100);
+	}
+
+	public void tickPhysics(int msPerTick) {
+		me.apply(forces, msPerTick);
+		for (Equipment e : equipment) {
+			e.physicsTick();
+		}
 	}
 	
 	//Only equipment should call these:
@@ -56,5 +59,16 @@ public class Ship {
 	}
 	public void addBodyForce(BodyForce bf) {
 		forces.add(bf);
+	}
+
+	
+	
+	
+	
+	public void reset() {
+		for (Equipment e:equipment) {
+			e.reset();
+		}
+		me.reset();
 	}
 }
