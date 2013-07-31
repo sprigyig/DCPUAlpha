@@ -52,8 +52,8 @@ public class Main {
 			if (timeout!=null) {
 				timeout.cancel();
 			}
-			//timeout = new Timeout(5000);
-			//timeout.start();
+			timeout = new Timeout(5000);
+			timeout.start();
 		}
 	}
 	
@@ -149,13 +149,7 @@ public class Main {
 		ship.addEquipment(new DemoStructure(-50, 0, 0));
 		ship.addEquipment(new DemoStructure(-100, 0, 0));
 		ship.addEquipment(new DemoStructure(50, 0, 0));
-		ship.addEquipment(new DemoStructure(100, 0, 0));
-		
-//		ship.cpu.memory.physical_memory[0] = ASSEMBLE(ADV, HWI, SHORT_LIT(7));
-//		ship.cpu.memory.physical_memory[1] = ASSEMBLE(SET, REG_A, SHORT_LIT(-1));
-//		ship.cpu.memory.physical_memory[2] = ASSEMBLE(ADV, HWI, SHORT_LIT(1));
-//		ship.cpu.memory.physical_memory[3] = ASSEMBLE(ADV, HWI, SHORT_LIT(2));
-		
+		ship.addEquipment(new DemoStructure(100, 0, 0));	
 
 		final Viewport vp = new Viewport(200, -200, 0, 1);
 		vp.addChild(ship.getVisuals());
