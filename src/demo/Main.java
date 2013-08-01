@@ -73,7 +73,7 @@ public class Main {
 	
 
 	public static void main(String[] args) {
-		final Ship ship = new Ship(1000, 200000);
+		final Ship ship = new Ship(1000, 400000);
 		
 		final Equipment torque1 = new Engine(100, (float)(Math.PI/8), (float)(Math.PI/2), 100);
 		final Equipment torque2 = new Engine(100, (float)(-Math.PI/8), (float)(-Math.PI/2), 100);
@@ -120,9 +120,9 @@ public class Main {
 		});
 		jf.getContentPane().add(jp, BorderLayout.CENTER);
 		s.addEntity(ship);
-		s.addEntity(new Asteroid(-100, -100, .01f, -0.05f, 40));
-		s.addEntity(new Asteroid(-100, -250, .01f, -0.05f, 40));
-		s.addEntity(new Asteroid(-230, -20, .01f, -0.05f, 40));
+		
+		s.addEntity(new Asteroid(-100, -250, .01f, -0.05f, 60));
+		
 		s.start();
 
 		

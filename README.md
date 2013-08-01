@@ -8,7 +8,7 @@ The State of Things:
 
 Currently you can run demo.Main and you will get a spaceship in the void. This spaceship loads DCPU16 code from a binary and runs it.
 
-You can interrupt the egines (#1-4 are the corners, clockwise starting in the top right. 5 is the one on top, and 6 is the one on bottom.) The value of register a will determine how "on" the engine is.
+You can interrupt the egines (#1-4 are the corners, clockwise starting in the top right. 5 is the one on top, and 6 is the one on bottom.) The value of register a should be 0, and B is the power. Otherwise you can use the nifty synchronizer business - check the docs for howtos. 
 
 Interrupting the sensor (on #7) will fill A with your X location (provided it isn't too big.) B with your Y location, C with error codes if either of the previous fail due to size, X with your rotation in degrees, and Y with your rotation rate in degrees/second.
 

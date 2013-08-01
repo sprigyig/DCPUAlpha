@@ -8,6 +8,6 @@ public class GlobalHacks {
 	}
 	
 	public static int borderThickness() {
-		return 2;
+		return 3;
 	}
 }

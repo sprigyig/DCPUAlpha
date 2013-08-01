@@ -1,0 +1,18 @@
+Interrupts:
+   +---+------+------------------------------------------------------------+
+   | A | Cost | Description                                                |
+   +---+------+------------------------------------------------------------+
+   | 0 |    1 | Set Power to B 0=off 0xFFFF=on, or anything in between     |
+   +---+------+------------------------------------------------------------+
+   | 1 |    1 | Configure synchronous command receiver 1 to react to       |
+   |   |      | command C by setting the power to B.                       |
+   +---+------+------------------------------------------------------------+
+   | 2 |    1 | Configure synchronous command receiver 2 to react to       |
+   |   |      | command C by setting the power to B.                       |
+   +---+------+------------------------------------------------------------+
+   | 3 |    1 | Configure synchronous command receiver 3 to react to       |
+   |   |      | command C by setting the power to B.                       |
+   +---+------+------------------------------------------------------------+
+   | 4 |    1 | Configure synchronous command receiver 4 to react to       |
+   |   |      | command C by setting the power to B.                       |
+   +---+------+------------------------------------------------------------+

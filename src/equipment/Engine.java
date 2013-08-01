@@ -14,6 +14,8 @@ import render.RTTRenderNode;
 import ships.Equipment;
 import ships.Ship;
 
+import static dcpu.DcpuConstants.*;
+
 public class Engine implements Equipment, ForceSource, CpuWatcher, Hardware {
 
 	private float max;
@@ -24,12 +26,17 @@ public class Engine implements Equipment, ForceSource, CpuWatcher, Hardware {
 	private long onMax;
 	private char setpoint;
 	private float renderOnness;
+	
+	private char[] commands;
+	private char[] setpoints;
 
 	public Engine(float r, float t1, float t2, float max) {
 		this.r = r;
 		this.t1 = t1;
 		this.t2 = t2;
 		this.max = max;
+		commands = new char[4];
+		setpoints = new char[4];
 	}
 	
 	public void addedTo(Ship s) {
@@ -46,6 +53,10 @@ public class Engine implements Equipment, ForceSource, CpuWatcher, Hardware {
 				g.setColor(new Color(90, 90, 200));
 				g.fillRect(-5, -10, 5, 20);
 				
+				g.setColor(GlobalHacks.getBorderColor());
+				g.fillPolygon(new int[]{0,0,(int)(16*Math.sqrt(renderOnness)+GlobalHacks.borderThickness()*2)}, new int[]{-8-GlobalHacks.borderThickness()*2,8+GlobalHacks.borderThickness()*2,0}, 3);
+				g.fillPolygon(new int[]{0,0,(int)(22*Math.sqrt(renderOnness)+GlobalHacks.borderThickness()*2)}, new int[]{-4-GlobalHacks.borderThickness()*2,4+GlobalHacks.borderThickness()*2,0}, 3);
+				
 				g.setColor(new Color(180,180,255));
 				g.fillPolygon(new int[]{0,0,(int)(16*Math.sqrt(renderOnness))}, new int[]{-8,8,0}, 3);
 				g.setColor(new Color(220,220,255));
@@ -57,6 +68,9 @@ public class Engine implements Equipment, ForceSource, CpuWatcher, Hardware {
 	}
 
 	public void reset() {
+		onRate = 0;
+		onMax = 0;
+		setpoint = 0;
 		
 	}
 	public void physicsTickPreForce() {
@@ -75,8 +89,13 @@ public class Engine implements Equipment, ForceSource, CpuWatcher, Hardware {
 	}
 
 	public void triggerSynchronizedEvent(char id, int cyclesAgo) {
-		
-	}
+		for (int i=0;i<commands.length;i++) {
+			if (id == commands[i]) {
+				
+				setpoint = setpoints[i];
+			}
+		}
+	} 
 
 	public float position_radius() {
 		return r;
@@ -111,7 +130,13 @@ public class Engine implements Equipment, ForceSource, CpuWatcher, Hardware {
 	}
 
 	public void interrupted(Dcpu parent) {
-		this.setpoint = parent.regs.gp[0];
+		parent.cyclecnt+=1;
+		if (parent.regs.gp[REG_A]==0) {
+			setpoint = parent.regs.gp[REG_B];
+		} else if (parent.regs.gp[REG_A]-1 < commands.length) {
+			commands[parent.regs.gp[REG_A]-1] = parent.regs.gp[REG_C];
+			setpoints[parent.regs.gp[REG_A]-1] = parent.regs.gp[REG_B];
+		}
 	}
 
 }
