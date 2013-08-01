@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 
 import physics.XYTSource;
 
+import regret.GlobalHacks;
 import render.XYTRenderNode;
 import ships.Equipment;
 import ships.Ship;
@@ -29,6 +30,11 @@ public class DemoStructure implements Equipment, XYTSource {
 				for (int i=0; i<x.length; i++) {
 					x[i]*=scale; y[i]*=scale;
 				}
+				g.setColor(GlobalHacks.getBorderColor());
+				g.setStroke(new BasicStroke(7, BasicStroke.CAP_ROUND,
+						BasicStroke.JOIN_ROUND));
+				g.drawPolyline(x,y, 8);
+				g.setColor(new Color(220,220,220));
 				g.setColor(new Color(160,160,166));
 				g.setStroke(new BasicStroke(5, BasicStroke.CAP_ROUND,
 						BasicStroke.JOIN_ROUND));
@@ -54,6 +60,12 @@ public class DemoStructure implements Equipment, XYTSource {
 	}
 	public void reset() {
 	}
-	public void physicsTick() {
+	public void physicsTickPostForce() {
+	}
+	public void triggerSynchronizedEvent(char id, int cyclesAgo) {
+	}
+	public void physicsTickPreForce() {
+		// TODO Auto-generated method stub
+		
 	}
 }

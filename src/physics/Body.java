@@ -5,6 +5,8 @@ import java.util.List;
 public class Body {
 	public float x, y, rot, xnrg, ynrg, rotnrg;
 	public float mass, ri;
+	
+	private float xs, ys, rots;//last speeds
 	public void apply(List<BodyForce>forces, int msPerTick) {
 		float fx = 0, fy=0, torque=0;
 		for (BodyForce f : forces) {
@@ -17,20 +19,36 @@ public class Body {
 		ynrg += (fy/mass);
 		rotnrg += (torque/ri);
 		
-		x += xspeed();
-		y += yspeed();
-		rot += rotspeed();
+		xs = xspeed_calc();
+		ys = yspeed_calc();
+		rots = rotspeed_calc();
+		
+		x+=xs;
+		y+=ys;
+		rot+=rots;
 	}
 	
 	public float xspeed() {
-		return (float) (xnrg >= 0 ? Math.sqrt(2*xnrg / mass): -Math.sqrt(2*(-xnrg) / mass));
+		return xs;
 	}
 	
 	public float yspeed() {
-		return (float)(ynrg >= 0 ? Math.sqrt(2*ynrg / mass): -Math.sqrt(2*(-ynrg) / mass));
+		return ys;
 	}
 	
 	public float rotspeed() {
+		return rots;
+	}
+	
+	public float xspeed_calc() {
+		return (float) (xnrg >= 0 ? Math.sqrt(2*xnrg / mass): -Math.sqrt(2*(-xnrg) / mass));
+	}
+	
+	public float yspeed_calc() {
+		return (float)(ynrg >= 0 ? Math.sqrt(2*ynrg / mass): -Math.sqrt(2*(-ynrg) / mass));
+	}
+	
+	public float rotspeed_calc() {
 		return (float)(rotnrg >= 0 ? Math.sqrt(2*rotnrg / ri) : -Math.sqrt(2 *(-rotnrg) / ri));
 	}
 	

@@ -16,11 +16,14 @@ import javax.swing.JPanel;
 
 import render.SpaceViewPanel;
 import render.XYTRenderNode;
+import ships.Equipment;
 import ships.Ship;
-import demo.equipment.DemoEngine;
 import demo.equipment.DemoSensor;
-import demo.equipment.DemoStructure;
+import env.Asteroid;
 import env.Space;
+import equipment.Engine;
+import equipment.Structure;
+import equipment.Synchronizer;
 
 public class Main {
 	private static class StatusBar extends JPanel {
@@ -72,13 +75,13 @@ public class Main {
 	public static void main(String[] args) {
 		final Ship ship = new Ship(1000, 200000);
 		
-		final DemoEngine torque1 = new DemoEngine(100, (float)(Math.PI/8), (float)(Math.PI/2), 100);
-		final DemoEngine torque2 = new DemoEngine(100, (float)(-Math.PI/8), (float)(-Math.PI/2), 100);
-		final DemoEngine torque3 = new DemoEngine(100, (float)(9 * Math.PI/8), (float)(Math.PI/2), 100);
-		final DemoEngine torque4 = new DemoEngine(100, (float)(7 * Math.PI/8), (float)(-Math.PI/2), 100);
+		final Equipment torque1 = new Engine(100, (float)(Math.PI/8), (float)(Math.PI/2), 100);
+		final Equipment torque2 = new Engine(100, (float)(-Math.PI/8), (float)(-Math.PI/2), 100);
+		final Equipment torque3 = new Engine(100, (float)(9 * Math.PI/8), (float)(Math.PI/2), 100);
+		final Equipment torque4 = new Engine(100, (float)(7 * Math.PI/8), (float)(-Math.PI/2), 100);
 		
-		final DemoEngine forward = new DemoEngine(30, (float)(Math.PI/2), 0, 100);
-		final DemoEngine back = new DemoEngine(30, (float)(-Math.PI/2), 0, 100);
+		final Equipment forward = new Engine(50, (float)(Math.PI/2), 0, 100);
+		final Equipment back = new Engine(50, (float)(-Math.PI/2), 0, 100);
 		final Space s = new Space();
 		ship.addEquipment(torque1);//1
 		ship.addEquipment(torque2);//2
@@ -87,13 +90,13 @@ public class Main {
 		ship.addEquipment(forward);//5
 		ship.addEquipment(back);//6
 		ship.addEquipment(new DemoSensor());//7
+		ship.addEquipment(new Synchronizer());
 		
-		ship.addEquipment(new DemoStructure(0, 0, 0));
-		ship.addEquipment(new DemoStructure(-50, 0, 0));
-		ship.addEquipment(new DemoStructure(-100, 0, 0));
-		ship.addEquipment(new DemoStructure(50, 0, 0));
-		ship.addEquipment(new DemoStructure(100, 0, 0));	
-
+		Structure struct;
+		ship.addEquipment(struct = new Structure());
+		
+		for (int i=-2; i<=2; i++) struct.addLocation(i, 0);
+		
 		JFrame jf = new JFrame();
 		jf.getContentPane().setLayout(new BorderLayout());
 		
@@ -117,6 +120,9 @@ public class Main {
 		});
 		jf.getContentPane().add(jp, BorderLayout.CENTER);
 		s.addEntity(ship);
+		s.addEntity(new Asteroid(-100, -100, .01f, -0.05f, 40));
+		s.addEntity(new Asteroid(-100, -250, .01f, -0.05f, 40));
+		s.addEntity(new Asteroid(-230, -20, .01f, -0.05f, 40));
 		s.start();
 
 		

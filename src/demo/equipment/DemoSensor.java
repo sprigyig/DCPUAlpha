@@ -43,7 +43,7 @@ public class DemoSensor implements Equipment {
 				parent.regs.gp[REG_X] = (char)rotdeg;
 				
 				
-				int rotspeeddeg = (((int)((ship.me.rotspeed() / Math.PI) * 180*33)));
+				int rotspeeddeg = (((int)((ship.me.rotspeed_calc() / Math.PI) * 180*33)));
 				parent.regs.gp[REG_Y] = (char)rotspeeddeg;
 				
 				
@@ -56,7 +56,15 @@ public class DemoSensor implements Equipment {
 		
 	}
 
-	public void physicsTick() {
+	public void physicsTickPostForce() {
+		
+	}
+
+	public void triggerSynchronizedEvent(char id, int cyclesAgo) {
+	}
+
+	public void physicsTickPreForce() {
+		// TODO Auto-generated method stub
 		
 	}
 

@@ -92,11 +92,19 @@ public class DemoEngine implements Equipment, ForceSource {
 		this.pctOn = 0f;
 	}
 
-	public void physicsTick() {
+	public void physicsTickPostForce() {
 		float add = 0;
 		if (pctOn > 0.001f) {
 			add = 1;
 		}
 		onness = ((onness * 3)+add)/4;
+	}
+
+	public void triggerSynchronizedEvent(char id, int cyclesAgo) {
+	}
+
+	public void physicsTickPreForce() {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -4,6 +4,7 @@ import static dcpu.DcpuConstants.*;
 import java.util.*;
 
 public class Dcpu {
+	public long debug = 0;
 	public Registers regs;
 	public IOperand[] operands;
 	public IOperation[] operations;
@@ -16,7 +17,10 @@ public class Dcpu {
 	public Queue<Runnable> cpuTodo;
 	public Set<CpuWatcher> watchers;
 	public SortedMap<Character, Hardware> hardware;
+	private long cyclecntLim;
 	
+	
+	long tally;
 	public Dcpu() {
 		regs = new Registers();
 		operands = new IOperand[0x40];
@@ -43,19 +47,19 @@ public class Dcpu {
 	//run for at least cycles cp cycles, leaving the extra
 	//to shorten the next run
 	public void step_cycles(long cycles) {
+		cyclecntLim += cycles;
 		synchronized(cpuTodo) {
 			while(!cpuTodo.isEmpty()) {
 				cpuTodo.poll().run();
 			}
 		}
-		while (cyclecnt < cycles) {
+		while (cyclecntLim - cyclecnt > cycles) {
 			step();
 		}
-		cyclecnt -= cycles;
 	}
 	
 	public void step() {
-		
+		long cyclecntStart = cyclecnt;
 		if (ifFailed) {
 			Instruction inst = new Instruction(memory.get(regs.pc++));
 			long cyclecnt_freeze = cyclecnt;
@@ -81,6 +85,10 @@ public class Dcpu {
 				interrupts.poll();
 			}
 		} else {
+			if (debug > 0) {
+				debug -=1;
+				System.out.printf("%04x(%04x)\n", (int)regs.pc, (int)memory.get(regs.pc));
+			}
 			Instruction inst = new Instruction(memory.get(regs.pc++));
 			if (inst.opcode() == ADV) {
 				char a_pc = regs.pc;
@@ -92,7 +100,7 @@ public class Dcpu {
 				if (op != null) {
 					op.compute(a, target, afrag, a_pc);
 				} else {
-					cyclecnt+=1;
+					cyclecnt+=16;
 				}
 				
 			} else {
@@ -108,12 +116,14 @@ public class Dcpu {
 				if (op != null) {
 					op.compute(a, b, target, bfrag, b_pc);
 				} else {
-					cyclecnt+=1;
+					cyclecnt+=16;
 				}
 			}
 		}
+		
 		for (CpuWatcher watcher : watchers) {
-			watcher.cpu_changed(this);
+			watcher.cpu_changed(this, cyclecnt - cyclecntStart);
+			tally += cyclecnt-cyclecntStart;
 		}
 	}
 	
@@ -668,44 +678,5 @@ public class Dcpu {
 	public void addHardware(char id, Hardware hw) {
 		hw.plugged_in(this, id);
 		hardware.put(id, hw);
-	}
-	
-	public static void main(String[] args) {
-		int cpu_ct = 200;
-		int chunks = 1000;
-		int chunk_cycles = 1000;
-		
-		Dcpu[] cpus = new Dcpu[cpu_ct];
-		for (int i=0;i<cpu_ct; i++) {
-			cpus[i] = mkcpu(
-					ASSEMBLE(ADD, REG_A, 1),
-					ASSEMBLE(ADV, JSR, SHORT_LIT(3)),
-					ASSEMBLE(SUB, PC, SHORT_LIT(2)),
-					ASSEMBLE(ADD, REG_A, REG_B),
-					ASSEMBLE(XOR, REG_B, REG_A),
-					ASSEMBLE(ADD, REG_A, REG_A),
-					ASSEMBLE(XOR, REG_A, EX),
-					ASSEMBLE(ADD, REG_A, REG_B),
-					ASSEMBLE(XOR, REG_B, REG_A),
-					ASSEMBLE(ADD, REG_A, REG_A),
-					ASSEMBLE(XOR, REG_A, EX),
-					ASSEMBLE(SET, PC, POP)
-			);
-		}
-		
-		
-		
-		long start = System.currentTimeMillis();
-		
-		for (int chunk=0; chunk<chunks; chunk++) {
-			for (Dcpu d : cpus) {
-				d.step_cycles(chunk_cycles);
-			}
-		}
-		
-		long end = System.currentTimeMillis();
-		
-		System.out.println("Time: "+(end-start)+" Cycles:"+cpu_ct*chunks*chunk_cycles);
-		System.out.println("Cycles/ms:"+ ((float)cpu_ct*chunks*chunk_cycles)/(end-start));
 	}
 }

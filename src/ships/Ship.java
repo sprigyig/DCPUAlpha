@@ -40,13 +40,16 @@ public class Ship implements Entity {
 	}
 
 	public void tickInternals(int msPerTick) {
-		cpu.step_cycles(msPerTick*100);
+		cpu.step_cycles(msPerTick*50);
 	}
 
 	public void tickPhysics(int msPerTick) {
+		for (Equipment e : equipment) {
+			e.physicsTickPreForce();
+		}
 		me.apply(forces, msPerTick);
 		for (Equipment e : equipment) {
-			e.physicsTick();
+			e.physicsTickPostForce();
 		}
 	}
 	
@@ -60,10 +63,11 @@ public class Ship implements Entity {
 	public void addBodyForce(BodyForce bf) {
 		forces.add(bf);
 	}
-
-	
-	
-	
+	public void triggerSynchronizedEvent(char id, int cyclesAgo) {
+		for (Equipment e:equipment) {
+			e.triggerSynchronizedEvent(id, cyclesAgo);
+		}
+	}
 	
 	public void reset() {
 		for (Equipment e:equipment) {
