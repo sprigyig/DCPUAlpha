@@ -21,12 +21,12 @@ import ships.Ship;
 import demo.equipment.DemoSensor;
 import env.Asteroid;
 import env.Space;
+import equipment.Capacitor;
 import equipment.Engine;
 import equipment.Generator;
 import equipment.PowerGrid;
 import equipment.Structure;
 import equipment.Synchronizer;
-
 import static dcpu.DcpuConstants.*;
 
 public class Main {
@@ -80,29 +80,31 @@ public class Main {
 		System.out.println(String.format("%04x\n", (int)ASSEMBLE(ADV, HWI, REG_A)));
 		final Ship ship = new Ship(1000, 400000);
 
-		final Equipment torque1 = new Engine(100, (float)(Math.PI/8), (float)(Math.PI/2), 100, 10);
-		final Equipment torque2 = new Engine(100, (float)(-Math.PI/8), (float)(-Math.PI/2), 100, 10);
-		final Equipment torque3 = new Engine(100, (float)(9 * Math.PI/8), (float)(Math.PI/2), 100, 10);
-		final Equipment torque4 = new Engine(100, (float)(7 * Math.PI/8), (float)(-Math.PI/2), 100, 10);
+		final Equipment torque1 = new Engine(100, (float)(Math.PI/8), (float)(Math.PI/2), 100, 10, (char)1);
+		final Equipment torque2 = new Engine(100, (float)(-Math.PI/8), (float)(-Math.PI/2), 100, 10, (char)2);
+		final Equipment torque3 = new Engine(100, (float)(9 * Math.PI/8), (float)(Math.PI/2), 100, 10, (char)3);
+		final Equipment torque4 = new Engine(100, (float)(7 * Math.PI/8), (float)(-Math.PI/2), 100, 10, (char)4);
 		
-		final Equipment forward = new Engine(50, (float)(Math.PI/2), 0, 100, 10);
-		final Equipment back = new Engine(50, (float)(-Math.PI/2), 0, 100, 10);
+		final Equipment forward = new Engine(50, (float)(Math.PI/2), 0, 100, 10, (char)5);
+		final Equipment back = new Engine(50, (float)(-Math.PI/2), 0, 100, 10, (char)6);
 		final Space s = new Space();
-		ship.addEquipment(torque1);//1
-		ship.addEquipment(torque2);//2
-		ship.addEquipment(torque3);//3
-		ship.addEquipment(torque4);//4
-		ship.addEquipment(forward);//5
-		ship.addEquipment(back);//6
-		ship.addEquipment(new DemoSensor());//7
-		ship.addEquipment(new Synchronizer());
+		ship.addEquipment(torque1);
+		ship.addEquipment(torque2);
+		ship.addEquipment(torque3);
+		ship.addEquipment(torque4);
+		ship.addEquipment(forward);
+		ship.addEquipment(back);
+		ship.addEquipment(new DemoSensor((char)7));
+		ship.addEquipment(new Synchronizer((char)8));
 		final PowerGrid grid;
-		ship.addEquipment(grid = new PowerGrid(1000, 10000, 1));
+		ship.addEquipment(grid = new PowerGrid(1000, 10000, 1, (char)9));
 		
 		
 		Structure struct;
 		ship.addEquipment(struct = new Structure());
 		ship.addEquipment(new Generator(0,0,0));
+		ship.addEquipment(new Capacitor(50, 0, 0));
+		ship.addEquipment(new Capacitor(-50, 0, 0));
 		for (int i=-2; i<=2; i++) struct.addLocation(i, 0);
 		
 		JFrame jf = new JFrame();

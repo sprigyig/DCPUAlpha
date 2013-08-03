@@ -92,4 +92,8 @@ public class Ship implements Entity {
 		}
 		cpu_freeze = 500;
 	}
+	
+	public int getCpuFreeze() {
+		return cpu_freeze;
+	}
 }

@@ -8,11 +8,16 @@ import static dcpu.DcpuConstants.*;
 
 public class DemoSensor implements Equipment {
 	private Ship ship;
+	private char hwid;
+
+	public DemoSensor(char hwid) {
+		this.hwid = hwid;
+	}
 
 	public void addedTo(Ship s) {
 		this.ship = s;
 		
-		s.addPluginHardware(s.cpu.next_hardware_id(), new Hardware() {
+		s.addPluginHardware(hwid, new Hardware() {
 			
 			public void query(Dcpu parent) {
 				

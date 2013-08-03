@@ -31,8 +31,9 @@ public class Engine implements Equipment, ForceSource, CpuWatcher, Hardware {
 	private char[] setpoints;
 	private Ship ship;
 	private int fullCost;
+	private char hwid;
 
-	public Engine(float r, float t1, float t2, float max, int fullCost) {
+	public Engine(float r, float t1, float t2, float max, int fullCost, char hwid) {
 		this.r = r;
 		this.t1 = t1;
 		this.t2 = t2;
@@ -40,6 +41,7 @@ public class Engine implements Equipment, ForceSource, CpuWatcher, Hardware {
 		commands = new char[4];
 		setpoints = new char[4];
 		this.fullCost = fullCost;
+		this.hwid = hwid;
 	}
 	
 	public void addedTo(Ship s) {
@@ -67,7 +69,7 @@ public class Engine implements Equipment, ForceSource, CpuWatcher, Hardware {
 			}
 		});
 		s.cpu.addWatcher(this);
-		s.cpu.addHardware(s.cpu.next_hardware_id(), this);
+		s.cpu.addHardware(hwid, this);
 		ship = s;
 	}
 

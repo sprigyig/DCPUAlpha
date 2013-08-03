@@ -2,8 +2,10 @@ package equipment;
 
 import dcpu.CpuWatcher;
 import dcpu.Dcpu;
+import dcpu.Hardware;
 import ships.Equipment;
 import ships.Ship;
+import static dcpu.DcpuConstants.*;
 
 public class PowerGrid implements Equipment{
 
@@ -15,14 +17,16 @@ public class PowerGrid implements Equipment{
 	private int cyclesPerCost;
 	private int cycleCost;
 	private int cycles;
+	private char hwid;
 
-	public PowerGrid(long capacity, int cyclesPerCost, int cycleCost) {
+	public PowerGrid(long capacity, int cyclesPerCost, int cycleCost, char hwid) {
 		this.capacity = capacity;
 		this.power = capacity;
 		
 		this.cyclesPerCost = cyclesPerCost;
 		this.cycleCost = cycleCost;
 		cycles = 0;
+		this.hwid = hwid;
 	}
 	
 	public void addedTo(Ship s) {
@@ -34,6 +38,20 @@ public class PowerGrid implements Equipment{
 					cycles += cyclesAdvanved;
 					sink( (cycles/cyclesPerCost)*cycleCost);
 					cycles = cycles % cyclesPerCost;
+				}
+			}
+		});
+		s.cpu.addHardware(hwid, new Hardware() {
+			public void query(Dcpu parent) {
+			}
+			
+			public void plugged_in(Dcpu parent, char id) {
+			}
+			
+			public void interrupted(Dcpu parent) {
+				if (parent.regs.gp[REG_A]==0) {
+					parent.regs.gp[REG_A]= (char)
+							(getPower()*0xFFFF/getCapacity());
 				}
 			}
 		});

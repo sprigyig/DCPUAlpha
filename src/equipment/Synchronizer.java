@@ -18,6 +18,7 @@ public class Synchronizer implements Equipment, Hardware, CpuWatcher {
 
 	private Ship ship;
 	private char alarmIrq;
+	private char hwid;
 	
 	public static final char READ_TIMER   = 0;
 	public static final char SET_ALARM    = 1;
@@ -25,8 +26,12 @@ public class Synchronizer implements Equipment, Hardware, CpuWatcher {
 	public static final char SET_FIRE_IRQ = 3;
 	public static final char TRIG_SYNC    = 4;
 	
+	public Synchronizer(char hwid) {
+		this.hwid = hwid;
+	}
+	
 	public void addedTo(Ship s) {
-		s.addPluginHardware(s.cpu.next_hardware_id(), this);
+		s.addPluginHardware(hwid, this);
 		this.ship = s;
 		syncTriggerTime = 100001;
 		syncTriggerNum = 'x';
