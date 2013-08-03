@@ -27,6 +27,8 @@ import equipment.PowerGrid;
 import equipment.Structure;
 import equipment.Synchronizer;
 
+import static dcpu.DcpuConstants.*;
+
 public class Main {
 	private static class StatusBar extends JPanel {
 		private static final long serialVersionUID = 1L;
@@ -75,8 +77,9 @@ public class Main {
 	
 
 	public static void main(String[] args) {
+		System.out.println(String.format("%04x\n", (int)ASSEMBLE(ADV, HWI, REG_A)));
 		final Ship ship = new Ship(1000, 400000);
-		
+
 		final Equipment torque1 = new Engine(100, (float)(Math.PI/8), (float)(Math.PI/2), 100, 10);
 		final Equipment torque2 = new Engine(100, (float)(-Math.PI/8), (float)(-Math.PI/2), 100, 10);
 		final Equipment torque3 = new Engine(100, (float)(9 * Math.PI/8), (float)(Math.PI/2), 100, 10);
@@ -95,11 +98,11 @@ public class Main {
 		ship.addEquipment(new Synchronizer());
 		final PowerGrid grid;
 		ship.addEquipment(grid = new PowerGrid(1000, 10000, 1));
-		ship.addEquipment(new Generator());
+		
 		
 		Structure struct;
 		ship.addEquipment(struct = new Structure());
-		
+		ship.addEquipment(new Generator(0,0,0));
 		for (int i=-2; i<=2; i++) struct.addLocation(i, 0);
 		
 		JFrame jf = new JFrame();

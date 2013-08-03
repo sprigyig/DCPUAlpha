@@ -90,6 +90,6 @@ public class Ship implements Entity {
 		for (Equipment e:equipment) {
 			e.reset();
 		}
-		cpu_freeze = 50;
+		cpu_freeze = 500;
 	}
 }
