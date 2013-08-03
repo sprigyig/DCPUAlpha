@@ -3,16 +3,13 @@ package env;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Random;
 
 import physics.Body;
 import physics.BodyForce;
-import physics.RTTSource;
 import regret.GlobalHacks;
 import render.BodyRenderNode;
-import render.RTTRenderNode;
 import render.RenderNode;
 
 public class Asteroid implements Entity {

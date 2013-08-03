@@ -278,7 +278,7 @@ public class DCPUBasic {
 	@Test
 	public void noops() {
 		Dcpu d = mkcpu(
-				ASSEMBLE(ADV, ADVNOOP5, LONG_LIT), 100,
+				ASSEMBLE(ADV, ADVNOOP4, LONG_LIT), 100,
 				ASSEMBLE(NOOP1, LONG_LIT, LONG_LIT), 100, 100,
 				ASSEMBLE(NOOP2, REG_A, SHORT_LIT(10)),
 				ASSEMBLE(NOOP1, LONG_LIT, REG_A),100,

@@ -78,8 +78,9 @@ public class DcpuConstants {
 	public static final int ADVNOOP2=0x04;
 	public static final int ADVNOOP3=0x05;
 	public static final int ADVNOOP4=0x06;
-	public static final int ADVNOOP5=0x07;
 	
+	
+	public static final int WFI = 0x07;
 	public static final int INT = 0x08;
 	public static final int IAG = 0x09;
 	public static final int IAS = 0x0a;

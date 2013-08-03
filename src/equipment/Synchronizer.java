@@ -81,7 +81,7 @@ public class Synchronizer implements Equipment, Hardware, CpuWatcher {
 		}
 	}
 
-	public void cpu_changed(Dcpu cpu, long cycles) {
+	public void cpu_changed(Dcpu cpu, long cycles, boolean idle) {
 		int oldcount = count;
 		count += cycles;
 		

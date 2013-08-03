@@ -17,6 +17,7 @@ public class Dcpu {
 	public Queue<Runnable> cpuTodo;
 	public Set<CpuWatcher> watchers;
 	public SortedMap<Character, Hardware> hardware;
+	public boolean wfi;
 	private long cyclecntLim;
 	
 	
@@ -32,6 +33,7 @@ public class Dcpu {
 		queue_interrupts = true;
 		watchers = new HashSet<>();
 		hardware = new TreeMap<>();
+		wfi = false;
 
 		fill_operand_extractors();
 		fill_operation_executors();
@@ -75,6 +77,7 @@ public class Dcpu {
 				ifFailed = false;
 			}
 		} else if (!queue_interrupts && !interrupts.isEmpty()) {
+			wfi = false;
 			if (regs.ia != 0) {
 				queue_interrupts = true;
 				memory.set(--regs.sp, regs.pc);
@@ -89,6 +92,15 @@ public class Dcpu {
 				debug -=1;
 				System.out.printf("%04x(%04x)\n", (int)regs.pc, (int)memory.get(regs.pc));
 			}
+			
+			if (wfi) {
+				cyclecnt+=1;
+				for (CpuWatcher watcher : watchers) {
+					watcher.cpu_changed(this, 1, true);
+				}
+				return;
+			}
+			
 			Instruction inst = new Instruction(memory.get(regs.pc++));
 			if (inst.opcode() == ADV) {
 				char a_pc = regs.pc;
@@ -122,8 +134,7 @@ public class Dcpu {
 		}
 		
 		for (CpuWatcher watcher : watchers) {
-			watcher.cpu_changed(this, cyclecnt - cyclecntStart);
-			tally += cyclecnt-cyclecntStart;
+			watcher.cpu_changed(this, cyclecnt - cyclecntStart, false);
 		}
 	}
 	
@@ -134,6 +145,14 @@ public class Dcpu {
 				memory.set(--regs.sp, regs.pc);
 				regs.pc = a;
 				cyclecnt+=3;
+			}
+		};
+		
+		advops[WFI] = new IAdvOperation() {
+			public void compute(char a, IOperand target, int a_instruction_fragment,
+					char a_fetch_pc) {
+				cyclecnt+=1;
+				wfi = true;
 			}
 		};
 		
@@ -678,5 +697,20 @@ public class Dcpu {
 	public void addHardware(char id, Hardware hw) {
 		hw.plugged_in(this, id);
 		hardware.put(id, hw);
+	}
+
+	public void reset() {
+		regs.ex = 0;
+		regs.ia = 0;
+		regs.pc = 0;
+		regs.sp = 0;
+		for (int i=0;i<regs.gp.length;i++) {
+			regs.gp[i] = 0;
+		}
+		ifFailed = false;
+		interrupts.clear();
+		queue_interrupts = true;
+		cpuTodo.clear();
+		cyclecntLim = cyclecnt = 0;
 	}
 }

@@ -29,14 +29,17 @@ public class Engine implements Equipment, ForceSource, CpuWatcher, Hardware {
 	
 	private char[] commands;
 	private char[] setpoints;
+	private Ship ship;
+	private int fullCost;
 
-	public Engine(float r, float t1, float t2, float max) {
+	public Engine(float r, float t1, float t2, float max, int fullCost) {
 		this.r = r;
 		this.t1 = t1;
 		this.t2 = t2;
 		this.max = max;
 		commands = new char[4];
 		setpoints = new char[4];
+		this.fullCost = fullCost;
 	}
 	
 	public void addedTo(Ship s) {
@@ -65,6 +68,7 @@ public class Engine implements Equipment, ForceSource, CpuWatcher, Hardware {
 		});
 		s.cpu.addWatcher(this);
 		s.cpu.addHardware(s.cpu.next_hardware_id(), this);
+		ship = s;
 	}
 
 	public void reset() {
@@ -81,7 +85,9 @@ public class Engine implements Equipment, ForceSource, CpuWatcher, Hardware {
 			int mixportion = 2;
 			renderOnness = (renderOnness * (mixportion) + mix)/(mixportion+1);
 		}
-		
+		if (onMax > 0) {
+			ship.power.sink(fullCost*onRate/onMax);
+		}
 	}
 	public void physicsTickPostForce() {
 		this.onMax = 0;
@@ -116,7 +122,7 @@ public class Engine implements Equipment, ForceSource, CpuWatcher, Hardware {
 		return max * onRate / onMax;
 	}
 
-	public void cpu_changed(Dcpu cpu, long cyclesAdvanved) {
+	public void cpu_changed(Dcpu cpu, long cyclesAdvanved, boolean idle) {
 		onRate += cyclesAdvanved * setpoint;
 		onMax += cyclesAdvanved * 0xFFFF;
 	}

@@ -22,6 +22,8 @@ import demo.equipment.DemoSensor;
 import env.Asteroid;
 import env.Space;
 import equipment.Engine;
+import equipment.Generator;
+import equipment.PowerGrid;
 import equipment.Structure;
 import equipment.Synchronizer;
 
@@ -75,13 +77,13 @@ public class Main {
 	public static void main(String[] args) {
 		final Ship ship = new Ship(1000, 400000);
 		
-		final Equipment torque1 = new Engine(100, (float)(Math.PI/8), (float)(Math.PI/2), 100);
-		final Equipment torque2 = new Engine(100, (float)(-Math.PI/8), (float)(-Math.PI/2), 100);
-		final Equipment torque3 = new Engine(100, (float)(9 * Math.PI/8), (float)(Math.PI/2), 100);
-		final Equipment torque4 = new Engine(100, (float)(7 * Math.PI/8), (float)(-Math.PI/2), 100);
+		final Equipment torque1 = new Engine(100, (float)(Math.PI/8), (float)(Math.PI/2), 100, 10);
+		final Equipment torque2 = new Engine(100, (float)(-Math.PI/8), (float)(-Math.PI/2), 100, 10);
+		final Equipment torque3 = new Engine(100, (float)(9 * Math.PI/8), (float)(Math.PI/2), 100, 10);
+		final Equipment torque4 = new Engine(100, (float)(7 * Math.PI/8), (float)(-Math.PI/2), 100, 10);
 		
-		final Equipment forward = new Engine(50, (float)(Math.PI/2), 0, 100);
-		final Equipment back = new Engine(50, (float)(-Math.PI/2), 0, 100);
+		final Equipment forward = new Engine(50, (float)(Math.PI/2), 0, 100, 10);
+		final Equipment back = new Engine(50, (float)(-Math.PI/2), 0, 100, 10);
 		final Space s = new Space();
 		ship.addEquipment(torque1);//1
 		ship.addEquipment(torque2);//2
@@ -91,6 +93,9 @@ public class Main {
 		ship.addEquipment(back);//6
 		ship.addEquipment(new DemoSensor());//7
 		ship.addEquipment(new Synchronizer());
+		final PowerGrid grid;
+		ship.addEquipment(grid = new PowerGrid(1000, 10000, 1));
+		ship.addEquipment(new Generator());
 		
 		Structure struct;
 		ship.addEquipment(struct = new Structure());
@@ -116,6 +121,8 @@ public class Main {
 				g.drawString(String.format("vx:%.03f", ship.me.xspeed()*33), 10, 55);
 				g.drawString(String.format("vy:%.03f", ship.me.yspeed()*33), 10, 70);
 				g.drawString(String.format("deg/s:%d", ((int)(ship.me.rotspeed()/Math.PI*180*33))%360), 10, 85);
+				
+				g.drawString(String.format("Power: %4d", grid.getPower()), 10, 100);
 			}
 		});
 		jf.getContentPane().add(jp, BorderLayout.CENTER);
@@ -186,16 +193,8 @@ public class Main {
 		s.cpu.runInCpuThread(new Runnable() {
 			public void run() {
 				s.cpu.memory.physical_memory = memory_contents;
-				s.cpu.regs.pc = 0;
-				s.cpu.regs.ex = 0;
-				s.cpu.regs.sp = 0;
-				s.cpu.regs.ia = 0;
-				for (int i=0;i<s.cpu.regs.gp.length;i++) {
-					s.cpu.regs.gp[i]=0;
-				}
-				
-				
 				s.reset();
+				s.power.setPower(s.power.getCapacity());
 				return;
 			}
 		});

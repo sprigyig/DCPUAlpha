@@ -11,6 +11,7 @@ import render.RenderNode;
 import dcpu.Dcpu;
 import dcpu.Hardware;
 import env.Entity;
+import equipment.PowerGrid;
 
 public class Ship implements Entity {
 	List<Equipment> equipment;
@@ -18,6 +19,8 @@ public class Ship implements Entity {
 	RenderNode renderParts;
 	public Dcpu cpu;
 	public Body me;
+	public PowerGrid power;
+	int cpu_freeze;
 	
 	public Ship(float mass, float ri) {
 		me = new Body(0, 0, 0, mass, ri);
@@ -40,7 +43,11 @@ public class Ship implements Entity {
 	}
 
 	public void tickInternals(int msPerTick) {
-		cpu.step_cycles(msPerTick*50);
+		if (cpu_freeze <= 0) {
+			cpu.step_cycles(msPerTick*50);
+		} else {
+			cpu_freeze -=1;
+		}
 	}
 
 	public void tickPhysics(int msPerTick) {
@@ -74,5 +81,15 @@ public class Ship implements Entity {
 			e.reset();
 		}
 		me.reset();
+		cpu.reset();
+	}
+
+	public void brownOut() {
+		System.out.println("Brown Out");
+		cpu.reset();
+		for (Equipment e:equipment) {
+			e.reset();
+		}
+		cpu_freeze = 50;
 	}
 }
