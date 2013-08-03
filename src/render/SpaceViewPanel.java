@@ -88,8 +88,10 @@ public class SpaceViewPanel extends JPanel {
 		public void transform(AffineTransform at) {
 			super.transform(at);
 			at.scale(zoom, zoom);
+			
 		}
 		public void zoom(double amt, double x, double y) {
+			amt = amt/Math.abs(amt);
 			double oldworldx = (x-this.x)/zoom;
 			double oldworldy = (y-this.y)/zoom;
 			zoom += amt * (zoom/10);
@@ -99,7 +101,6 @@ public class SpaceViewPanel extends JPanel {
 			
 			this.x -= (oldworldx-newworldx)*zoom;
 			this.y -= (oldworldy-newworldy)*zoom;
-	
 		}
 		public void moveCenter(double x, double y) {
 			this.x -= x;
