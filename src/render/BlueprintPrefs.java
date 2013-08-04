@@ -40,4 +40,8 @@ public class BlueprintPrefs implements RenderPreferences {
 		return bg;
 	}
 
+	public Color overlayTextColor() {
+		return Color.white;
+	}
+
 }

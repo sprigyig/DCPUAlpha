@@ -1,7 +1,11 @@
 package demo;
 
+import static dcpu.DcpuConstants.ADV;
+import static dcpu.DcpuConstants.ASSEMBLE;
+import static dcpu.DcpuConstants.HWI;
+import static dcpu.DcpuConstants.REG_A;
+
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -28,7 +32,6 @@ import equipment.Generator;
 import equipment.PowerGrid;
 import equipment.Structure;
 import equipment.Synchronizer;
-import static dcpu.DcpuConstants.*;
 
 public class Main {
 	private static class StatusBar extends JPanel {
@@ -119,7 +122,7 @@ public class Main {
 		final SpaceViewPanel jp = new SpaceViewPanel(s);
 		jp.addOverlay(new XYTRenderNode(10, 10, 0) {
 			public void draw(Graphics2D g, RenderPreferences prefs) {
-				g.setColor(Color.yellow.darker());
+				g.setColor(prefs.overlayTextColor());
 				g.drawString(String.format("x:%.03f", ship.me.x), 10, 10);
 				g.drawString(String.format("y:%.03f", ship.me.y), 10, 25);
 				g.drawString(String.format("deg:%d", ((int)(ship.me.rot/Math.PI*180))%360), 10, 40);
@@ -137,7 +140,7 @@ public class Main {
 		s.addEntity(new Asteroid(-100, -250, .01f, -0.05f, 60));
 		
 		s.start();
-
+		jp.startGraphics();
 		
 		jp.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {

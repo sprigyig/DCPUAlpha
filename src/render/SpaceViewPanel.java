@@ -1,5 +1,7 @@
 package render;
 
+import java.awt.BorderLayout;
+import java.awt.Canvas;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -7,9 +9,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
@@ -24,15 +28,22 @@ public class SpaceViewPanel extends JPanel {
 	private Viewport vp;
 	private RenderNode rootWindow;
 	private RenderPreferences prefs;
+	private BufferStrategy strat;
+	private Canvas canvas;
 	
 	public SpaceViewPanel(Space sp) {
+		super(new BorderLayout());
+		
+		canvas = new Canvas();
+		add(canvas);
+		
 		prefs = new StandardPrefs();
 		space = sp;
 		vp = new Viewport(200, -200, 0, 1d);
 		ViewportMouseDrag md = new ViewportMouseDrag();
-		addMouseMotionListener(md);
-		addMouseListener(md);
-		addMouseWheelListener(new MouseWheelListener() {
+		canvas.addMouseMotionListener(md);
+		canvas.addMouseListener(md);
+		canvas.addMouseWheelListener(new MouseWheelListener() {
 			public void mouseWheelMoved(MouseWheelEvent e) {
 				vp.zoom(-e.getPreciseWheelRotation(), e.getX(), -e.getY());
 			}
@@ -50,9 +61,33 @@ public class SpaceViewPanel extends JPanel {
 		});
 		new Timer(30, new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				repaint();
+				if (strat == null) {
+					return;
+				}
+				 do {
+			         do {
+			             Graphics graphics = strat.getDrawGraphics();
+			             update(graphics);
+			             graphics.dispose();
+			         } while (strat.contentsRestored());
+			         strat.show();
+			     } while (strat.contentsLost());
 			}
 		}).start();
+	}
+	
+
+	public void addMouseListener(MouseListener l) {
+		canvas.addMouseListener(l);
+	}
+	
+	public void removeMouseListener(MouseListener l) {
+		canvas.removeMouseListener(l);
+	}
+	
+	public void startGraphics() {
+		canvas.createBufferStrategy(2);
+		strat = canvas.getBufferStrategy();
 	}
 	
 	public void addOverlay(RenderNode overlay) {
@@ -63,7 +98,7 @@ public class SpaceViewPanel extends JPanel {
 		overlays.remove(overlay);
 	}
 	
-	public void paint(Graphics g) {
+	public void update(Graphics g) {
 		prefs = new StandardPrefs();
 		//prefs = new BlueprintPrefs();
 		setBackground(prefs.spaceColor());

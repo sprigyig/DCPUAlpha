@@ -3,6 +3,7 @@ package equipment;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.event.MouseListener;
 
 import physics.XYTSource;
 import render.RenderPreferences;
@@ -20,7 +21,7 @@ public class Generator implements Equipment, XYTSource {
 		this.y = y;
 		this.t = t;
 	}
-
+	
 	public void addedTo(Ship s) {
 		ship = s;
 		s.addRenderNode(new XYTRenderNode(this) {
@@ -37,6 +38,9 @@ public class Generator implements Equipment, XYTSource {
 				g.fillRect(-scale, -scale, scale*2, scale*2);
 				
 				int color = (int) (ship.power.getPower() * 255 / ship.power.getCapacity());
+				
+				color = Math.max(0, Math.min(color,255));
+				
 				int len = (int) (ship.power.getPower() * 20 / ship.power.getCapacity());
 				
 				g.setColor(prefs.borderColor());

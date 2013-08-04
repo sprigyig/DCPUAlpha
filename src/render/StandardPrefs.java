@@ -17,11 +17,11 @@ public class StandardPrefs implements RenderPreferences {
 	}
 
 	public Color body2() {
-		return new Color(150, 150, 160);
+		return new Color(180, 180, 200);
 	}
 
 	public Color body3() {
-		return new Color(80, 80, 90);
+		return new Color(100, 100, 120);
 	}
 
 	public Color highlight1() {
@@ -29,7 +29,11 @@ public class StandardPrefs implements RenderPreferences {
 	}
 
 	public Color spaceColor() {
-		return new Color(65, 65, 90);
+		return new Color(35, 35, 60);
+	}
+
+	public Color overlayTextColor() {
+		return Color.yellow.darker();
 	}
 
 }

@@ -13,4 +13,6 @@ public interface RenderPreferences {
 	public Color highlight1();
 	
 	public Color spaceColor();
+	
+	public Color overlayTextColor();
 }
