@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import physics.XYTSource;
-import regret.GlobalHacks;
+import render.RenderPreferences;
 import render.XYTRenderNode;
 import ships.Equipment;
 import ships.Ship;
@@ -18,8 +18,6 @@ public class Capacitor implements Equipment, XYTSource {
 	 */
 	private float x,y,t;
 
-	
-	
 	public Capacitor(float x, float y, float t) {
 		this.x = x;
 		this.y = y;
@@ -29,18 +27,21 @@ public class Capacitor implements Equipment, XYTSource {
 	public void addedTo(Ship s) {
 		final Ship ship = s;
 		s.addRenderNode(new XYTRenderNode(this){
-			public void draw(Graphics2D g) {
+			public void draw(Graphics2D g, RenderPreferences prefs) {
 				int scale = 15;
 				int podheight = 7;
-				g.setColor(GlobalHacks.getBorderColor());
-				g.setStroke(new BasicStroke(2 * GlobalHacks.borderThickness(),
+				g.setColor(prefs.borderColor());
+				
+				int t = prefs.borderThickness();
+				
+				g.setStroke(new BasicStroke(2 * t,
 						BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 				
 				g.drawRect(-scale, -scale, 2*scale, podheight);
 				g.drawRect(-scale, scale-podheight, 2*scale, podheight);
 				g.drawRect(-scale, -podheight/2, 2*scale, podheight);
 				
-				g.setColor(Color.gray);
+				g.setColor(prefs.body2());
 				
 				g.fillRect(-scale, -scale, 2*scale, podheight);
 				g.fillRect(-scale, scale-podheight, 2*scale, podheight);
@@ -48,7 +49,7 @@ public class Capacitor implements Equipment, XYTSource {
 				
 				int color = (int) (ship.power.getPower() * 255 / ship.power.getCapacity());
 				
-				g.setColor(GlobalHacks.getBorderColor());
+				g.setColor(prefs.borderColor());
 				
 				if (ship.getCpuFreeze() > 0 && System.currentTimeMillis()%500 < 250) {
 					g.setColor(new Color(200,200,200));

@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import physics.XYTSource;
-import regret.GlobalHacks;
+import render.RenderPreferences;
 import render.XYTRenderNode;
 import ships.Equipment;
 import ships.Ship;
@@ -24,24 +24,25 @@ public class Generator implements Equipment, XYTSource {
 	public void addedTo(Ship s) {
 		ship = s;
 		s.addRenderNode(new XYTRenderNode(this) {
-			public void draw(Graphics2D g) {
+			public void draw(Graphics2D g, RenderPreferences prefs) {
 				int scale = 15;
-				g.setColor(GlobalHacks.getBorderColor());
-				g.setStroke(new BasicStroke(2 * GlobalHacks.borderThickness(),
+				g.setColor(prefs.borderColor());
+				int t = prefs.borderThickness();
+				g.setStroke(new BasicStroke(2 * t,
 						BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 				
 				g.drawRect(-scale, -scale, 2*scale, 2*scale);
 				
-				g.setColor(Color.gray);
+				g.setColor(prefs.body2());
 				g.fillRect(-scale, -scale, scale*2, scale*2);
 				
 				int color = (int) (ship.power.getPower() * 255 / ship.power.getCapacity());
 				int len = (int) (ship.power.getPower() * 20 / ship.power.getCapacity());
 				
-				g.setColor(GlobalHacks.getBorderColor());
+				g.setColor(prefs.borderColor());
 				
 				if (ship.getCpuFreeze() > 0 && System.currentTimeMillis()%500 < 250) {
-					g.setColor(new Color(200,200,200));
+					g.setColor(prefs.body1());
 				}
 				
 				g.drawRect(-10, -2, 20, 4);

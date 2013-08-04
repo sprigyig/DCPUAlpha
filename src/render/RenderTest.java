@@ -23,7 +23,7 @@ public class RenderTest {
 				Graphics2D g2 = (Graphics2D) g;
 				
 				XYTRenderNode rn = new XYTRenderNode(20, -20, 0) {
-					public void draw(Graphics2D g) {
+					public void draw(Graphics2D g, RenderPreferences prefs) {
 						g.fillArc(-5, -5, 10, 10, 0, 360);
 					}
 				};
@@ -43,7 +43,7 @@ public class RenderTest {
 					}
 					
 				}) {
-					public void draw(Graphics2D g) {
+					public void draw(Graphics2D g, RenderPreferences prefs) {
 						g.drawLine(0, 0, 40, 0);
 					}
 				};
@@ -55,7 +55,7 @@ public class RenderTest {
 				
 				AffineTransform cart = new AffineTransform();
 				cart.scale(1, -1);
-				root.render(g2, cart);
+				root.render(g2, cart, new StandardPrefs());
 			}
 		};
 		

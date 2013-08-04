@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import render.RenderPreferences;
 import render.SpaceViewPanel;
 import render.XYTRenderNode;
 import ships.Equipment;
@@ -117,7 +118,7 @@ public class Main {
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		final SpaceViewPanel jp = new SpaceViewPanel(s);
 		jp.addOverlay(new XYTRenderNode(10, 10, 0) {
-			public void draw(Graphics2D g) {
+			public void draw(Graphics2D g, RenderPreferences prefs) {
 				g.setColor(Color.yellow.darker());
 				g.drawString(String.format("x:%.03f", ship.me.x), 10, 10);
 				g.drawString(String.format("y:%.03f", ship.me.y), 10, 25);

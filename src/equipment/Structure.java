@@ -1,12 +1,11 @@
 package equipment;
 
 import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.ArrayList;
 
-import regret.GlobalHacks;
+import render.RenderPreferences;
 import render.XYTRenderNode;
 import ships.Equipment;
 import ships.Ship;
@@ -24,7 +23,7 @@ public class Structure implements Equipment {
 	
 	public void addedTo(Ship s) {
 		s.addRenderNode(new XYTRenderNode(0,0,0){
-			public void draw(Graphics2D g) {
+			public void draw(Graphics2D g, RenderPreferences prefs) {
 				int scale = 25;
 				int[] x = new int[]{-1,-1,1,1,-1,1,-1,1};
 				int[] y = new int[]{-1,1,1,-1,1,1,-1,-1};
@@ -33,8 +32,9 @@ public class Structure implements Equipment {
 					x[i]*=scale; y[i]*=scale;
 				}
 				
-				g.setColor(GlobalHacks.getBorderColor());
-				g.setStroke(new BasicStroke(5+GlobalHacks.borderThickness()*2, BasicStroke.CAP_ROUND,
+				g.setColor(prefs.borderColor());
+				int t = prefs.borderThickness();
+				g.setStroke(new BasicStroke(5+t*2, BasicStroke.CAP_ROUND,
 						BasicStroke.JOIN_ROUND));
 				for (Point p : elements) {
 					for (int i=0;i<8;i++) { x[i]+=p.x*scale*2;y[i]+=p.y*scale*2; }
@@ -42,7 +42,7 @@ public class Structure implements Equipment {
 					for (int i=0;i<8;i++) { x[i]-=p.x*scale*2;y[i]-=p.y*scale*2; }
 				}
 				
-				g.setColor(new Color(100,100,110));
+				g.setColor(prefs.body3());
 				g.setStroke(new BasicStroke(5, BasicStroke.CAP_ROUND,
 						BasicStroke.JOIN_ROUND));
 				for (Point p : elements) {
@@ -51,7 +51,7 @@ public class Structure implements Equipment {
 					for (int i=0;i<8;i++) { x[i]-=p.x*scale*2;y[i]-=p.y*scale*2; }
 				}
 				
-				g.setColor(new Color(150,150,110));
+				g.setColor(prefs.body2());
 				g.setStroke(new BasicStroke(2, BasicStroke.CAP_ROUND,
 						BasicStroke.JOIN_MITER));
 				for (Point p : elements) {

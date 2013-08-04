@@ -8,6 +8,7 @@ import physics.Body;
 import physics.BodyForce;
 import render.BodyRenderNode;
 import render.RenderNode;
+import render.RenderPreferences;
 import dcpu.Dcpu;
 import dcpu.Hardware;
 import env.Entity;
@@ -26,7 +27,7 @@ public class Ship implements Entity {
 		me = new Body(0, 0, 0, mass, ri);
 		cpu = new Dcpu();
 		renderParts = new BodyRenderNode(me) {
-			public void draw(Graphics2D g) {
+			public void draw(Graphics2D g, RenderPreferences prefs) {
 			}
 		};
 		forces = new ArrayList<BodyForce>();

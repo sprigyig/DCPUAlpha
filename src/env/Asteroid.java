@@ -8,9 +8,9 @@ import java.util.Random;
 
 import physics.Body;
 import physics.BodyForce;
-import regret.GlobalHacks;
 import render.BodyRenderNode;
 import render.RenderNode;
+import render.RenderPreferences;
 
 public class Asteroid implements Entity {
 	Body bod;
@@ -34,15 +34,15 @@ public class Asteroid implements Entity {
 		final int seed = r.nextInt();
 		
 		roid = new BodyRenderNode(bod) {
-			public void draw(Graphics2D g) {
+			public void draw(Graphics2D g, RenderPreferences prefs) {
 				Random rbg = new Random(seed+3);
 				Random rfg = new Random(seed+3);
 				
 				int rad = radius + rbg.nextInt(20);
 				rfg.nextInt(20);
 				
-				g.setColor(GlobalHacks.getBorderColor());
-				g.setStroke(new BasicStroke(GlobalHacks.borderThickness(), BasicStroke.CAP_ROUND,
+				g.setColor(prefs.borderColor());
+				g.setStroke(new BasicStroke(prefs.borderThickness(), BasicStroke.CAP_ROUND,
 						BasicStroke.JOIN_ROUND));
 				g.fillArc(-rad, -rad, 2*rad, 2*rad, 0, 360);
 				{

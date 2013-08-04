@@ -1,20 +1,21 @@
 package equipment;
 
+import static dcpu.DcpuConstants.REG_A;
+import static dcpu.DcpuConstants.REG_B;
+import static dcpu.DcpuConstants.REG_C;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import physics.BodyForce;
+import physics.ForceSource;
+import render.RTTRenderNode;
+import render.RenderPreferences;
+import ships.Equipment;
+import ships.Ship;
 import dcpu.CpuWatcher;
 import dcpu.Dcpu;
 import dcpu.Hardware;
-
-import physics.BodyForce;
-import physics.ForceSource;
-import regret.GlobalHacks;
-import render.RTTRenderNode;
-import ships.Equipment;
-import ships.Ship;
-
-import static dcpu.DcpuConstants.*;
 
 public class Engine implements Equipment, ForceSource, CpuWatcher, Hardware {
 
@@ -47,20 +48,20 @@ public class Engine implements Equipment, ForceSource, CpuWatcher, Hardware {
 	public void addedTo(Ship s) {
 		s.addBodyForce(new BodyForce(this));
 		s.addRenderNode(new RTTRenderNode(this) {
-			public void draw(Graphics2D g) {
-				int t = GlobalHacks.borderThickness();
-				g.setColor(GlobalHacks.getBorderColor());
-				g.fillRect(-25-t, -15-t, 20+2*t, 30+2*t);
-				g.fillRect(-5-t, -10-t, 5+2*t, 20+2*t);
+			public void draw(Graphics2D g, RenderPreferences prefs) {
+				int t = prefs.borderThickness();
+				g.setColor(prefs.borderColor());
+				g.drawRect(-25-t, -15-t, 20+2*t, 30+2*t);
+				g.drawRect(-5-t, -10-t, 5+2*t, 20+2*t);
 				
-				g.setColor(new Color(255, 255, 255));
+				g.setColor(prefs.body1());
 				g.fillRect(-25, -15, 20, 30);
-				g.setColor(new Color(90, 90, 200));
+				g.setColor(prefs.highlight1());
 				g.fillRect(-5, -10, 5, 20);
 				
-				g.setColor(GlobalHacks.getBorderColor());
-				g.fillPolygon(new int[]{0,0,(int)(16*Math.sqrt(renderOnness)+GlobalHacks.borderThickness()*2)}, new int[]{-8-GlobalHacks.borderThickness()*2,8+GlobalHacks.borderThickness()*2,0}, 3);
-				g.fillPolygon(new int[]{0,0,(int)(22*Math.sqrt(renderOnness)+GlobalHacks.borderThickness()*2)}, new int[]{-4-GlobalHacks.borderThickness()*2,4+GlobalHacks.borderThickness()*2,0}, 3);
+				g.setColor(prefs.borderColor());
+				g.fillPolygon(new int[]{0,0,(int)(16*Math.sqrt(renderOnness)+t*2)}, new int[]{-8-t*2,8+t*2,0}, 3);
+				g.fillPolygon(new int[]{0,0,(int)(22*Math.sqrt(renderOnness)+t*2)}, new int[]{-4-t*2,4+t*2,0}, 3);
 				
 				g.setColor(new Color(180,180,255));
 				g.fillPolygon(new int[]{0,0,(int)(16*Math.sqrt(renderOnness))}, new int[]{-8,8,0}, 3);

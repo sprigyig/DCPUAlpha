@@ -1,6 +1,5 @@
 package render;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -24,11 +23,11 @@ public class SpaceViewPanel extends JPanel {
 	private ArrayList<RenderNode> overlays;
 	private Viewport vp;
 	private RenderNode rootWindow;
+	private RenderPreferences prefs;
 	
 	public SpaceViewPanel(Space sp) {
+		prefs = new StandardPrefs();
 		space = sp;
-		int gray = 65;
-		setBackground(new Color(gray,gray,(int)(gray*1.3)));
 		vp = new Viewport(200, -200, 0, 1d);
 		ViewportMouseDrag md = new ViewportMouseDrag();
 		addMouseMotionListener(md);
@@ -65,6 +64,9 @@ public class SpaceViewPanel extends JPanel {
 	}
 	
 	public void paint(Graphics g) {
+		prefs = new StandardPrefs();
+		//prefs = new BlueprintPrefs();
+		setBackground(prefs.spaceColor());
 		super.paint(g);
 		Graphics2D g2 = (Graphics2D) g;
 		
@@ -73,7 +75,7 @@ public class SpaceViewPanel extends JPanel {
 		cart.scale(1, -1);
 		
 		space.blockRunning(true);
-		rootWindow.render(g2,cart);
+		rootWindow.render(g2,cart, prefs);
 		space.blockRunning(false);
 		
 	}
