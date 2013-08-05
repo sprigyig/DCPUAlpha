@@ -27,17 +27,17 @@ public class SpaceViewPanel extends JPanel {
 	private ArrayList<RenderNode> overlays;
 	private Viewport vp;
 	private RenderNode rootWindow;
-	private RenderPreferences prefs;
+	public RenderPreferences prefs;
 	private BufferStrategy strat;
 	private Canvas canvas;
+	public boolean lockPosition;
 	
 	public SpaceViewPanel(Space sp) {
 		super(new BorderLayout());
-		
+		prefs = new StandardPrefs();
 		canvas = new Canvas();
 		add(canvas);
 		
-		prefs = new StandardPrefs();
 		space = sp;
 		vp = new Viewport(200, -200, 0, 1d);
 		ViewportMouseDrag md = new ViewportMouseDrag();
@@ -74,6 +74,23 @@ public class SpaceViewPanel extends JPanel {
 			     } while (strat.contentsLost());
 			}
 		}).start();
+		canvas.addMouseListener(new MouseAdapter() {
+			public void mouseReleased(MouseEvent e) {
+				AffineTransform cart = new AffineTransform();
+				cart.scale(1, -1);
+				space.blockRunning(true);
+				rootWindow.interaction(cart, e, MouseEventType.MOUSE_RELEASE);
+				space.blockRunning(false);
+			}
+			
+			public void mousePressed(MouseEvent e) {
+				AffineTransform cart = new AffineTransform();
+				cart.scale(1, -1);
+				space.blockRunning(true);
+				rootWindow.interaction(cart, e, MouseEventType.MOUSE_PRESS);
+				space.blockRunning(false);
+			}
+		});
 	}
 	
 
@@ -99,11 +116,9 @@ public class SpaceViewPanel extends JPanel {
 	}
 	
 	public void update(Graphics g) {
-		prefs = new StandardPrefs();
-		//prefs = new BlueprintPrefs();
-		setBackground(prefs.spaceColor());
-		super.paint(g);
 		Graphics2D g2 = (Graphics2D) g;
+		g.setColor(prefs.spaceColor());
+		g.fillRect(0, 0, getWidth(), getHeight());
 		
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 		AffineTransform cart = new AffineTransform();
@@ -114,8 +129,8 @@ public class SpaceViewPanel extends JPanel {
 		space.blockRunning(false);
 		
 	}
-	
-	private class Viewport extends XYTRenderNode {
+
+	public class Viewport extends XYTRenderNode {
 		private double zoom;
 		public Viewport(double x, double y, double theta, double zoom) {
 			super(x, y, theta);
@@ -140,8 +155,10 @@ public class SpaceViewPanel extends JPanel {
 			this.y -= (oldworldy-newworldy)*zoom;
 		}
 		public void moveCenter(double x, double y) {
-			this.x -= x;
-			this.y -= y;
+			if (!lockPosition) {
+				this.x -= x;
+				this.y -= y;
+			}
 		}
 	}
 	
@@ -153,6 +170,15 @@ public class SpaceViewPanel extends JPanel {
 		}
 		
 		public void mouseDragged(MouseEvent e) {
+			boolean interacted;
+			AffineTransform cart = new AffineTransform();
+			cart.scale(1, -1);
+			space.blockRunning(true);
+			interacted = rootWindow.interaction(cart, e, MouseEventType.MOUSE_DRAG);
+			space.blockRunning(false);
+			
+			if (interacted) return;
+			
 			if (lx!=-1) {
 				vp.moveCenter(lx-e.getX(), ly+e.getY());
 				lx = e.getX();

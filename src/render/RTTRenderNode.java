@@ -19,5 +19,4 @@ public class RTTRenderNode extends RenderNode {
 		root.translate(rttsrc.position_radius(), 0);
 		root.rotate(rttsrc.alignment_theta());
 	}
-
 }

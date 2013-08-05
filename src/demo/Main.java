@@ -83,7 +83,7 @@ public class Main {
 	public static void main(String[] args) {
 		System.out.println(String.format("%04x\n", (int)ASSEMBLE(ADV, HWI, REG_A)));
 		final Ship ship = new Ship(1000, 400000);
-
+		ship.me.rot= 0*(float) (Math.PI/2);
 		final Equipment torque1 = new Engine(100, (float)(Math.PI/8), (float)(Math.PI/2), 100, 10, (char)1);
 		final Equipment torque2 = new Engine(100, (float)(-Math.PI/8), (float)(-Math.PI/2), 100, 10, (char)2);
 		final Equipment torque3 = new Engine(100, (float)(9 * Math.PI/8), (float)(Math.PI/2), 100, 10, (char)3);

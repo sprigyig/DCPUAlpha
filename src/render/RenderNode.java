@@ -2,6 +2,7 @@ package render;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,7 +10,7 @@ import java.util.Collection;
 public abstract class RenderNode {
 	protected Image img;
 	protected Collection<RenderNode> children;
-
+	
 	public RenderNode() {
 		children = new ArrayList<RenderNode>();
 	}
@@ -36,6 +37,26 @@ public abstract class RenderNode {
 		for (RenderNode r : children) {
 			r.render(graphics, (AffineTransform) root.clone(), prefs);
 		}
+	}
+	
+
+	public boolean interaction(AffineTransform root, MouseEvent e, MouseEventType t) {
+		transform(root);
+		
+		if (interacted(root, e, t)) {
+			return true;
+		}
+		
+		for (RenderNode r : children) {
+			if (r.interaction((AffineTransform) root.clone(), e, t)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean interacted(AffineTransform root, MouseEvent e, MouseEventType t) {
+		return false;
 	}
 
 	public void addChild(RenderNode r) {

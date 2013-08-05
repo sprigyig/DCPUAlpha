@@ -4,6 +4,7 @@ import static dcpu.DcpuConstants.REG_A;
 import static dcpu.DcpuConstants.REG_B;
 import static dcpu.DcpuConstants.REG_C;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
@@ -50,9 +51,10 @@ public class Engine implements Equipment, ForceSource, CpuWatcher, Hardware {
 		s.addRenderNode(new RTTRenderNode(this) {
 			public void draw(Graphics2D g, RenderPreferences prefs) {
 				int t = prefs.borderThickness();
+				g.setStroke(new BasicStroke(t));
 				g.setColor(prefs.borderColor());
-				g.drawRect(-25-t, -15-t, 20+2*t, 30+2*t);
-				g.drawRect(-5-t, -10-t, 5+2*t, 20+2*t);
+				g.drawRect(-25, -15, 20, 30);
+				g.drawRect(-5, -10, 5, 20);
 				
 				g.setColor(prefs.body1());
 				g.fillRect(-25, -15, 20, 30);
@@ -68,6 +70,7 @@ public class Engine implements Equipment, ForceSource, CpuWatcher, Hardware {
 				g.setColor(new Color(220,220,255));
 				g.fillPolygon(new int[]{0,0,(int)(22*Math.sqrt(renderOnness))}, new int[]{-4,4,0}, 3);
 			}
+			
 		});
 		s.cpu.addWatcher(this);
 		s.cpu.addHardware(hwid, this);

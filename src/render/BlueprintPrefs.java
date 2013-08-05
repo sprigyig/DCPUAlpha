@@ -8,7 +8,7 @@ public class BlueprintPrefs implements RenderPreferences {
 	private Color trans;
 
 	public BlueprintPrefs() {
-		this.bg = new Color(50, 50, 255);
+		this.bg = new Color(70, 50, 170);
 		this.trans = new Color(0,0,0,0);
 	}
 	
@@ -17,7 +17,7 @@ public class BlueprintPrefs implements RenderPreferences {
 	}
 
 	public Color borderColor() {
-		return Color.white;
+		return Color.gray;
 	}
 
 	public Color body1() {
@@ -33,7 +33,7 @@ public class BlueprintPrefs implements RenderPreferences {
 	}
 
 	public Color highlight1() {
-		return Color.white;
+		return Color.gray;
 	}
 
 	public Color spaceColor() {

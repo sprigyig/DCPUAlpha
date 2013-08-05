@@ -56,6 +56,7 @@ public class Capacitor implements Equipment, XYTSource {
 				}
 				
 				g.drawArc(-podheight/2, -podheight/2, podheight, podheight, 0, 360);
+				color = Math.max(0, Math.min(color,255));
 				g.setColor(new Color(255-color, color, 0));
 				g.fillArc(-podheight/2, -podheight/2, podheight, podheight, 0, 360);
 				

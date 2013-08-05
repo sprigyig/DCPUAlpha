@@ -3,7 +3,6 @@ package equipment;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.event.MouseListener;
 
 import physics.XYTSource;
 import render.RenderPreferences;

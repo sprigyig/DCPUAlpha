@@ -43,5 +43,4 @@ public class XYTRenderNode extends RenderNode {
 		}
 		
 	}
-	
 }
