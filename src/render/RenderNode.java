@@ -66,4 +66,8 @@ public abstract class RenderNode {
 	public void removeChild(RenderNode r) {
 		children.remove(r);
 	}
+	
+	public int layer() {
+		return 1;
+	}
 }

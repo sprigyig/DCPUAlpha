@@ -1,12 +1,15 @@
 package env;
 
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
 
 import render.RenderNode;
 
 public class Space {
 	HashSet<Entity> entities;
-	HashSet<RenderNode> rendities;
+	TreeSet<RenderNode> rendities;
 	private boolean die;
 	
 	boolean block;
@@ -15,13 +18,20 @@ public class Space {
 	
 	public Space() {
 		entities = new HashSet<>();
-		rendities = new HashSet<>();
+		rendities = new TreeSet<RenderNode>(new Comparator<RenderNode>() {
+			public int compare(RenderNode a, RenderNode b) {
+				if (a.layer() != b.layer()) {
+					return a.layer() - b.layer();
+				}
+				return a.hashCode() - b.hashCode();
+			}
+		});
 		die = false;
 		block = false;
 		canBlock = false;
 		blockLock = new Object();
 	}
-	public HashSet<RenderNode> rendities() {
+	public Set<RenderNode> rendities() {
 		return rendities;
 	}
 	
@@ -30,7 +40,7 @@ public class Space {
 		rendities.add(e.getVisuals());
 	}
 	
-	public void reniveEntity(Entity e) {
+	public void removeEntity(Entity e) {
 		entities.remove(e);
 		rendities.remove(e.getVisuals());
 	}

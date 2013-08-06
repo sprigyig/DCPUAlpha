@@ -6,10 +6,12 @@ public class BlueprintPrefs implements RenderPreferences {
 
 	private Color bg;
 	private Color trans;
+	private Color fg;
 
 	public BlueprintPrefs() {
 		this.bg = new Color(70, 50, 170);
 		this.trans = new Color(0,0,0,0);
+		this.fg = new Color(90, 70, 190);
 	}
 	
 	public int borderThickness() {
@@ -17,7 +19,7 @@ public class BlueprintPrefs implements RenderPreferences {
 	}
 
 	public Color borderColor() {
-		return Color.gray;
+		return fg;
 	}
 
 	public Color body1() {
@@ -33,7 +35,7 @@ public class BlueprintPrefs implements RenderPreferences {
 	}
 
 	public Color highlight1() {
-		return Color.gray;
+		return fg;
 	}
 
 	public Color spaceColor() {
@@ -41,7 +43,7 @@ public class BlueprintPrefs implements RenderPreferences {
 	}
 
 	public Color overlayTextColor() {
-		return Color.white;
+		return fg;
 	}
 
 }
