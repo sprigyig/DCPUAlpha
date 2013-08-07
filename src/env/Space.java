@@ -1,5 +1,8 @@
 package env;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +18,7 @@ public class Space {
 	boolean block;
 	boolean canBlock;
 	Object blockLock;
+	private ArrayList<KeyListener> keylisteners;
 	
 	public Space() {
 		entities = new HashSet<>();
@@ -26,6 +30,7 @@ public class Space {
 				return a.hashCode() - b.hashCode();
 			}
 		});
+		keylisteners = new ArrayList<>();
 		die = false;
 		block = false;
 		canBlock = false;
@@ -98,5 +103,19 @@ public class Space {
 				}
 			}
 		}.start();
+	}
+	
+	public void keytyped(KeyEvent k) {
+		for (KeyListener kl : keylisteners) {
+			kl.keyTyped(k);
+		}
+	}
+	
+	public void addKeyListener(KeyListener kl) {
+		keylisteners.add(kl);
+	}
+	
+	public void removeKeyListener(KeyListener kl) {
+		keylisteners.remove(kl);
 	}
 }
