@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+import render.FocusableOverlay;
 import render.RenderNode;
 
 public class Space {
@@ -19,6 +20,7 @@ public class Space {
 	boolean canBlock;
 	Object blockLock;
 	private ArrayList<KeyListener> keylisteners;
+	private FocusableOverlay focused;
 	
 	public Space() {
 		entities = new HashSet<>();
@@ -117,5 +119,12 @@ public class Space {
 	
 	public void removeKeyListener(KeyListener kl) {
 		keylisteners.remove(kl);
+	}
+	
+	public void setFocused(FocusableOverlay tic) {
+		if (focused !=null && focused != tic) {
+			focused.lostFocus();
+		}
+		this.focused = tic;
 	}
 }

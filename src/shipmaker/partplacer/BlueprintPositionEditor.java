@@ -1,7 +1,6 @@
-package shipmaker;
+package shipmaker.partplacer;
 
 import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
@@ -10,6 +9,7 @@ import physics.XYTSource;
 import render.RenderNode;
 import render.RenderPreferences;
 import render.XYTRenderNode;
+import shipmaker.BlueprintLocation;
 import shipmaker.knobs.PositionKnob;
 import shipmaker.knobs.RadiusKnob;
 import shipmaker.knobs.T1Knob;
@@ -152,17 +152,8 @@ public class BlueprintPositionEditor implements Entity {
 			g.setStroke(normal);
 			g.setColor(prefs.borderColor().brighter());
 			g.drawArc(-20, -20, 40, 40, 0, (int) (bpl.t2 * 180 / Math.PI));
-
-			g.setColor(Color.black);
-			g.setStroke(new BasicStroke(prefs.borderThickness(),
-					BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL));
-			g.drawLine(1, 0, 40, 0);
-			g.drawPolyline(new int[] { 10, 0, 10 }, new int[] { -10, 0, 10 }, 3);
-			g.setColor(Color.white);
-			g.setStroke(new BasicStroke(1, BasicStroke.CAP_SQUARE,
-					BasicStroke.JOIN_BEVEL));
-			g.drawLine(1, 0, 40, 0);
-			g.drawPolyline(new int[] { 10, 0, 10 }, new int[] { -10, 0, 10 }, 3);
+			g.drawLine(0, 0, 20, 0);
+			
 		}
 		public int layer() {
 			return 2;

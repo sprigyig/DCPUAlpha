@@ -4,7 +4,10 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import physics.Body;
 import physics.XYTSource;
+import render.BodyRenderNode;
+import render.RenderNode;
 import render.RenderPreferences;
 import render.XYTRenderNode;
 import ships.Equipment;
@@ -24,42 +27,55 @@ public class Capacitor implements Equipment, XYTSource {
 		this.t = t;
 	}
 
+	public static RenderNode makeIndependantPart(Body base) {
+		return new BodyRenderNode(base) {
+			public void draw(Graphics2D g, RenderPreferences prefs) {
+				Capacitor.draw(g, prefs, 255, false);
+			}
+		};
+	}
+	
+	private static void draw(Graphics2D g, RenderPreferences prefs, int color, boolean flash) {
+		int scale = 15;
+		int podheight = 7;
+		g.setColor(prefs.borderColor());
+		
+		int t = prefs.borderThickness();
+		
+		g.setStroke(new BasicStroke(2 * t,
+				BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+		
+		g.drawRect(-scale, -scale, 2*scale, podheight);
+		g.drawRect(-scale, scale-podheight, 2*scale, podheight);
+		g.drawRect(-scale, -podheight/2, 2*scale, podheight);
+		
+		g.setColor(prefs.body2());
+		
+		g.fillRect(-scale, -scale, 2*scale, podheight);
+		g.fillRect(-scale, scale-podheight, 2*scale, podheight);
+		g.fillRect(-scale, -podheight/2, 2*scale, podheight);
+		
+		
+		g.setColor(prefs.borderColor());
+		
+		if (flash) {
+			g.setColor(new Color(200,200,200));
+		}
+		
+		g.drawArc(-podheight/2, -podheight/2, podheight, podheight, 0, 360);
+		color = Math.max(0, Math.min(color,255));
+		g.setColor(new Color(255-color, color, 0));
+		g.fillArc(-podheight/2, -podheight/2, podheight, podheight, 0, 360);
+		
+	}
+	
 	public void addedTo(Ship s) {
 		final Ship ship = s;
 		s.addRenderNode(new XYTRenderNode(this){
 			public void draw(Graphics2D g, RenderPreferences prefs) {
-				int scale = 15;
-				int podheight = 7;
-				g.setColor(prefs.borderColor());
-				
-				int t = prefs.borderThickness();
-				
-				g.setStroke(new BasicStroke(2 * t,
-						BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-				
-				g.drawRect(-scale, -scale, 2*scale, podheight);
-				g.drawRect(-scale, scale-podheight, 2*scale, podheight);
-				g.drawRect(-scale, -podheight/2, 2*scale, podheight);
-				
-				g.setColor(prefs.body2());
-				
-				g.fillRect(-scale, -scale, 2*scale, podheight);
-				g.fillRect(-scale, scale-podheight, 2*scale, podheight);
-				g.fillRect(-scale, -podheight/2, 2*scale, podheight);
-				
 				int color = (int) (ship.power.getPower() * 255 / ship.power.getCapacity());
-				
-				g.setColor(prefs.borderColor());
-				
-				if (ship.getCpuFreeze() > 0 && System.currentTimeMillis()%500 < 250) {
-					g.setColor(new Color(200,200,200));
-				}
-				
-				g.drawArc(-podheight/2, -podheight/2, podheight, podheight, 0, 360);
-				color = Math.max(0, Math.min(color,255));
-				g.setColor(new Color(255-color, color, 0));
-				g.fillArc(-podheight/2, -podheight/2, podheight, podheight, 0, 360);
-				
+				boolean flash = ship.getCpuFreeze() > 0 && System.currentTimeMillis()%500 < 250;
+				Capacitor.draw(g, prefs, color, flash);
 			}
 		});
 	}

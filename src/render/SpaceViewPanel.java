@@ -26,7 +26,8 @@ import env.Space;
 public class SpaceViewPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private Space space;
-	private ArrayList<RenderNode> overlays;
+	private ArrayList<RenderNode> topleft;
+	private ArrayList<RenderNode> topRight;
 	private Viewport vp;
 	private RenderNode rootWindow;
 	public RenderPreferences prefs;
@@ -50,15 +51,25 @@ public class SpaceViewPanel extends JPanel {
 				vp.zoom(-e.getPreciseWheelRotation(), e.getX(), -e.getY());
 			}
 		});
-		overlays = new ArrayList<>();
+		topleft = new ArrayList<>();
+		topRight = new ArrayList<>();
 		rootWindow = new XYTRenderNode(0,0,0);
 		rootWindow.addChild(vp);
 		rootWindow.addChild(new RenderNode() {
 			{
-				children = overlays;
+				children = topleft;
 			}
 			protected void transform(AffineTransform root) {
 				root.scale(1, -1);
+			}
+		});
+		rootWindow.addChild(new RenderNode() {
+			{
+				children = topRight;
+			}
+			protected void transform(AffineTransform root) {
+				root.scale(1, -1);
+				root.translate(getWidth(), 0);
 			}
 		});
 		new Timer(30, new ActionListener() {
@@ -123,12 +134,20 @@ public class SpaceViewPanel extends JPanel {
 		strat = canvas.getBufferStrategy();
 	}
 	
-	public void addOverlay(RenderNode overlay) {
-		overlays.add(overlay);
+	public void addLeftOverlay(RenderNode overlay) {
+		topleft.add(overlay);
 	}
 	
-	public void removeOverlay(RenderNode overlay) {
-		overlays.remove(overlay);
+	public void removeLeftOverlay(RenderNode overlay) {
+		topleft.remove(overlay);
+	}
+	
+	public void addRightOverlay(RenderNode overlay) {
+		topRight.add(overlay);
+	}
+	
+	public void removeRightOverlay(RenderNode overlay) {
+		topRight.remove(overlay);
 	}
 	
 	public void update(Graphics g) {
