@@ -1,17 +1,15 @@
 package shipmaker.catalog;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 
 import physics.Body;
 import render.OverlayManager;
+import render.PropertyTable;
 import render.RenderNode;
 import render.RenderPreferences;
-import render.XYTRenderNode;
 import shipmaker.CatalogPart;
 import shipmaker.CatalogPartType;
 import shipmaker.partplacer.HexTextControl;
-import shipmaker.partplacer.IconEditField;
 import ships.Equipment;
 import equipment.Engine;
 
@@ -21,6 +19,7 @@ public class StandardEngine implements CatalogPartType {
 		return new CatalogPart() {
 			RenderNode ragdoll;
 			char hwid;
+			private PropertyTable table;
 			
 			public CatalogPartType type() {
 				return StandardEngine.this;
@@ -34,41 +33,28 @@ public class StandardEngine implements CatalogPartType {
 			}
 			
 			public RenderNode getOptionsOverlay(final OverlayManager om) {
-				return new XYTRenderNode(-200, 0, 0) {
-					{
-						addChild(new IconEditField(10, 40, 0, om, new HexTextControl(4) {
-							
-							public boolean drawIcon(Graphics2D g, RenderPreferences prefs) {
-								return false;
-							}
-							
-							protected void set(int x) {
-								hwid = (char)x;
-							}
-							
-							protected int get() {
-								return (int)hwid;
-							}
-						}));
-					}
-					public void draw(Graphics2D g, RenderPreferences prefs) {
-						g.setColor(Color.white);
-						int w = g.getFontMetrics().stringWidth(name());
+				if (this.table == null) {
+					this.table = new PropertyTable(-199, 0, 0, 100, 100);
+					this.table.new TableName("Standard Engine");
+					this.table.new TableFixedProp("Power/Tick", "10");
+					this.table.new TableFixedProp("Force", "100");
+					this.table.new TableFixedProp("Mass", ""+mass());
+					this.table.new TableFixedProp("Rot Inertia", ""+rotationalInertia());
+					this.table.new TableSetProp("Hardware ID", new HexTextControl(4	) {
+						public boolean drawIcon(Graphics2D g, RenderPreferences prefs) {
+							return false;
+						}
 						
-						g.drawString("Hardware ID", 100, 45);
-						g.drawRect(0, -1, 201, 101);
-						g.drawLine(90, 25, 90, 100);
-						g.drawLine(0, 25, 200, 25);
-						g.drawLine(0, 50, 200, 50);
-						g.drawLine(0, 75, 200, 75);
-						g.setColor(Color.gray.brighter());
-						g.drawString("100", 10, 70);
-						g.drawString("Max Force", 100, 70);
-						g.drawString("10", 10, 95);
-						g.drawString("Power/Tick", 100, 95);
-						g.drawString(name(), 100-w/2, 20);
-					}
-				};
+						protected void set(int x) {
+							hwid = (char)x;
+						}
+						
+						protected int get() {
+							return (int)hwid;
+						}
+					}, om);
+				}
+				return this.table;
 			}
 			
 			public Equipment generateEquipment(float effectiveX, float effectiveY,

@@ -4,7 +4,10 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import physics.Body;
 import physics.XYTSource;
+import render.BodyRenderNode;
+import render.RenderNode;
 import render.RenderPreferences;
 import render.XYTRenderNode;
 import ships.Equipment;
@@ -21,38 +24,54 @@ public class Generator implements Equipment, XYTSource {
 		this.t = t;
 	}
 	
+	public static RenderNode makeIndependantPart(Body base) {
+		return new BodyRenderNode(base) {
+			public void draw(Graphics2D g, RenderPreferences prefs) {
+				Generator.draw(g, prefs, 255, false, 20);
+			}
+		};
+	}
+	
+	private static void draw(Graphics2D g, RenderPreferences prefs, int color, boolean flash, int len) {
+		int scale = 15;
+		g.setColor(prefs.borderColor());
+		int t = prefs.borderThickness();
+		g.setStroke(new BasicStroke(2 * t,
+				BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+		
+		g.drawRect(-scale, -scale, 2*scale, 2*scale);
+		
+		g.setColor(prefs.body2());
+		g.fillRect(-scale, -scale, scale*2, scale*2);
+		
+		
+		
+		color = Math.max(0, Math.min(color,255));
+		
+		
+		
+		g.setColor(prefs.borderColor());
+		
+		if (flash) {
+			g.setColor(prefs.body1());
+		}
+		
+		g.drawRect(-10, -2, 20, 4);
+		
+		g.setColor(new Color(255-color, color, 0));
+		
+		g.fillRect(-10, -2, len, 4);
+	}
+
+	
 	public void addedTo(Ship s) {
 		ship = s;
 		s.addRenderNode(new XYTRenderNode(this) {
 			public void draw(Graphics2D g, RenderPreferences prefs) {
-				int scale = 15;
-				g.setColor(prefs.borderColor());
-				int t = prefs.borderThickness();
-				g.setStroke(new BasicStroke(2 * t,
-						BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-				
-				g.drawRect(-scale, -scale, 2*scale, 2*scale);
-				
-				g.setColor(prefs.body2());
-				g.fillRect(-scale, -scale, scale*2, scale*2);
-				
 				int color = (int) (ship.power.getPower() * 255 / ship.power.getCapacity());
-				
-				color = Math.max(0, Math.min(color,255));
-				
 				int len = (int) (ship.power.getPower() * 20 / ship.power.getCapacity());
-				
-				g.setColor(prefs.borderColor());
-				
-				if (ship.getCpuFreeze() > 0 && System.currentTimeMillis()%500 < 250) {
-					g.setColor(prefs.body1());
-				}
-				
-				g.drawRect(-10, -2, 20, 4);
-				
-				g.setColor(new Color(255-color, color, 0));
-				
-				g.fillRect(-10, -2, len, 4);
+				boolean flash = ship.getCpuFreeze() > 0 && System.currentTimeMillis()%500 < 250;
+				Generator.draw(g, prefs, color, flash, len);
 			}
 		});
 	}

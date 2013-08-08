@@ -13,7 +13,7 @@ import shipmaker.knobs.T2Knob;
 public class BlueprintPositionOverlay extends XYTRenderNode {
 	public BlueprintPositionOverlay(final BlueprintPositionEditor bpe, OverlayManager om) {
 		super(0,0,0);
-		addChild(new IconEditField(15, 35, 0, om, new FloatTextControl("X:", "") {
+		addChild(new IconEditField(35, 35, 0, om, new FloatTextControl(" X:", "") {
 			public boolean drawIcon(Graphics2D g, RenderPreferences prefs) {
 				PositionKnob.drawLeftright(g);
 				return true;
@@ -28,7 +28,7 @@ public class BlueprintPositionOverlay extends XYTRenderNode {
 			}
 		}));
 		
-		addChild(new IconEditField(15, 55, 0, om, new FloatTextControl("Y:", "") {
+		addChild(new IconEditField(35, 55, 0, om, new FloatTextControl(" Y:", "") {
 			public void set(float f) {
 				bpe.bpl.y = f;
 			}
@@ -43,7 +43,7 @@ public class BlueprintPositionOverlay extends XYTRenderNode {
 			}
 		}));
 		
-		addChild(new IconEditField(15, 75, 0, om, new FloatTextControl("R:", "") {
+		addChild(new IconEditField(35, 75, 0, om, new FloatTextControl(" R:", "") {
 			public boolean drawIcon(Graphics2D g, RenderPreferences prefs) {
 				RadiusKnob.drawRadius(g);
 				return true;
@@ -58,7 +58,7 @@ public class BlueprintPositionOverlay extends XYTRenderNode {
 			}
 		}));
 		
-		addChild(new IconEditField(15, 95, 0, om, new FloatTextControl("T1:", " \u03c0") {
+		addChild(new IconEditField(35, 95, 0, om, new FloatTextControl("T1:", "\u03c0") {
 			public boolean drawIcon(Graphics2D g, RenderPreferences prefs) {
 				T1Knob.drawT1(g);
 				return true;
@@ -75,7 +75,7 @@ public class BlueprintPositionOverlay extends XYTRenderNode {
 			}
 		}));
 		
-		addChild(new IconEditField(15, 115, 0, om, new FloatTextControl("T2:", "\u03c0") {
+		addChild(new IconEditField(35, 115, 0, om, new FloatTextControl("T2:", "\u03c0") {
 			public boolean drawIcon(Graphics2D g, RenderPreferences prefs) {
 				T2Knob.drawT2(g);
 				return true;
