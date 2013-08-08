@@ -45,7 +45,7 @@ public class Editor {
 			}
 		});
 		
-		svp.addRightOverlay(part.getOptionsOverlay(s));
+		svp.overlays().addRight(part.getOptionsOverlay(svp.overlays()));
 		svp.prefs = new BlueprintPrefs();
 		JFrame jf = new JFrame();
 		jf.add(svp);
@@ -53,7 +53,7 @@ public class Editor {
 		jf.setVisible(true);
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		s.start();
-		svp.addLeftOverlay(new BlueprintPositionOverlay(bpe, s));
+		svp.overlays().addLeft(new BlueprintPositionOverlay(bpe, svp.overlays()));
 		
 		svp.startGraphics();
 	}

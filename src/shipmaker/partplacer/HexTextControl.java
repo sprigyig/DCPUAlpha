@@ -13,9 +13,9 @@ public abstract class HexTextControl implements TextInputControl {
 
 	public String content() {
 		if (editing) {
-			return String.format("0x%s\u258c", content).toUpperCase();
+			return "0x"+(String.format("%s\u258c", content).toUpperCase());
 		} else {
-			return String.format("0x%0" + len + "x", get()).toUpperCase();
+			return "0x"+(String.format("%0" + len + "x", get()).toUpperCase());
 		}
 	}
 

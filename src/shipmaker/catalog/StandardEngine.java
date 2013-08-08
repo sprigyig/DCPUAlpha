@@ -3,17 +3,17 @@ package shipmaker.catalog;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import env.Space;
-import equipment.Engine;
 import physics.Body;
+import render.OverlayManager;
 import render.RenderNode;
+import render.RenderPreferences;
 import render.XYTRenderNode;
 import shipmaker.CatalogPart;
 import shipmaker.CatalogPartType;
 import shipmaker.partplacer.HexTextControl;
 import shipmaker.partplacer.IconEditField;
 import ships.Equipment;
-import render.RenderPreferences;
+import equipment.Engine;
 
 public class StandardEngine implements CatalogPartType {
 
@@ -33,10 +33,10 @@ public class StandardEngine implements CatalogPartType {
 				return ragdoll;
 			}
 			
-			public RenderNode getOptionsOverlay(final Space s) {
+			public RenderNode getOptionsOverlay(final OverlayManager om) {
 				return new XYTRenderNode(-200, 0, 0) {
 					{
-						addChild(new IconEditField(10, 40, 0, s, new HexTextControl(4) {
+						addChild(new IconEditField(10, 40, 0, om, new HexTextControl(4) {
 							
 							public boolean drawIcon(Graphics2D g, RenderPreferences prefs) {
 								return false;
@@ -54,7 +54,7 @@ public class StandardEngine implements CatalogPartType {
 					public void draw(Graphics2D g, RenderPreferences prefs) {
 						g.setColor(Color.white);
 						int w = g.getFontMetrics().stringWidth(name());
-						g.drawString(name(), 100-w/2, 20);
+						
 						g.drawString("Hardware ID", 100, 45);
 						g.drawRect(0, -1, 201, 101);
 						g.drawLine(90, 25, 90, 100);
@@ -62,10 +62,11 @@ public class StandardEngine implements CatalogPartType {
 						g.drawLine(0, 50, 200, 50);
 						g.drawLine(0, 75, 200, 75);
 						g.setColor(Color.gray.brighter());
-						g.drawString("100", 60, 70);
+						g.drawString("100", 10, 70);
 						g.drawString("Max Force", 100, 70);
-						g.drawString("10", 60, 95);
+						g.drawString("10", 10, 95);
 						g.drawString("Power/Tick", 100, 95);
+						g.drawString(name(), 100-w/2, 20);
 					}
 				};
 			}

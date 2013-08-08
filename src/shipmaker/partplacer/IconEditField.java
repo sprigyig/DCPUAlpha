@@ -11,24 +11,24 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 
 import render.MouseEventType;
+import render.OverlayManager;
 import render.RenderPreferences;
 import render.XYTRenderNode;
-import env.Space;
 
 public class IconEditField extends XYTRenderNode {
 	private TextInputControl control;
 	private int hitboxWidth;
 	private int hitboxLeft;
-	private Space space;
+	private OverlayManager om;
 
-	public IconEditField(double x, double y, double theta, Space s,
+	public IconEditField(double x, double y, double theta, OverlayManager o,
 			TextInputControl pcontrol) {
 		super(x, y, theta);
-		this.space = s;
+		this.om = o;
 
 		this.control = pcontrol;
 
-		s.addKeyListener(new KeyListener() {
+		om.addKeyListener(new KeyListener() {
 			public void keyTyped(KeyEvent e) {
 				if (control.editing()) {
 					control.typed(e);
@@ -82,7 +82,7 @@ public class IconEditField extends XYTRenderNode {
 			if (dest.getX() > hitboxLeft && dest.getX() < hitboxWidth
 					&& Math.abs(dest.getY()) < 9) {
 				control.startEdit();
-				space.setFocused(control);
+				om.setFocused(control);
 				return true;
 			} else {
 				System.out.println("nope");

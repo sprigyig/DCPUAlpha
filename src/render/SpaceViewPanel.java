@@ -7,8 +7,6 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -16,7 +14,6 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferStrategy;
-import java.util.ArrayList;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -26,8 +23,7 @@ import env.Space;
 public class SpaceViewPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private Space space;
-	private ArrayList<RenderNode> topleft;
-	private ArrayList<RenderNode> topRight;
+	private OverlayManager overlays;
 	private Viewport vp;
 	private RenderNode rootWindow;
 	public RenderPreferences prefs;
@@ -40,6 +36,7 @@ public class SpaceViewPanel extends JPanel {
 		prefs = new StandardPrefs();
 		canvas = new Canvas();
 		add(canvas);
+		overlays = new OverlayManager();
 		
 		space = sp;
 		vp = new Viewport(200, -200, 0, 1d);
@@ -51,27 +48,10 @@ public class SpaceViewPanel extends JPanel {
 				vp.zoom(-e.getPreciseWheelRotation(), e.getX(), -e.getY());
 			}
 		});
-		topleft = new ArrayList<>();
-		topRight = new ArrayList<>();
 		rootWindow = new XYTRenderNode(0,0,0);
 		rootWindow.addChild(vp);
-		rootWindow.addChild(new RenderNode() {
-			{
-				children = topleft;
-			}
-			protected void transform(AffineTransform root) {
-				root.scale(1, -1);
-			}
-		});
-		rootWindow.addChild(new RenderNode() {
-			{
-				children = topRight;
-			}
-			protected void transform(AffineTransform root) {
-				root.scale(1, -1);
-				root.translate(getWidth(), 0);
-			}
-		});
+		
+		rootWindow.addChild(overlays);
 		new Timer(30, new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (strat == null) {
@@ -104,20 +84,7 @@ public class SpaceViewPanel extends JPanel {
 				space.blockRunning(false);
 			}
 		});
-		canvas.addKeyListener(new KeyListener() {
-			
-			public void keyTyped(KeyEvent e) {
-				
-			}
-			
-			public void keyReleased(KeyEvent e) {
-				
-			}
-			
-			public void keyPressed(KeyEvent e) {
-				space.keytyped(e);
-			}
-		});
+		canvas.addKeyListener(overlays);
 	}
 	
 
@@ -134,22 +101,6 @@ public class SpaceViewPanel extends JPanel {
 		strat = canvas.getBufferStrategy();
 	}
 	
-	public void addLeftOverlay(RenderNode overlay) {
-		topleft.add(overlay);
-	}
-	
-	public void removeLeftOverlay(RenderNode overlay) {
-		topleft.remove(overlay);
-	}
-	
-	public void addRightOverlay(RenderNode overlay) {
-		topRight.add(overlay);
-	}
-	
-	public void removeRightOverlay(RenderNode overlay) {
-		topRight.remove(overlay);
-	}
-	
 	public void update(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		g.setColor(prefs.spaceColor());
@@ -158,7 +109,7 @@ public class SpaceViewPanel extends JPanel {
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 		AffineTransform cart = new AffineTransform();
 		cart.scale(1, -1);
-		
+		overlays.setWindowDimensions(this.getSize());
 		space.blockRunning(true);
 		rootWindow.render(g2,cart, prefs);
 		space.blockRunning(false);
@@ -231,5 +182,9 @@ public class SpaceViewPanel extends JPanel {
 		public void mouseReleased(MouseEvent e) {
 			ly = lx = -1;
 		}
+	}
+	
+	public OverlayManager overlays() {
+		return overlays;
 	}
 }
