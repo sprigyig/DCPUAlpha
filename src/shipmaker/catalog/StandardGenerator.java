@@ -1,11 +1,14 @@
 package shipmaker.catalog;
 
+import java.awt.Color;
+
 import physics.Body;
 import render.OverlayManager;
-import render.PropertyTable;
 import render.RenderNode;
+import shipmaker.BlueprintLocation;
 import shipmaker.CatalogPart;
 import shipmaker.CatalogPartType;
+import shipmaker.render.PropertyTable;
 import ships.Equipment;
 import equipment.Generator;
 
@@ -24,10 +27,10 @@ public class StandardGenerator implements CatalogPartType {
 				return Generator.makeIndependantPart(base);
 			}
 			
-			public RenderNode getOptionsOverlay(OverlayManager om) {
+			public RenderNode getOptionsOverlay(OverlayManager om, BlueprintLocation bpl) {
 				if (this.table == null) {
-					this.table = new PropertyTable(-199, 0, 0, 100, 100);
-					this.table.new TableName("Standard Generator");
+					this.table = new PropertyTable(-1, 0, 0, 100, 100);
+					this.table.new TableName("Standard Generator", Color.gray.brighter());
 					this.table.new TableFixedProp("Power/Tick", "18");
 					this.table.new TableFixedProp("Mass", ""+mass());
 					this.table.new TableFixedProp("Rot Inertia", ""+rotationalInertia());

@@ -1,12 +1,17 @@
-package render;
+package shipmaker.render;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 
-import shipmaker.partplacer.IconEditField;
+import render.OverlayManager;
+import render.RenderPreferences;
+import render.XYTRenderNode;
+import shipmaker.BlueprintLocation;
+import shipmaker.partplacer.FloatTextControl;
 import shipmaker.partplacer.TextInputControl;
+import shipmaker.render.IconEditField;
 
 public class PropertyTable extends XYTRenderNode {
 
@@ -23,7 +28,7 @@ public class PropertyTable extends XYTRenderNode {
 	public class TableName implements TableRow {
 		private String name;
 
-		public TableName(String name) {
+		public TableName(String name, Color textcolor) {
 			this.name = name;
 			rows.add(this);
 		}
@@ -100,4 +105,84 @@ public class PropertyTable extends XYTRenderNode {
 		g.drawLine(c1Width+c2Width, ROW_HEIGHT*rows.size(), c1Width+c2Width, 0);
 	}
 	
+	public void addPosition(final BlueprintLocation bp, OverlayManager om) {
+		new TableName("Position", Color.white);
+		new TableSetProp("X", new FloatTextControl("","") {
+			
+			public boolean drawIcon(Graphics2D g, RenderPreferences prefs) {
+				return false;
+			}
+			
+			protected void set(float f) {
+				if (f <=1000)
+					bp.x = f;
+			}
+			
+			protected float get() {
+				return bp.x;
+			}
+		}, om);
+		new TableSetProp("Y", new FloatTextControl("","") {
+			
+			public boolean drawIcon(Graphics2D g, RenderPreferences prefs) {
+				return false;
+			}
+			
+			protected void set(float f) {
+				if (f <= 1000)
+					bp.y = f;
+			}
+			
+			protected float get() {
+				return bp.y;
+			}
+		}, om);
+		new TableSetProp("R", new FloatTextControl("","") {
+			
+			public boolean drawIcon(Graphics2D g, RenderPreferences prefs) {
+				return false;
+			}
+			
+			protected void set(float f) {
+				if (f <= 1000)
+					bp.r = f;
+			}
+			
+			protected float get() {
+				return bp.r;
+			}
+		}, om);
+		new TableSetProp("T1 (\u03c0)", new FloatTextControl("","") {
+			
+			public boolean drawIcon(Graphics2D g, RenderPreferences prefs) {
+				return false;
+			}
+			
+			public void set(float f) {
+				f = f % 2;
+				if (f < 0) f+=2;
+				bp.t1 = (float) (f*Math.PI);
+			}
+
+			public float get() {
+				return (float) (bp.t1/Math.PI);
+			}
+		}, om);
+		new TableSetProp("T2 (\u03c0)", new FloatTextControl("","") {
+			
+			public boolean drawIcon(Graphics2D g, RenderPreferences prefs) {
+				return false;
+			}
+			
+			public void set(float f) {
+				f = f % 2;
+				if (f < 0) f+=2;
+				bp.t2 = (float) (f*Math.PI);
+			}
+
+			public float get() {
+				return (float) (bp.t2/Math.PI);
+			}
+		}, om);
+	}
 }

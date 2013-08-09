@@ -9,6 +9,7 @@ import shipmaker.knobs.PositionKnob;
 import shipmaker.knobs.RadiusKnob;
 import shipmaker.knobs.T1Knob;
 import shipmaker.knobs.T2Knob;
+import shipmaker.render.IconEditField;
 
 public class BlueprintPositionOverlay extends XYTRenderNode {
 	public BlueprintPositionOverlay(final BlueprintPositionEditor bpe, OverlayManager om) {

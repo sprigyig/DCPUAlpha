@@ -43,6 +43,8 @@ public class PositionKnob extends Knob {
 	public void tweak(float dx, float dy, float worldx, float worldy) {
 		bpl.x += dx;
 		bpl.y += dy;
+		bpl.x = Math.min(Math.max(bpl.x, -1000f), 1000f);
+		bpl.y = Math.min(Math.max(bpl.y, -1000f), 1000f);
 	}
 
 	public float worldx() {

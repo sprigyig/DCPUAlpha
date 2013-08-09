@@ -34,7 +34,7 @@ public class RadiusKnob extends Knob {
 
 	public void tweak(float dx, float dy, float worldx, float worldy) {
 		bpl.r += dx;
-		bpl.r = Math.max(0, bpl.r);
+		bpl.r = Math.max(0, Math.min(bpl.r,1000f));
 	}
 
 	public float worldx() {

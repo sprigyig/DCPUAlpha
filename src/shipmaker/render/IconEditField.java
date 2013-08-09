@@ -1,4 +1,4 @@
-package shipmaker.partplacer;
+package shipmaker.render;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -14,6 +14,7 @@ import render.MouseEventType;
 import render.OverlayManager;
 import render.RenderPreferences;
 import render.XYTRenderNode;
+import shipmaker.partplacer.TextInputControl;
 
 public class IconEditField extends XYTRenderNode {
 	private TextInputControl control;

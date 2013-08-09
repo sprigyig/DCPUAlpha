@@ -1,15 +1,17 @@
 package shipmaker.catalog;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 
 import physics.Body;
 import render.OverlayManager;
-import render.PropertyTable;
 import render.RenderNode;
 import render.RenderPreferences;
+import shipmaker.BlueprintLocation;
 import shipmaker.CatalogPart;
 import shipmaker.CatalogPartType;
 import shipmaker.partplacer.HexTextControl;
+import shipmaker.render.PropertyTable;
 import ships.Equipment;
 import equipment.Engine;
 
@@ -20,7 +22,7 @@ public class StandardEngine implements CatalogPartType {
 			RenderNode ragdoll;
 			char hwid;
 			private PropertyTable table;
-			
+
 			public CatalogPartType type() {
 				return StandardEngine.this;
 			}
@@ -32,10 +34,10 @@ public class StandardEngine implements CatalogPartType {
 				return ragdoll;
 			}
 			
-			public RenderNode getOptionsOverlay(final OverlayManager om) {
+			public RenderNode getOptionsOverlay(final OverlayManager om, BlueprintLocation bpl) {
 				if (this.table == null) {
-					this.table = new PropertyTable(-199, 0, 0, 100, 100);
-					this.table.new TableName("Standard Engine");
+					this.table = new PropertyTable(-1, 0, 0, 100, 100);
+					this.table.new TableName("Standard Engine", Color.gray.brighter());
 					this.table.new TableFixedProp("Power/Tick", "10");
 					this.table.new TableFixedProp("Force", "100");
 					this.table.new TableFixedProp("Mass", ""+mass());
@@ -53,6 +55,7 @@ public class StandardEngine implements CatalogPartType {
 							return (int)hwid;
 						}
 					}, om);
+					this.table.addPosition(bpl, om);
 				}
 				return this.table;
 			}

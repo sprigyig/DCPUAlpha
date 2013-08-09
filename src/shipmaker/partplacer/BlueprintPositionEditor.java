@@ -184,4 +184,8 @@ public class BlueprintPositionEditor implements Entity {
 		return base;
 	}
 
+	public BlueprintLocation bpl() {
+		return bpl;
+	}
+
 }

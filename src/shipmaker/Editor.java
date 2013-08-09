@@ -8,7 +8,7 @@ import render.RenderNode;
 import render.SpaceViewPanel;
 import shipmaker.catalog.StandardEngine;
 import shipmaker.partplacer.BlueprintPositionEditor;
-import shipmaker.partplacer.BlueprintPositionOverlay;
+import env.Asteroid;
 import env.Entity;
 import env.Space;
 
@@ -45,7 +45,7 @@ public class Editor {
 			}
 		});
 		
-		svp.overlays().addRight(part.getOptionsOverlay(svp.overlays()));
+		svp.overlays().addLeft(part.getOptionsOverlay(svp.overlays(), bpe.bpl()));
 		svp.prefs = new BlueprintPrefs();
 		JFrame jf = new JFrame();
 		jf.add(svp);
@@ -53,8 +53,7 @@ public class Editor {
 		jf.setVisible(true);
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		s.start();
-		svp.overlays().addLeft(new BlueprintPositionOverlay(bpe, svp.overlays()));
-		
+		s.addEntity(new Asteroid(-100, -250, .01f, -0.05f, 60));
 		svp.startGraphics();
 	}
 }

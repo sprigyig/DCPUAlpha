@@ -77,11 +77,7 @@ public class SpaceViewPanel extends JPanel {
 			}
 			
 			public void mousePressed(MouseEvent e) {
-				AffineTransform cart = new AffineTransform();
-				cart.scale(1, -1);
-				space.blockRunning(true);
-				rootWindow.interaction(cart, e, MouseEventType.MOUSE_PRESS);
-				space.blockRunning(false);
+
 			}
 		});
 		canvas.addKeyListener(overlays);
@@ -173,6 +169,14 @@ public class SpaceViewPanel extends JPanel {
 		}
 
 		public void mousePressed(MouseEvent e) {
+			AffineTransform cart = new AffineTransform();
+			cart.scale(1, -1);
+			space.blockRunning(true);
+			boolean interacted = rootWindow.interaction(cart, e, MouseEventType.MOUSE_PRESS);
+			space.blockRunning(false);
+			
+			if (interacted) return;
+			
 			if (e.getButton() == MouseEvent.BUTTON1) {
 				lx = e.getX();
 				ly = -e.getY();

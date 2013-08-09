@@ -55,7 +55,7 @@ public class Asteroid implements Entity {
 						g.fillArc(x-lrad, y-lrad, 2*lrad, 2*lrad, 0, 360);
 					}
 				}
-				g.setColor(new Color(200,170, 170));
+				g.setColor(prefs.body3());
 				g.fillArc(-rad+2, -rad+2, 2*rad-4, 2*rad-4, 0, 360);
 				{
 					int lobes = rfg.nextInt(4)+10;
