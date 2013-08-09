@@ -120,7 +120,7 @@ public class Main {
 		jf.setSize(400, 400);
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		final SpaceViewPanel jp = new SpaceViewPanel(s);
-		jp.overlays().addLeft(new XYTRenderNode(10, 10, 0) {
+		jp.overlays().topLeft().addChild(new XYTRenderNode(10, 10, 0) {
 			public void draw(Graphics2D g, RenderPreferences prefs) {
 				g.setColor(prefs.overlayTextColor());
 				g.drawString(String.format("x:%.03f", ship.me.x), 10, 10);

@@ -32,7 +32,7 @@ public class Generator implements Equipment, XYTSource {
 		};
 	}
 	
-	private static void draw(Graphics2D g, RenderPreferences prefs, int color, boolean flash, int len) {
+	public static void draw(Graphics2D g, RenderPreferences prefs, int color, boolean flash, int len) {
 		int scale = 15;
 		g.setColor(prefs.borderColor());
 		int t = prefs.borderThickness();

@@ -8,7 +8,7 @@ import render.RenderNode;
 import render.SpaceViewPanel;
 import shipmaker.catalog.StandardEngine;
 import shipmaker.partplacer.BlueprintPositionEditor;
-import env.Asteroid;
+import shipmaker.render.CatalogSelector;
 import env.Entity;
 import env.Space;
 
@@ -45,7 +45,8 @@ public class Editor {
 			}
 		});
 		
-		svp.overlays().addLeft(part.getOptionsOverlay(svp.overlays(), bpe.bpl()));
+		svp.overlays().topLeft().addChild(part.getOptionsOverlay(svp.overlays(), bpe.bpl()));
+		svp.overlays().bottomLeft().addChild(new CatalogSelector(svp.overlays()));
 		svp.prefs = new BlueprintPrefs();
 		JFrame jf = new JFrame();
 		jf.add(svp);

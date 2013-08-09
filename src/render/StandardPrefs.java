@@ -1,8 +1,11 @@
 package render;
 
 import java.awt.Color;
+import java.awt.Dimension;
 
 public class StandardPrefs implements RenderPreferences {
+
+	private Dimension window;
 
 	public int borderThickness() {
 		return 3;
@@ -34,6 +37,14 @@ public class StandardPrefs implements RenderPreferences {
 
 	public Color overlayTextColor() {
 		return Color.yellow.darker();
+	}
+
+	public Dimension window() {
+		return window;
+	}
+
+	public void setWindow(Dimension d) {
+		window = d;
 	}
 
 }

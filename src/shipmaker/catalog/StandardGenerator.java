@@ -1,10 +1,12 @@
 package shipmaker.catalog;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 
 import physics.Body;
 import render.OverlayManager;
 import render.RenderNode;
+import render.RenderPreferences;
 import shipmaker.BlueprintLocation;
 import shipmaker.CatalogPart;
 import shipmaker.CatalogPartType;
@@ -55,6 +57,10 @@ public class StandardGenerator implements CatalogPartType {
 
 	public float rotationalInertia() {
 		return 4000;
+	}
+
+	public void preview(Graphics2D g, RenderPreferences prefs) {
+		Generator.draw(g, prefs, 255, false, 20);
 	}
 
 }

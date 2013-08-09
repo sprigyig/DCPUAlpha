@@ -1,6 +1,7 @@
 package render;
 
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.AffineTransform;
@@ -12,6 +13,7 @@ public class OverlayManager extends RenderNode implements KeyListener {
 
 	private RenderNode left;
 	private RenderNode right;
+	private RenderNode bottomLeft;
 	private Dimension dimension;
 	private FocusableOverlay focused;
 	private ArrayList<KeyListener> listeners;
@@ -32,6 +34,18 @@ public class OverlayManager extends RenderNode implements KeyListener {
 			}
 			
 		}));
+		addChild(bottomLeft = new XYTRenderNode(new XYTSource() {
+			public float position_y() {
+				return dimension.height;
+			}
+			public float position_x() {
+				return 0;
+			}
+			
+			public float alignment_theta() {
+				return 0;
+			}
+		}));
 	}
 
 	protected void transform(AffineTransform root) {
@@ -50,19 +64,19 @@ public class OverlayManager extends RenderNode implements KeyListener {
 		this.focused = tic;
 	}
 	
-	public void addLeft(RenderNode l) {
-		left.addChild(l);
+	
+	public RenderNode topLeft() {
+		return left;
 	}
-	public void addRight(RenderNode r) {
-		right.addChild(r);
+	
+	public RenderNode topRight() {
+		return right;
 	}
-	public void removeLeft(RenderNode l) {
-		left.removeChild(l);
+	
+	public RenderNode bottomLeft() {
+		return bottomLeft;
 	}
-	public void removeRight(RenderNode r) {
-		right.removeChild(r);
-	}
-
+	
 	public void keyPressed(KeyEvent ke) {
 		for (KeyListener l : listeners) {
 			l.keyTyped(ke);
@@ -78,5 +92,9 @@ public class OverlayManager extends RenderNode implements KeyListener {
 	
 	public void removeKeyListener(KeyListener l) {
 		listeners.remove(l);
+	}
+	
+	public void draw(Graphics2D g, RenderPreferences prefs) {
+		prefs.setWindow(dimension);
 	}
 }

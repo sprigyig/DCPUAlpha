@@ -57,7 +57,7 @@ public class Engine implements Equipment, ForceSource, CpuWatcher, Hardware {
 		};
 	}
 	
-	private static void draw(Graphics2D g, RenderPreferences prefs, float renderOnness) {
+	public static void draw(Graphics2D g, RenderPreferences prefs, float renderOnness) {
 		int t = prefs.borderThickness();
 		g.setStroke(new BasicStroke(t));
 		g.setColor(prefs.borderColor());

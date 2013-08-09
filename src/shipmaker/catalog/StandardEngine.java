@@ -79,4 +79,8 @@ public class StandardEngine implements CatalogPartType {
 		return 2000;
 	}
 
+	public void preview(Graphics2D g, RenderPreferences prefs) {
+		Engine.draw(g, prefs, 1f);
+	}
+
 }

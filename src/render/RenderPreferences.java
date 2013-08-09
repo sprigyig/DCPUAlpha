@@ -1,6 +1,7 @@
 package render;
 
 import java.awt.Color;
+import java.awt.Dimension;
 
 public interface RenderPreferences {
 	public int borderThickness();
@@ -15,4 +16,7 @@ public interface RenderPreferences {
 	public Color spaceColor();
 	
 	public Color overlayTextColor();
+	
+	public Dimension window();
+	public void setWindow(Dimension d);
 }

@@ -22,7 +22,7 @@ public abstract class RenderNode {
 
 	protected abstract void transform(AffineTransform root);
 
-	protected void draw(Graphics2D graphics, RenderPreferences prefs) {
+	public void draw(Graphics2D graphics, RenderPreferences prefs) {
 		if (img != null) {
 			graphics.drawImage(img, -img.getWidth(null) / 2,
 					-img.getHeight(null) / 2, null);
