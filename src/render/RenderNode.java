@@ -4,6 +4,8 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -69,5 +71,19 @@ public abstract class RenderNode {
 	
 	public int layer() {
 		return 1;
+	}
+	
+	public static Point2D.Float reverse(AffineTransform root, MouseEvent e) {
+		Point2D.Float src = new Point2D.Float();
+		src.setLocation(e.getX(), e.getY());
+		try {
+			root.invert();
+		} catch (NoninvertibleTransformException e1) {
+			e1.printStackTrace();
+		}
+		Point2D.Float dest = new Point2D.Float();
+		root.transform(src, dest);
+		
+		return dest;
 	}
 }
