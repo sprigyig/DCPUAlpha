@@ -53,7 +53,7 @@ public class Editor {
 		jf.setVisible(true);
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		s.start();
-		s.addEntity(new Asteroid(-100, -250, .01f, -0.05f, 60));
+		
 		svp.startGraphics();
 	}
 }
