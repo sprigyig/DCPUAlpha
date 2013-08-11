@@ -55,4 +55,9 @@ public class BlueprintPrefs implements RenderPreferences {
 	public void setWindow(Dimension d) {
 		window = d;
 	}
+
+	public Color overlayInactiveTextColor() {
+		int g = 200;
+		return new Color(g, g, g+10);
+	}
 }

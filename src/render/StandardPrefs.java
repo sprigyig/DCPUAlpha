@@ -47,4 +47,8 @@ public class StandardPrefs implements RenderPreferences {
 		window = d;
 	}
 
+	public Color overlayInactiveTextColor() {
+		return new Color(240, 240, 240);
+	}
+
 }

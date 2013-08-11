@@ -1,7 +1,6 @@
 package render;
 
 import java.awt.BorderLayout;
-import java.awt.Canvas;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -9,11 +8,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
-import java.awt.image.BufferStrategy;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -27,23 +24,19 @@ public class SpaceViewPanel extends JPanel {
 	private Viewport vp;
 	private RenderNode rootWindow;
 	public RenderPreferences prefs;
-	private BufferStrategy strat;
-	private Canvas canvas;
 	public boolean lockPosition;
 	
 	public SpaceViewPanel(Space sp) {
 		super(new BorderLayout());
 		prefs = new StandardPrefs();
-		canvas = new Canvas();
-		add(canvas);
 		overlays = new OverlayManager();
 		
 		space = sp;
 		vp = new Viewport(200, -200, 0, 1d);
 		ViewportMouseDrag md = new ViewportMouseDrag();
-		canvas.addMouseMotionListener(md);
-		canvas.addMouseListener(md);
-		canvas.addMouseWheelListener(new MouseWheelListener() {
+		this.addMouseMotionListener(md);
+		this.addMouseListener(md);
+		this.addMouseWheelListener(new MouseWheelListener() {
 			public void mouseWheelMoved(MouseWheelEvent e) {
 				vp.zoom(-e.getPreciseWheelRotation(), e.getX(), -e.getY());
 			}
@@ -52,22 +45,12 @@ public class SpaceViewPanel extends JPanel {
 		rootWindow.addChild(vp);
 		
 		rootWindow.addChild(overlays);
-		new Timer(30, new ActionListener() {
+		new Timer(15, new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (strat == null) {
-					return;
-				}
-				 do {
-			         do {
-			             Graphics graphics = strat.getDrawGraphics();
-			             update(graphics);
-			             graphics.dispose();
-			         } while (strat.contentsRestored());
-			         strat.show();
-			     } while (strat.contentsLost());
+				repaint();
 			}
 		}).start();
-		canvas.addMouseListener(new MouseAdapter() {
+		this.addMouseListener(new MouseAdapter() {
 			public void mouseReleased(MouseEvent e) {
 				AffineTransform cart = new AffineTransform();
 				cart.scale(1, -1);
@@ -80,21 +63,12 @@ public class SpaceViewPanel extends JPanel {
 
 			}
 		});
-		canvas.addKeyListener(overlays);
+		this.addKeyListener(overlays);
+		this.setFocusable(true);
 	}
-	
 
-	public void addMouseListener(MouseListener l) {
-		canvas.addMouseListener(l);
-	}
-	
-	public void removeMouseListener(MouseListener l) {
-		canvas.removeMouseListener(l);
-	}
-	
-	public void startGraphics() {
-		canvas.createBufferStrategy(2);
-		strat = canvas.getBufferStrategy();
+	public void paint(Graphics g) {
+		update(g);
 	}
 	
 	public void update(Graphics g) {
@@ -152,12 +126,19 @@ public class SpaceViewPanel extends JPanel {
 		}
 		
 		public void mouseDragged(MouseEvent e) {
-			boolean interacted;
+			boolean interacted = false;
+			
+			
 			AffineTransform cart = new AffineTransform();
 			cart.scale(1, -1);
-			space.blockRunning(true);
-			interacted = rootWindow.interaction(cart, e, MouseEventType.MOUSE_DRAG);
-			space.blockRunning(false);
+			
+			if (lx==-1) {
+				
+				space.blockRunning(true);
+				interacted = rootWindow.interaction(cart, e, MouseEventType.MOUSE_DRAG);
+				space.blockRunning(false);
+				
+			}
 			
 			if (interacted) return;
 			
@@ -175,7 +156,9 @@ public class SpaceViewPanel extends JPanel {
 			boolean interacted = rootWindow.interaction(cart, e, MouseEventType.MOUSE_PRESS);
 			space.blockRunning(false);
 			
-			if (interacted) return;
+			if (interacted) {
+				return;
+			}
 			
 			if (e.getButton() == MouseEvent.BUTTON1) {
 				lx = e.getX();

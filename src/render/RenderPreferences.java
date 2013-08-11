@@ -16,6 +16,7 @@ public interface RenderPreferences {
 	public Color spaceColor();
 	
 	public Color overlayTextColor();
+	public Color overlayInactiveTextColor();
 	
 	public Dimension window();
 	public void setWindow(Dimension d);

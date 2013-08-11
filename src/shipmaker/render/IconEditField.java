@@ -85,8 +85,6 @@ public class IconEditField extends XYTRenderNode {
 				control.startEdit();
 				om.setFocused(control);
 				return true;
-			} else {
-				System.out.println("nope");
 			}
 		} else {
 			System.out.println("end edit");

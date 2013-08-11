@@ -37,6 +37,7 @@ public abstract class Knob extends XYTRenderNode implements XYTSource {
 
 	public boolean interacted(AffineTransform root, MouseEvent e,
 			MouseEventType t) {
+		System.out.println("k:"+t.name());
 		Point2D.Float src = new Point2D.Float();
 		src.setLocation(e.getX(), e.getY());
 		try {

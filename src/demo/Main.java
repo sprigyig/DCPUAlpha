@@ -140,7 +140,6 @@ public class Main {
 		s.addEntity(new Asteroid(-100, -250, .01f, -0.05f, 60));
 		
 		s.start();
-		jp.startGraphics();
 		
 		jp.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {

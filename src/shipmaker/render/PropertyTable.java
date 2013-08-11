@@ -1,5 +1,6 @@
 package shipmaker.render;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -35,11 +36,11 @@ public class PropertyTable extends XYTRenderNode {
 		
 		public void render(Graphics2D g, RenderPreferences prefs, int y) {
 			int mid = (c1Width + c2Width)/2;
-			g.setColor(Color.gray.brighter());
+			g.setColor(prefs.overlayInactiveTextColor());
 			g.setFont(new Font("SansSerif", Font.BOLD, 14));
 			g.drawString(name, mid - g.getFontMetrics().stringWidth(name)/2, 15+y);
 			g.setColor(Color.white);
-			g.drawLine(0, y+ROW_HEIGHT, c1Width+c2Width, y+ROW_HEIGHT);
+			g.drawLine(2, y+ROW_HEIGHT, c1Width+c2Width-2, y+ROW_HEIGHT);
 		}
 	}
 	
@@ -54,12 +55,12 @@ public class PropertyTable extends XYTRenderNode {
 		}
 		
 		public void render(Graphics2D g, RenderPreferences prefs, int y) {
-			g.setColor(Color.gray.brighter());
+			g.setColor(prefs.overlayInactiveTextColor());
 			g.setFont(new Font("SansSerif", Font.BOLD, 14));
 			g.drawString(name,10, 15+y);
 			g.drawString(value,10+c1Width, 15+y);
 			g.setColor(Color.white);
-			g.drawLine(0, y+ROW_HEIGHT, c1Width+c2Width, y+ROW_HEIGHT);
+			g.drawLine(2, y+ROW_HEIGHT, c1Width+c2Width-2, y+ROW_HEIGHT);
 			g.drawLine(c1Width, y, c1Width, 20+y);
 		}
 	}
@@ -76,11 +77,11 @@ public class PropertyTable extends XYTRenderNode {
 		}
 		
 		public void render(Graphics2D g, RenderPreferences prefs, int y) {
-			g.setColor(Color.gray.brighter());
+			g.setColor(prefs.overlayInactiveTextColor());
 			g.setFont(new Font("SansSerif", Font.BOLD, 14));
 			g.drawString(name,10, 15+y);
 			g.setColor(Color.white);
-			g.drawLine(0, y+ROW_HEIGHT, c1Width+c2Width, y+ROW_HEIGHT);
+			g.drawLine(2, y+ROW_HEIGHT, c1Width+c2Width-2, y+ROW_HEIGHT);
 			g.drawLine(c1Width, y, c1Width, 20+y);
 		}
 	}
@@ -96,13 +97,14 @@ public class PropertyTable extends XYTRenderNode {
 	
 	public void draw(Graphics2D g, RenderPreferences prefs) {
 		int y = 0;
+		g.setColor(Color.white);
+		g.setStroke(new BasicStroke(2));
 		for (TableRow row : rows) {
 			row.render(g, prefs, y);
 			y+=ROW_HEIGHT;
 		}
-		g.setColor(Color.white);
-		g.drawLine(0, ROW_HEIGHT*rows.size(), 0, 0);
-		g.drawLine(c1Width+c2Width, ROW_HEIGHT*rows.size(), c1Width+c2Width, 0);
+		
+		g.drawRoundRect(0, 0, c1Width+c2Width, ROW_HEIGHT*rows.size(), 8, 8);
 	}
 	
 	public void addPosition(final BlueprintLocation bp, OverlayManager om) {

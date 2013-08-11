@@ -9,6 +9,7 @@ import render.SpaceViewPanel;
 import shipmaker.catalog.StandardEngine;
 import shipmaker.partplacer.BlueprintPositionEditor;
 import shipmaker.render.CatalogSelector;
+import shipmaker.render.ShipContents;
 import env.Entity;
 import env.Space;
 
@@ -20,7 +21,7 @@ public class Editor {
 		CatalogPart part = type.create();
 		Body partRagdoll = new Body(0, 0, 0, 1, 1);
 		
-		
+		EditorShip es = new EditorShip();
 		
 		final Space s = new Space();
 		
@@ -46,7 +47,9 @@ public class Editor {
 		});
 		
 		svp.overlays().topLeft().addChild(part.getOptionsOverlay(svp.overlays(), bpe.bpl()));
-		svp.overlays().bottomLeft().addChild(new CatalogSelector(svp.overlays()));
+		svp.overlays().bottomLeft().addChild(new CatalogSelector(svp.overlays(), es));
+		svp.overlays().topRight().addChild(new ShipContents(es, s, svp.overlays()));
+		
 		svp.prefs = new BlueprintPrefs();
 		JFrame jf = new JFrame();
 		jf.add(svp);
@@ -55,6 +58,5 @@ public class Editor {
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		s.start();
 		
-		svp.startGraphics();
 	}
 }
