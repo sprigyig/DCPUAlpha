@@ -5,13 +5,13 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import render.RenderPreferences;
-import shipmaker.BlueprintLocation;
+import shipmaker.partplacer.BlueprintPositionEditor;
 
 public class PositionKnob extends Knob {
-	private BlueprintLocation bpl;
+	private BlueprintPositionEditor bpl;
 
-	public PositionKnob(BlueprintLocation bpl) {
-		this.bpl = bpl;
+	public PositionKnob(BlueprintPositionEditor editor) {
+		this.bpl = editor;
 	}
 	
 	public float offset_rotation() {
@@ -41,25 +41,25 @@ public class PositionKnob extends Knob {
 	}
 
 	public void tweak(float dx, float dy, float worldx, float worldy) {
-		bpl.x += dx;
-		bpl.y += dy;
-		bpl.x = Math.min(Math.max(bpl.x, -1000f), 1000f);
-		bpl.y = Math.min(Math.max(bpl.y, -1000f), 1000f);
+		bpl.bpl().x += dx;
+		bpl.bpl().y += dy;
+		bpl.bpl().x = Math.min(Math.max(bpl.bpl().x, -1000f), 1000f);
+		bpl.bpl().y = Math.min(Math.max(bpl.bpl().y, -1000f), 1000f);
 	}
 
 	public float worldx() {
-		return bpl.x;
+		return bpl.bpl().x;
 	}
 
 	public float worldy() {
-		return bpl.y;
+		return bpl.bpl().y;
 	}
 
 	public float position_x() {
-		return bpl.x;
+		return bpl.bpl().x;
 	}
 
 	public float position_y() {
-		return bpl.y - 20;
+		return bpl.bpl().y - 20;
 	}
 }

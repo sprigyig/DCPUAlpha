@@ -43,12 +43,14 @@ public abstract class RenderNode {
 	
 
 	public boolean interaction(AffineTransform root, MouseEvent e, MouseEventType t) {
-		transform(root);
+		AffineTransform rootc = (AffineTransform) root.clone();
+		transform(rootc);
 		
-		if (interacted(root, e, t)) {
+		if (interacted(rootc, e, t)) {
 			return true;
 		}
 		
+		transform(root);
 		for (RenderNode r : children) {
 			if (r.interaction((AffineTransform) root.clone(), e, t)) {
 				return true;

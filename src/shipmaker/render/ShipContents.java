@@ -9,6 +9,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
+import javax.swing.SwingUtilities;
+
 import physics.XYTSource;
 import render.MouseEventType;
 import render.OverlayManager;
@@ -18,6 +20,7 @@ import render.XYTRenderNode;
 import shipmaker.EditorShip;
 import shipmaker.EditorShip.EditorShipPart;
 import shipmaker.EditorShip.ShipWatcher;
+import shipmaker.partplacer.BlueprintPositionEditor;
 import env.Space;
 
 public class ShipContents extends XYTRenderNode implements ShipWatcher {
@@ -27,8 +30,11 @@ public class ShipContents extends XYTRenderNode implements ShipWatcher {
 	Space space;
 	OverlayManager om;
 	
-	private ArrayList<PartLabel> labels;
+	EditorShipPart selected;
+	BlueprintPositionEditor editor;
+	RenderNode options;
 	
+	private ArrayList<PartLabel> labels;
 
 	private class PartLabel extends XYTRenderNode implements XYTSource {
 		int index;
@@ -47,12 +53,12 @@ public class ShipContents extends XYTRenderNode implements ShipWatcher {
 					
 				}
 				public boolean interacted(AffineTransform root, MouseEvent e, MouseEventType t) {
+					
 					if (t == MouseEventType.MOUSE_PRESS) {
 						Point2D.Float pt = RenderNode.reverse(root, e);
-						
 						if (pt.x > 0 && pt.x < 20 && pt.y > 0 && pt.y < 20) {
-							System.out.println("GOTIT");
 							ship.removePart(part);
+							return true;
 						}
 					}
 					return false;
@@ -73,13 +79,24 @@ public class ShipContents extends XYTRenderNode implements ShipWatcher {
 		}
 		
 		public void draw(Graphics2D g, RenderPreferences prefs) {
-			g.setColor(Color.white);
+			g.setColor(selected == part ? Color.orange : Color.white);
 			int fh = 14;
 			g.setFont(new Font("SansSerif", Font.BOLD, fh));
 			
 			int mid = ROW_HEIGHT/2;
 			
 			g.drawString(part.part.type().name(), 0, mid+fh/2);
+		}
+		public boolean interacted(AffineTransform root, MouseEvent e, MouseEventType t) {
+			
+			if (t == MouseEventType.MOUSE_PRESS) {
+				Point2D.Float pt = RenderNode.reverse(root, e);
+				if (pt.x >0 && pt.x < 200 && pt.y > 0 && pt.y < ROW_HEIGHT) {
+					setSelected(part);
+					return true;
+				}
+			}
+			return false;
 		}
 	}
 	
@@ -91,11 +108,40 @@ public class ShipContents extends XYTRenderNode implements ShipWatcher {
 		ship.addWatcher(this);
 		labels = new ArrayList<ShipContents.PartLabel>();
 	}
+	
+	private void setSelected(EditorShipPart p) {
+		selected = p;
+		
+		if (options != null) {
+			om.topLeft().removeChild(options);
+		}
+		
+		if (p == null) {
+			space.removeEntity(editor);
+			editor = null;
+			return;
+		}
+		
+		if (editor == null) {
+			editor = new BlueprintPositionEditor(p.location);
+			space.addEntity(editor);
+		}
+		editor.bpl(p.location);
+		options = p.part.getOptionsOverlay(om, p.location);
+		om.topLeft().addChild(options);
+		space.addEntity(p);
+	}
+	
 	public void partAdded(EditorShipPart p) {
-		PartLabel pl = new PartLabel(p);
+		final PartLabel pl = new PartLabel(p);
 		pl.index = labels.size();
 		labels.add(pl);
-		addChild(pl);
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				addChild(pl);
+			}
+		});
+		setSelected(p);
 	}
 	public void partRemoved(EditorShipPart p) {
 		PartLabel pl = null;
@@ -107,7 +153,18 @@ public class ShipContents extends XYTRenderNode implements ShipWatcher {
 		}
 		if (pl != null) {
 			labels.remove(pl);
-			removeChild(pl);
+			
+			final PartLabel fpl = pl;
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					removeChild(fpl);
+					space.removeEntity(fpl.part);
+					if (fpl.part == selected) {
+						setSelected(null);
+					}
+				}
+			});
+			
 			for (int i=0; i<labels.size(); i++) {
 				labels.get(i).index = i;
 			}

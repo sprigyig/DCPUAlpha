@@ -1,19 +1,65 @@
 package shipmaker;
 
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+import env.Entity;
+import physics.XYTSource;
+import render.RenderNode;
+import render.RenderPreferences;
+import render.XYTRenderNode;
+
 public class EditorShip {
 	
-	public static class EditorShipPart {
+	private static class BPLPreview extends XYTRenderNode implements XYTSource {
+
+		private BlueprintLocation bpl;
+		private CatalogPartType type;
+
+		public BPLPreview(BlueprintLocation bpl, CatalogPartType type) {
+			super(null);
+			this.bpl = bpl;
+			this.type = type;
+			src = this;
+		}
+
+		public float position_x() {
+			return (float) (bpl.x + Math.cos(bpl.t1) * bpl.r);
+		}
+
+		public float position_y() {
+			return (float) (bpl.y + Math.sin(bpl.t1) * bpl.r);
+		}
+
+		public float alignment_theta() {
+			return bpl.t1 + bpl.t2;
+		}
+		
+		public void draw(Graphics2D g, RenderPreferences prefs) {
+			type.preview(g, prefs);
+		}
+		
+	}
+	
+	public static class EditorShipPart implements Entity {
 		public EditorShipPart(CatalogPart part, BlueprintLocation location) {
 			super();
 			this.part = part;
 			this.location = location;
+			this.visuals = new BPLPreview(location, part.type());
 		}
+		private BPLPreview visuals;
 		public CatalogPart part;
 		public BlueprintLocation location;
+		public void tickInternals(int msPerTick) {
+		}
+		public void tickPhysics(int msPerTick) {
+		}
+		public RenderNode getVisuals() {
+			return visuals;
+		}
 	}
 	
 	public static interface ShipWatcher {

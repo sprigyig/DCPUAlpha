@@ -4,7 +4,6 @@ import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
-import physics.Body;
 import physics.XYTSource;
 import render.RenderNode;
 import render.RenderPreferences;
@@ -24,18 +23,14 @@ public class BlueprintPositionEditor implements Entity {
 			new float[] { 2f }, 0f);
 
 
-	private static class BPLBaseNode extends RenderNode {
-		private BlueprintLocation bpl;
+	private class BPLBaseNode extends RenderNode {
+		BPLBaseNode() {
+			this.addChild(new PositionKnob(BlueprintPositionEditor.this));
 
-		BPLBaseNode(BlueprintLocation pbpl) {
-			this.bpl = pbpl;
-
-			this.addChild(new PositionKnob(bpl));
-
-			this.addChild(new T1Knob(bpl) );
-			this.addChild(new T2Knob(bpl) );
+			this.addChild(new T1Knob(BlueprintPositionEditor.this) );
+			this.addChild(new T2Knob(BlueprintPositionEditor.this) );
 			
-			this.addChild(new BPLAngleNode(bpl));
+			this.addChild(new BPLAngleNode());
 		}
 
 		protected void transform(AffineTransform root) {
@@ -81,17 +76,14 @@ public class BlueprintPositionEditor implements Entity {
 		}
 	}
 
-	private static class BPLAngleNode extends XYTRenderNode implements
+	private class BPLAngleNode extends XYTRenderNode implements
 			XYTSource {
-		private BlueprintLocation bpl;
-
-		public BPLAngleNode(BlueprintLocation pbpl) {
+		public BPLAngleNode() {
 			super(null);
 			this.src = this;
-			this.bpl = pbpl;
-			this.addChild(new RadiusKnob(bpl));
+			this.addChild(new RadiusKnob(BlueprintPositionEditor.this));
 			
-			addChild(new BPLAlignmentNode(bpl));
+			addChild(new BPLAlignmentNode());
 		}
 
 		public float position_x() {
@@ -126,14 +118,11 @@ public class BlueprintPositionEditor implements Entity {
 		}
 	}
 
-	private static class BPLAlignmentNode extends XYTRenderNode implements
+	private class BPLAlignmentNode extends XYTRenderNode implements
 			XYTSource {
-		private BlueprintLocation bpl;
-
-		public BPLAlignmentNode(BlueprintLocation bpl) {
+		public BPLAlignmentNode() {
 			super(null);
 			this.src = this;
-			this.bpl = bpl;
 		}
 
 		public float position_x() {
@@ -162,18 +151,14 @@ public class BlueprintPositionEditor implements Entity {
 
 	BlueprintLocation bpl;
 	BPLBaseNode base;
-	private Body bod;
 
-	public BlueprintPositionEditor(Body b) {
-		bpl = new BlueprintLocation();
-		base = new BPLBaseNode(bpl);
-		bod = b;
+	public BlueprintPositionEditor(BlueprintLocation bpl) {
+		this.bpl = bpl;
+		base = new BPLBaseNode();
 	}
 
 	public void tickInternals(int msPerTick) {
-		bod.x = (float) (bpl.x + Math.cos(bpl.t1)*bpl.r);
-		bod.y = (float) (bpl.y + Math.sin(bpl.t1)*bpl.r);
-		bod.rot = bpl.t1 + bpl.t2;
+		
 	}
 
 	public void tickPhysics(int msPerTick) {
@@ -186,6 +171,10 @@ public class BlueprintPositionEditor implements Entity {
 
 	public BlueprintLocation bpl() {
 		return bpl;
+	}
+
+	public void bpl(BlueprintLocation location) {
+		bpl = location;
 	}
 
 }

@@ -5,13 +5,13 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import render.RenderPreferences;
-import shipmaker.BlueprintLocation;
+import shipmaker.partplacer.BlueprintPositionEditor;
 
 public class RadiusKnob extends Knob {
-	private BlueprintLocation bpl;
+	private BlueprintPositionEditor bpl;
 
-	public RadiusKnob(BlueprintLocation bpl) {
-		this.bpl = bpl;
+	public RadiusKnob(BlueprintPositionEditor blueprintPositionEditor) {
+		this.bpl = blueprintPositionEditor;
 	}
 
 	public float offset_rotation() {
@@ -33,20 +33,20 @@ public class RadiusKnob extends Knob {
 	}
 
 	public void tweak(float dx, float dy, float worldx, float worldy) {
-		bpl.r += dx;
-		bpl.r = Math.max(0, Math.min(bpl.r,1000f));
+		bpl.bpl().r += dx;
+		bpl.bpl().r = Math.max(0, Math.min(bpl.bpl().r,1000f));
 	}
 
 	public float worldx() {
-		return bpl.x + bpl.r;
+		return bpl.bpl().x + bpl.bpl().r;
 	}
 
 	public float worldy() {
-		return bpl.y;
+		return bpl.bpl().y;
 	}
 
 	public float position_x() {
-		return bpl.r;
+		return bpl.bpl().r;
 	}
 
 	public float position_y() {
