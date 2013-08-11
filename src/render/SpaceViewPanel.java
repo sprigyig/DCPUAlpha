@@ -120,6 +120,7 @@ public class SpaceViewPanel extends JPanel {
 	
 	private class ViewportMouseDrag extends MouseAdapter {
 		int lx, ly;
+		int sx, sy;
 		
 		public ViewportMouseDrag() {
 			lx = ly = -1;
@@ -128,6 +129,7 @@ public class SpaceViewPanel extends JPanel {
 		public void mouseDragged(MouseEvent e) {
 			boolean interacted = false;
 			
+			sx = sy = -1;
 			
 			AffineTransform cart = new AffineTransform();
 			cart.scale(1, -1);
@@ -157,17 +159,30 @@ public class SpaceViewPanel extends JPanel {
 			space.blockRunning(false);
 			
 			if (interacted) {
+				sx = sy = -1;
+				return;
+			}
+			
+			if (overlays.lowPriorityInteraction != null) {
+				overlays.lowPriorityInteraction.run();
+				overlays.lowPriorityInteraction = null; 
+				sx = sy = -1;
 				return;
 			}
 			
 			if (e.getButton() == MouseEvent.BUTTON1) {
-				lx = e.getX();
-				ly = -e.getY();
+				sx=lx = e.getX();
+				sy=ly = -e.getY();
 			}
 		}
 
 		public void mouseReleased(MouseEvent e) {
-			ly = lx = -1;
+			if (sx==e.getX() && sy==-e.getY()) {
+				if (overlays.nonproductiveClick != null) {
+					overlays.nonproductiveClick.run();
+				}
+			}
+			sx = sy = ly = lx = -1;
 		}
 	}
 	

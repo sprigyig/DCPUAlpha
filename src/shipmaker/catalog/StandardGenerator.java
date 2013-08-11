@@ -31,7 +31,7 @@ public class StandardGenerator implements CatalogPartType {
 			
 			public RenderNode getOptionsOverlay(OverlayManager om, BlueprintLocation bpl) {
 				if (this.table == null) {
-					this.table = new PropertyTable(2, 2, 0, 100, 100);
+					this.table = new PropertyTable(2, 2, 0, 100, 100, om);
 					this.table.new TableName("Standard Generator", Color.gray.brighter());
 					this.table.new TableFixedProp("Power/Tick", "18");
 					this.table.new TableFixedProp("Mass", ""+mass());

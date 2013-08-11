@@ -17,6 +17,8 @@ public class OverlayManager extends RenderNode implements KeyListener {
 	private Dimension dimension;
 	private FocusableOverlay focused;
 	private ArrayList<KeyListener> listeners;
+	public Runnable lowPriorityInteraction;
+	public Runnable nonproductiveClick;
 	
 	public OverlayManager() {
 		this.listeners = new ArrayList<KeyListener>();

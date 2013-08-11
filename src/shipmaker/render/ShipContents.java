@@ -107,6 +107,11 @@ public class ShipContents extends XYTRenderNode implements ShipWatcher {
 		this.om = om;
 		ship.addWatcher(this);
 		labels = new ArrayList<ShipContents.PartLabel>();
+		om.nonproductiveClick = new Runnable() {
+			public void run() {
+				setSelected(null);
+			}
+		};
 	}
 	
 	private void setSelected(EditorShipPart p) {
@@ -132,7 +137,7 @@ public class ShipContents extends XYTRenderNode implements ShipWatcher {
 		space.addEntity(p);
 	}
 	
-	public void partAdded(EditorShipPart p) {
+	public void partAdded(final EditorShipPart p) {
 		final PartLabel pl = new PartLabel(p);
 		pl.index = labels.size();
 		labels.add(pl);
@@ -142,6 +147,31 @@ public class ShipContents extends XYTRenderNode implements ShipWatcher {
 			}
 		});
 		setSelected(p);
+		p.getVisuals().addChild(new RenderNode() {
+			protected void transform(AffineTransform root) {
+			}
+			public boolean interacted(AffineTransform root, MouseEvent e, MouseEventType t) {
+				if (t!=MouseEventType.MOUSE_PRESS) return false;
+				
+				Point2D.Float pt = RenderNode.reverse(root, e);
+				if (pt.distance(0, 0) < 20 && p!=selected && (selected==null || selected.location.distance(p.location) > 20)) {
+					if (om.lowPriorityInteraction == null) {
+						om.lowPriorityInteraction = new Runnable() {
+							public void run() {
+								setSelected(p);
+							}
+							
+						};
+					}
+				}
+				return false;
+			}
+			public void draw(Graphics2D g, RenderPreferences prefs) {
+				g.setColor(new Color(255,255,255,20));
+				g.setStroke(new BasicStroke(1f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10, new float[]{5}, 0));
+				g.drawArc(-20, -20, 40, 40, 0, 360);
+			}
+		});
 	}
 	public void partRemoved(EditorShipPart p) {
 		PartLabel pl = null;
