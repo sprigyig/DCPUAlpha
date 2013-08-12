@@ -9,9 +9,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-import javax.swing.SwingUtilities;
-
 import physics.XYTSource;
+import render.CollectionAdd;
+import render.CollectionRemoval;
 import render.MouseEventType;
 import render.OverlayManager;
 import render.RenderNode;
@@ -141,11 +141,7 @@ public class ShipContents extends XYTRenderNode implements ShipWatcher {
 		final PartLabel pl = new PartLabel(p);
 		pl.index = labels.size();
 		labels.add(pl);
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				addChild(pl);
-			}
-		});
+		om.afterInteraction(new CollectionAdd<RenderNode>(children, pl));
 		setSelected(p);
 		p.getVisuals().addChild(new RenderNode() {
 			protected void transform(AffineTransform root) {
@@ -185,15 +181,12 @@ public class ShipContents extends XYTRenderNode implements ShipWatcher {
 			labels.remove(pl);
 			
 			final PartLabel fpl = pl;
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					removeChild(fpl);
-					space.removeEntity(fpl.part);
-					if (fpl.part == selected) {
-						setSelected(null);
-					}
-				}
-			});
+			om.afterInteraction(new CollectionRemoval<RenderNode>(children, pl));
+			om.afterInteraction(space.removeEntityAction(fpl.part));
+
+			if (fpl.part == selected) {
+				setSelected(null);
+			}
 			
 			for (int i=0; i<labels.size(); i++) {
 				labels.get(i).index = i;

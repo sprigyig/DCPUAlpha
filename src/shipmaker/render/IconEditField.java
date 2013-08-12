@@ -69,6 +69,8 @@ public class IconEditField extends XYTRenderNode {
 		if (t != MouseEventType.MOUSE_PRESS)
 			return false;
 
+		System.out.println("wat" + control.editing());
+		
 		if (!control.editing()) {
 			Point2D.Float src = new Point2D.Float();
 			src.setLocation(e.getX(), e.getY());

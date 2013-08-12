@@ -38,8 +38,8 @@ public class StandardEngine implements CatalogPartType {
 				if (this.table == null) {
 					this.table = new PropertyTable(2, 2, 0, 100, 100, om);
 					this.table.new TableName("Standard Engine", Color.gray.brighter());
-					this.table.new TableFixedProp("Power/Tick", "10");
-					this.table.new TableFixedProp("Force", "100");
+					this.table.new TableFixedProp("Power/Tick", "10 (Max)");
+					this.table.new TableFixedProp("Force", "100 (Max)");
 					this.table.new TableFixedProp("Mass", ""+mass());
 					this.table.new TableFixedProp("Rot Inertia", ""+rotationalInertia());
 					this.table.new TableSetProp("Hardware ID", new HexTextControl(4	) {

@@ -128,7 +128,6 @@ public class SpaceViewPanel extends JPanel {
 		
 		public void mouseDragged(MouseEvent e) {
 			boolean interacted = false;
-			
 			sx = sy = -1;
 			
 			AffineTransform cart = new AffineTransform();
@@ -142,7 +141,9 @@ public class SpaceViewPanel extends JPanel {
 				
 			}
 			
-			if (interacted) return;
+			if (interacted) {
+				return;
+			}
 			
 			if (lx!=-1) {
 				vp.moveCenter(lx-e.getX(), ly+e.getY());
@@ -160,6 +161,7 @@ public class SpaceViewPanel extends JPanel {
 			
 			if (interacted) {
 				sx = sy = -1;
+				overlays.lowPriorityInteraction = null;
 				return;
 			}
 			
@@ -167,6 +169,7 @@ public class SpaceViewPanel extends JPanel {
 				overlays.lowPriorityInteraction.run();
 				overlays.lowPriorityInteraction = null; 
 				sx = sy = -1;
+				
 				return;
 			}
 			

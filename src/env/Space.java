@@ -8,7 +8,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+import render.CollectionRemoval;
 import render.RenderNode;
+import shipmaker.EditorShip.EditorShipPart;
 
 public class Space {
 	HashSet<Entity> entities;
@@ -117,6 +119,9 @@ public class Space {
 	
 	public void removeKeyListener(KeyListener kl) {
 		keylisteners.remove(kl);
+	}
+	public Runnable removeEntityAction(EditorShipPart part) {
+		return new CollectionRemoval<Entity>(entities, part);
 	}
 	
 }

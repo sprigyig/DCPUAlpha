@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 
@@ -19,9 +20,11 @@ public class OverlayManager extends RenderNode implements KeyListener {
 	private ArrayList<KeyListener> listeners;
 	public Runnable lowPriorityInteraction;
 	public Runnable nonproductiveClick;
+	public ArrayList<Runnable> afterInteraction;
 	
 	public OverlayManager() {
 		this.listeners = new ArrayList<KeyListener>();
+		afterInteraction = new ArrayList<>();
 		
 		addChild(left = new XYTRenderNode(0,0,0));
 		addChild(right = new XYTRenderNode(new XYTSource() {
@@ -98,5 +101,19 @@ public class OverlayManager extends RenderNode implements KeyListener {
 	
 	public void draw(Graphics2D g, RenderPreferences prefs) {
 		prefs.setWindow(dimension);
+	}
+	
+	public void afterInteraction(Runnable r) {
+		afterInteraction.add(r);
+	}
+	
+	public boolean interaction(AffineTransform root, MouseEvent e, MouseEventType t) {
+		boolean result = super.interaction(root, e, t);
+		
+		for (Runnable r : afterInteraction) {
+			r.run();
+		}
+		afterInteraction.clear();
+		return result;
 	}
 }

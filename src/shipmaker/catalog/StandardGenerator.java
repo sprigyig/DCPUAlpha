@@ -36,6 +36,7 @@ public class StandardGenerator implements CatalogPartType {
 					this.table.new TableFixedProp("Power/Tick", "18");
 					this.table.new TableFixedProp("Mass", ""+mass());
 					this.table.new TableFixedProp("Rot Inertia", ""+rotationalInertia());
+					this.table.addPosition(bpl, om);
 				}
 				return this.table;
 			}
