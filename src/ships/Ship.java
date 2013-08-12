@@ -86,7 +86,6 @@ public class Ship implements Entity {
 	}
 
 	public void brownOut() {
-		System.out.println("Brown Out");
 		cpu.reset();
 		for (Equipment e:equipment) {
 			e.reset();

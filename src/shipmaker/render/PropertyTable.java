@@ -197,9 +197,7 @@ public class PropertyTable extends XYTRenderNode {
 		if (t!=MouseEventType.MOUSE_PRESS) return false;
 		
 		Point2D.Float pt = RenderNode.reverse(root, e);
-		System.out.println(pt);
 		if (pt.x > 0 && pt.x < c1Width + c2Width && pt.y > 0 && pt.y < rows.size() * ROW_HEIGHT) {
-			System.out.println("inhibitor");
 			om.lowPriorityInteraction = new Runnable() {
 				public void run() {
 					//inhibit de-selection by registering this

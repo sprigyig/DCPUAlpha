@@ -49,7 +49,6 @@ public abstract class Knob extends XYTRenderNode implements XYTSource {
 
 		if (t == MouseEventType.MOUSE_PRESS && Math.abs(pt.getX()) < 10
 				&& Math.abs(pt.getY()) < 10) {
-			System.out.println(pt.getX());
 			dragging = true;
 			last = pt;
 			pt.setLocation(pt.getX() + worldx(), pt.getY() + worldy());

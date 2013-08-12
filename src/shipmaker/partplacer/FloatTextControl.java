@@ -32,7 +32,6 @@ public abstract class FloatTextControl implements TextInputControl {
 
 	public void typed(KeyEvent e) {
 		if (editing) {
-			System.out.println(e.getKeyCode());
 			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 				endEdit(false);
 			} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {

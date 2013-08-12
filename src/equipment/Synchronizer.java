@@ -69,7 +69,6 @@ public class Synchronizer implements Equipment, Hardware, CpuWatcher {
 			syncTriggerTime = ((int)parent.regs.gp[REG_X])<<16 | parent.regs.gp[REG_Y];
 			syncTriggerNum = parent.regs.gp[REG_Z];
 			parent.cyclecnt+=3;
-			System.out.println("trigger set to:"+syncTriggerTime);
 			break;
 		case SET_ROLL_IRQ:
 			rolloverIrq = parent.regs.gp[REG_B];
@@ -96,7 +95,6 @@ public class Synchronizer implements Equipment, Hardware, CpuWatcher {
 			}
 			if (alarmIrq!=0) {
 				cpu.interrupts.add(alarmIrq);
-				System.out.println("alarm irq when count="+count +" cpu:"+cpu.cyclecnt);
 				cpu.debug = 10;
 			}
 		}
