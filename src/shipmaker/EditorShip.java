@@ -10,6 +10,7 @@ import physics.XYTSource;
 import render.RenderNode;
 import render.RenderPreferences;
 import render.XYTRenderNode;
+import shipmaker.catalog.PowerGrid;
 
 public class EditorShip {
 	
@@ -73,6 +74,7 @@ public class EditorShip {
 	public EditorShip() {
 		parts = new ArrayList<EditorShip.EditorShipPart>();
 		watchers = new ArrayList<ShipWatcher>();
+		addPart(new PowerGrid());
 	}
 	
 	public EditorShipPart addPart(CatalogPartType type) {

@@ -1,6 +1,5 @@
 package shipmaker.catalog;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 
 import physics.Body;
@@ -37,7 +36,7 @@ public class StandardEngine implements CatalogPartType {
 			public RenderNode getOptionsOverlay(final OverlayManager om, BlueprintLocation bpl) {
 				if (this.table == null) {
 					this.table = new PropertyTable(2, 2, 0, 100, 100, om);
-					this.table.new TableName("Standard Engine", Color.gray.brighter());
+					this.table.new TableName(name());
 					this.table.new TableFixedProp("Power/Tick", "10 (Max)");
 					this.table.new TableFixedProp("Force", "100 (Max)");
 					this.table.new TableFixedProp("Mass", ""+mass());
@@ -83,4 +82,10 @@ public class StandardEngine implements CatalogPartType {
 		Engine.draw(g, prefs, 1f);
 	}
 
+	public boolean placeable() {
+		return true;
+	}
+	public boolean deletable() {
+		return true;
+	}
 }

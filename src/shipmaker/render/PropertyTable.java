@@ -34,7 +34,7 @@ public class PropertyTable extends XYTRenderNode {
 	public class TableName implements TableRow {
 		private String name;
 
-		public TableName(String name, Color textcolor) {
+		public TableName(String name) {
 			this.name = name;
 			rows.add(this);
 		}
@@ -114,7 +114,7 @@ public class PropertyTable extends XYTRenderNode {
 	}
 	
 	public void addPosition(final BlueprintLocation bp, OverlayManager om) {
-		new TableName("Position", Color.white);
+		new TableName("Position");
 		new TableSetProp("X", new FloatTextControl("","") {
 			
 			public boolean drawIcon(Graphics2D g, RenderPreferences prefs) {

@@ -9,35 +9,46 @@ import render.RenderPreferences;
 import shipmaker.BlueprintLocation;
 import shipmaker.CatalogPart;
 import shipmaker.CatalogPartType;
+import shipmaker.partplacer.HexTextControl;
 import shipmaker.render.PropertyTable;
 import ships.Equipment;
-import equipment.Generator;
 
-public class StandardGenerator implements CatalogPartType {
+public class PowerGrid implements CatalogPartType {
 
 	public CatalogPart create() {
 		return new CatalogPart() {
 			
 			private PropertyTable table;
+			int hwid;
 
 			public CatalogPartType type() {
-				return StandardGenerator.this;
+				return PowerGrid.this;
 			}
 			
 			public RenderNode getRenderRagdoll(Body base) {
-				return Generator.makeIndependantPart(base);
+				return null;
 			}
 			
 			public RenderNode getOptionsOverlay(OverlayManager om, BlueprintLocation bpl) {
-				if (this.table == null) {
-					this.table = new PropertyTable(2, 2, 0, 100, 100, om);
-					this.table.new TableName(name());
-					this.table.new TableFixedProp("Power/Tick", "18");
-					this.table.new TableFixedProp("Mass", ""+mass());
-					this.table.new TableFixedProp("Rot Inertia", ""+rotationalInertia());
-					this.table.addPosition(bpl, om);
+				if (table == null) {
+					table = new PropertyTable(0, 0, 0, 100, 100, om);
+					table.new TableName(name());
+					table.new TableSetProp("Hardware ID", new HexTextControl(4) {
+						
+						public boolean drawIcon(Graphics2D g, RenderPreferences prefs) {
+							return false;
+						}
+						
+						protected void set(int x) {
+							hwid = x;
+						}
+						
+						protected int get() {
+							return hwid;
+						}
+					}, om);
 				}
-				return this.table;
+				return table;
 			}
 			
 			public Equipment generateEquipment(float effectiveX, float effectiveY,
@@ -48,25 +59,26 @@ public class StandardGenerator implements CatalogPartType {
 	}
 
 	public String name() {
-		return "Generator";
+		return "Power Grid";
 	}
 
 	public float mass() {
-		return 800;
+		return 0;
 	}
 
 	public float rotationalInertia() {
-		return 4000;
-	}
-
-	public void preview(Graphics2D g, RenderPreferences prefs) {
-		Generator.draw(g, prefs, 255, false, 20);
+		return 0;
 	}
 
 	public boolean placeable() {
-		return true;
+		return false;
 	}
+
+	public void preview(Graphics2D g, RenderPreferences prefs) {
+	}
+
 	public boolean deletable() {
-		return true;
+		return false;
 	}
+
 }

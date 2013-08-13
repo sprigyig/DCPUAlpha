@@ -98,30 +98,6 @@ public class CatalogSelector extends XYTRenderNode implements FocusableOverlay {
 		types = new ArrayList<CatalogPartType>();
 		types.add(new StandardEngine());
 		types.add(new StandardGenerator());
-		types.add(new StandardEngine() {
-			public String name() {
-				return super.name()+"2";
-			}
-		});
-		types.add(new StandardGenerator());
-		types.add(new StandardEngine(){
-			public String name() {
-				return super.name()+"3";
-			}
-		});
-		types.add(new StandardGenerator());
-		types.add(new StandardEngine(){
-			public String name() {
-				return super.name()+"4";
-			}
-		});
-		types.add(new StandardGenerator());
-		types.add(new StandardEngine(){
-			public String name() {
-				return super.name()+"5";
-			}
-		});
-		types.add(new StandardGenerator());
 		
 		XYTRenderNode list = new XYTRenderNode(0, 0, 0);
 		for (int i=0; i<ROWS; i++) {

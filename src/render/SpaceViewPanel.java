@@ -166,10 +166,11 @@ public class SpaceViewPanel extends JPanel {
 			}
 			
 			if (overlays.lowPriorityInteraction != null) {
+				space.blockRunning(true);
 				overlays.lowPriorityInteraction.run();
 				overlays.lowPriorityInteraction = null; 
 				sx = sy = -1;
-				
+				space.blockRunning(false);
 				return;
 			}
 			
@@ -182,7 +183,9 @@ public class SpaceViewPanel extends JPanel {
 		public void mouseReleased(MouseEvent e) {
 			if (sx==e.getX() && sy==-e.getY()) {
 				if (overlays.nonproductiveClick != null) {
+					space.blockRunning(true);
 					overlays.nonproductiveClick.run();
+					space.blockRunning(false);
 				}
 			}
 			sx = sy = ly = lx = -1;

@@ -52,6 +52,14 @@ public class Space {
 		rendities.remove(e.getVisuals());
 	}
 	
+	public Runnable removeEntityLater(final Entity e) {
+		return new Runnable() {
+			public void run() {
+				removeEntity(e);
+			}
+		};
+	}
+	
 	public void tickFrame(int ms) {
 		//TODO: make all of this stuff multi-threaded later
 		for (Entity e: entities) {
