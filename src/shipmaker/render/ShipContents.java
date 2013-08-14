@@ -10,7 +10,6 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 import physics.XYTSource;
-import render.CollectionAdd;
 import render.CollectionRemoval;
 import render.MouseEventType;
 import render.OverlayManager;
@@ -21,6 +20,8 @@ import shipmaker.EditorShip;
 import shipmaker.EditorShip.EditorShipPart;
 import shipmaker.EditorShip.ShipWatcher;
 import shipmaker.partplacer.BlueprintPositionEditor;
+import ships.Ship;
+import env.Entity;
 import env.Space;
 
 public class ShipContents extends XYTRenderNode implements ShipWatcher {
@@ -106,7 +107,7 @@ public class ShipContents extends XYTRenderNode implements ShipWatcher {
 		}
 	}
 
-	public ShipContents(EditorShip ship, Space space, OverlayManager om) {
+	public ShipContents(final EditorShip ship, Space space, OverlayManager om) {
 		super(-200, 0, 0);
 		this.ship = ship;
 		this.space = space;
@@ -121,6 +122,39 @@ public class ShipContents extends XYTRenderNode implements ShipWatcher {
 		for (EditorShipPart p : ship.parts()) {
 			partAdded(p);
 		}
+		
+		final XYTRenderNode centerMass = new XYTRenderNode(new XYTSource() {
+			public float position_y() {
+				return ship.massCenterY();
+			}
+			
+			public float position_x() {
+				return ship.massCenterX();
+			}
+			
+			public float alignment_theta() {
+				return 0;
+			}
+		}) {
+			public void draw(Graphics2D g, RenderPreferences prefs) {
+				g.setColor(Color.white);
+				g.setStroke(new BasicStroke(1));
+				g.drawLine(-5, -5, 5, 5);
+				g.drawLine(-5, 5, 5, -5);
+			}
+		};
+		space.addEntity(new Entity() {
+			public void tickPhysics(int msPerTick) {
+			}
+			
+			public void tickInternals(int msPerTick) {
+				
+			}
+			
+			public RenderNode getVisuals() {
+				return centerMass;
+			}
+		});
 	}
 
 	private void setSelected(EditorShipPart p) {
@@ -142,6 +176,7 @@ public class ShipContents extends XYTRenderNode implements ShipWatcher {
 				space.addEntity(editor);
 			}
 			editor.bpl(p.location);
+			space.addEntity(p);
 		} else if (editor != null) {
 			space.removeEntity(editor);
 			editor = null;
@@ -149,7 +184,7 @@ public class ShipContents extends XYTRenderNode implements ShipWatcher {
 		if (p != null) {
 			options = p.part.getOptionsOverlay(om, p.location);
 			om.topLeft().addChild(options);
-			space.addEntity(p);
+
 		}
 
 	}

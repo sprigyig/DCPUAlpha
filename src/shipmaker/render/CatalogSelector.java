@@ -18,8 +18,11 @@ import render.RenderPreferences;
 import render.XYTRenderNode;
 import shipmaker.CatalogPartType;
 import shipmaker.EditorShip;
+import shipmaker.catalog.BasicCapacitor;
+import shipmaker.catalog.PositionSensor;
 import shipmaker.catalog.StandardEngine;
 import shipmaker.catalog.StandardGenerator;
+import shipmaker.catalog.Synchronizer;
 
 public class CatalogSelector extends XYTRenderNode implements FocusableOverlay {
 	
@@ -98,6 +101,10 @@ public class CatalogSelector extends XYTRenderNode implements FocusableOverlay {
 		types = new ArrayList<CatalogPartType>();
 		types.add(new StandardEngine());
 		types.add(new StandardGenerator());
+		types.add(new BasicCapacitor());
+		types.add(new PositionSensor());
+		types.add(new Synchronizer());
+		
 		
 		XYTRenderNode list = new XYTRenderNode(0, 0, 0);
 		for (int i=0; i<ROWS; i++) {

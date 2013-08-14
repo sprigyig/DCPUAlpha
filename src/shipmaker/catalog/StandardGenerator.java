@@ -10,7 +10,7 @@ import shipmaker.BlueprintLocation;
 import shipmaker.CatalogPart;
 import shipmaker.CatalogPartType;
 import shipmaker.render.PropertyTable;
-import ships.Equipment;
+import ships.Ship;
 import equipment.Generator;
 
 public class StandardGenerator implements CatalogPartType {
@@ -32,7 +32,8 @@ public class StandardGenerator implements CatalogPartType {
 				if (this.table == null) {
 					this.table = new PropertyTable(2, 2, 0, 100, 100, om);
 					this.table.new TableName(name());
-					this.table.new TableFixedProp("Power/Tick", "18");
+					this.table.new TableFixedProp("Power/Tick", "17");
+					this.table.new TableFixedProp("Power Capacity", "200");
 					this.table.new TableFixedProp("Mass", ""+mass());
 					this.table.new TableFixedProp("Rot Inertia", ""+rotationalInertia());
 					this.table.addPosition(bpl, om);
@@ -40,9 +41,11 @@ public class StandardGenerator implements CatalogPartType {
 				return this.table;
 			}
 			
-			public Equipment generateEquipment(float effectiveX, float effectiveY,
-					float effectiveTheta) {
-				return null;
+			public void applyToShip(BlueprintLocation location, Ship s, float centerMassX, float centerMassY) {
+				location.convertToXYT(centerMassX, centerMassY);
+				
+				s.addEquipment(new Generator((int)location.x, (int)location.y, (int)location.t2, 17));
+				s.power.capacityAdded(200);
 			}
 		};
 	}
@@ -60,7 +63,7 @@ public class StandardGenerator implements CatalogPartType {
 	}
 
 	public void preview(Graphics2D g, RenderPreferences prefs) {
-		Generator.draw(g, prefs, 255, false, 20);
+		Generator.draw(g, prefs, prefs.spaceColor(), false, 20);
 	}
 
 	public boolean placeable() {

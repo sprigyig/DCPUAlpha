@@ -99,4 +99,11 @@ public class PowerGrid implements Equipment{
 		this.power = power;
 	}
 	
+	public void capacityAdded(long capacity) {
+		this.capacity += capacity;
+	}
+	
+	public void setHwid(char hwid) {
+		this.hwid = hwid;
+	}
 }

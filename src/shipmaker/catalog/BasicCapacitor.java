@@ -3,26 +3,25 @@ package shipmaker.catalog;
 import java.awt.Graphics2D;
 
 import physics.Body;
+import equipment.Capacitor;
 import render.OverlayManager;
 import render.RenderNode;
 import render.RenderPreferences;
 import shipmaker.BlueprintLocation;
 import shipmaker.CatalogPart;
 import shipmaker.CatalogPartType;
-import shipmaker.partplacer.HexTextControl;
 import shipmaker.render.PropertyTable;
 import ships.Ship;
 
-public class PowerGrid implements CatalogPartType {
+public class BasicCapacitor implements CatalogPartType {
 
 	public CatalogPart create() {
 		return new CatalogPart() {
 			
 			private PropertyTable table;
-			int hwid;
 
 			public CatalogPartType type() {
-				return PowerGrid.this;
+				return BasicCapacitor.this;
 			}
 			
 			public RenderNode getRenderRagdoll(Body base) {
@@ -33,51 +32,46 @@ public class PowerGrid implements CatalogPartType {
 				if (table == null) {
 					table = new PropertyTable(0, 0, 0, 100, 100, om);
 					table.new TableName(name());
-					table.new TableSetProp("Hardware ID", new HexTextControl(4) {
-						
-						public boolean drawIcon(Graphics2D g, RenderPreferences prefs) {
-							return false;
-						}
-						
-						protected void set(int x) {
-							hwid = x;
-						}
-						
-						protected int get() {
-							return hwid;
-						}
-					}, om);
+					table.new TableFixedProp("Capacity", "400");
+					table.new TableFixedProp("Rot Inertia", ""+rotationalInertia());
+					table.new TableFixedProp("mass", ""+mass());
+					table.addPosition(bpl, om);
+					
 				}
 				return table;
 			}
 			
-			public void applyToShip(BlueprintLocation location, Ship s, float centerMassX, float centerMassY) {
-				s.power.setHwid((char)hwid);
+			public void applyToShip(BlueprintLocation location, Ship s,
+					float centerMassX, float centerMassY) {
+				s.power.capacityAdded(400);
+				location.convertToXYT(centerMassX, centerMassY);
+				s.addEquipment(new Capacitor(location.x, location.y, location.t2));
 			}
 		};
 	}
 
 	public String name() {
-		return "Power Grid";
+		return "Basic Capacitor";
 	}
 
 	public float mass() {
-		return 0;
+		return 200;
 	}
 
 	public float rotationalInertia() {
-		return 0;
+		return 1000;
 	}
 
 	public boolean placeable() {
-		return false;
+		return true;
 	}
 
 	public void preview(Graphics2D g, RenderPreferences prefs) {
+		Capacitor.draw(g, prefs, prefs.spaceColor(), false);
 	}
 
 	public boolean deletable() {
-		return false;
+		return true;
 	}
 
 }

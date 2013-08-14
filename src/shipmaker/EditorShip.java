@@ -11,6 +11,7 @@ import render.RenderNode;
 import render.RenderPreferences;
 import render.XYTRenderNode;
 import shipmaker.catalog.PowerGrid;
+import ships.Ship;
 
 public class EditorShip {
 	
@@ -87,6 +88,55 @@ public class EditorShip {
 		}
 		
 		return ret;
+	}
+	
+	public float massCenterX() {
+		float massX = 0f, massTotal = 0f;
+		for (EditorShipPart pt : parts) {
+			massX += pt.part.type().mass() * pt.location.effectiveX();
+			massTotal += pt.part.type().mass();
+		}
+		return massX/massTotal;
+	}
+	
+	public float massCenterY() {
+		float massY = 0f, massTotal = 0f;
+		for (EditorShipPart pt : parts) {
+			massY += pt.part.type().mass() * pt.location.effectiveY();
+			massTotal += pt.part.type().mass();
+		}
+		return massY/massTotal;
+	}
+	
+	public Ship makeShip() {
+		float massX = 0f, massY = 0f, massTotal = 0f;
+		
+		for (EditorShipPart pt : parts) {
+			massX += pt.part.type().mass() * pt.location.effectiveX();
+			massY += pt.part.type().mass() * pt.location.effectiveY();
+			massTotal += pt.part.type().mass();
+			
+		}
+		
+		float massCenterX = massX/massTotal;
+		float massCenterY = massY/massTotal;
+		
+		float ri = 0;
+		for (EditorShipPart pt : parts) {
+			ri += pt.part.type().rotationalInertia();
+			float dx = massCenterX - pt.location.effectiveX();
+			float dy = massCenterY - pt.location.effectiveY();
+			
+			ri += pt.part.type().mass() * (dy* dy + dx * dx);
+		}
+		
+		Ship s = new Ship(massTotal, ri);
+		
+		for (EditorShipPart pt : parts) {
+			pt.part.applyToShip(pt.location, s, massCenterX, massCenterY);
+		}
+		return s;
+		
 	}
 	
 	public void removePart(EditorShipPart e) {

@@ -11,7 +11,7 @@ import shipmaker.CatalogPart;
 import shipmaker.CatalogPartType;
 import shipmaker.partplacer.HexTextControl;
 import shipmaker.render.PropertyTable;
-import ships.Equipment;
+import ships.Ship;
 import equipment.Engine;
 
 public class StandardEngine implements CatalogPartType {
@@ -59,9 +59,9 @@ public class StandardEngine implements CatalogPartType {
 				return this.table;
 			}
 			
-			public Equipment generateEquipment(float effectiveX, float effectiveY,
-					float effectiveTheta) {
-				return null;
+			public void applyToShip(BlueprintLocation location, Ship s, float centerMassX, float centerMassY) {
+				location.convertToRTT(centerMassX, centerMassY);
+				s.addEquipment(new Engine(location.r, location.t1, location.t2, 10, 100, hwid));
 			}
 		};
 	}
@@ -71,7 +71,7 @@ public class StandardEngine implements CatalogPartType {
 	}
 
 	public float mass() {
-		return 25;
+		return 300;
 	}
 
 	public float rotationalInertia() {

@@ -1,7 +1,10 @@
 package shipmaker.catalog;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics2D;
 
+import demo.equipment.DemoSensor;
 import physics.Body;
 import render.OverlayManager;
 import render.RenderNode;
@@ -13,16 +16,15 @@ import shipmaker.partplacer.HexTextControl;
 import shipmaker.render.PropertyTable;
 import ships.Ship;
 
-public class PowerGrid implements CatalogPartType {
+public class PositionSensor implements CatalogPartType {
 
 	public CatalogPart create() {
 		return new CatalogPart() {
-			
 			private PropertyTable table;
-			int hwid;
+			private int hwid;
 
 			public CatalogPartType type() {
-				return PowerGrid.this;
+				return PositionSensor.this;
 			}
 			
 			public RenderNode getRenderRagdoll(Body base) {
@@ -52,13 +54,13 @@ public class PowerGrid implements CatalogPartType {
 			}
 			
 			public void applyToShip(BlueprintLocation location, Ship s, float centerMassX, float centerMassY) {
-				s.power.setHwid((char)hwid);
+				s.addEquipment(new DemoSensor((char)hwid));
 			}
 		};
 	}
 
 	public String name() {
-		return "Power Grid";
+		return "Debug Position Sensor";
 	}
 
 	public float mass() {
@@ -74,10 +76,21 @@ public class PowerGrid implements CatalogPartType {
 	}
 
 	public void preview(Graphics2D g, RenderPreferences prefs) {
+		g.setStroke(new BasicStroke(1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL));
+		
+		g.setColor(Color.white);
+		g.drawLine(0, -20, 0, 20);
+		g.drawLine(-20, 0, 20, 0);
+		
+		g.drawArc(-15, -15, 30, 30, 20, 350);
+		g.drawArc(-5, -5, 10, 10, 30, 330);
+		g.drawArc(-10, -10, 20, 20, 40, 340);
+		
+		
 	}
 
 	public boolean deletable() {
-		return false;
+		return true;
 	}
 
 }

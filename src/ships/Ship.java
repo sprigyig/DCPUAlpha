@@ -32,6 +32,8 @@ public class Ship implements Entity {
 		};
 		forces = new ArrayList<BodyForce>();
 		equipment = new ArrayList<Equipment>();
+		power = new PowerGrid(0, 1000, 1, 'x');
+		power.addedTo(this);
 	}
 	
 	public void addEquipment(Equipment e) {

@@ -17,22 +17,24 @@ public class Generator implements Equipment, XYTSource {
 
 	private Ship ship;
 	private int x, y, t;
+	private long powerPerTick;
 
-	public Generator(int x, int y, int t) {
+	public Generator(int x, int y, int t, int powerPerTick) {
 		this.x = x;
 		this.y = y;
 		this.t = t;
+		this.powerPerTick = powerPerTick;
 	}
 	
 	public static RenderNode makeIndependantPart(Body base) {
 		return new BodyRenderNode(base) {
 			public void draw(Graphics2D g, RenderPreferences prefs) {
-				Generator.draw(g, prefs, 255, false, 20);
+				Generator.draw(g, prefs, Color.green, false, 20);
 			}
 		};
 	}
 	
-	public static void draw(Graphics2D g, RenderPreferences prefs, int color, boolean flash, int len) {
+	public static void draw(Graphics2D g, RenderPreferences prefs, Color bar, boolean flash, int len) {
 		int scale = 15;
 		g.setColor(prefs.borderColor());
 		int t = prefs.borderThickness();
@@ -46,8 +48,6 @@ public class Generator implements Equipment, XYTSource {
 		
 		
 		
-		color = Math.max(0, Math.min(color,255));
-		
 		
 		
 		g.setColor(prefs.borderColor());
@@ -58,7 +58,7 @@ public class Generator implements Equipment, XYTSource {
 		
 		g.drawRect(-10, -2, 20, 4);
 		
-		g.setColor(new Color(255-color, color, 0));
+		g.setColor(bar);
 		
 		g.fillRect(-10, -2, len, 4);
 	}
@@ -71,7 +71,9 @@ public class Generator implements Equipment, XYTSource {
 				int color = (int) (ship.power.getPower() * 255 / ship.power.getCapacity());
 				int len = (int) (ship.power.getPower() * 20 / ship.power.getCapacity());
 				boolean flash = ship.getCpuFreeze() > 0 && System.currentTimeMillis()%500 < 250;
-				Generator.draw(g, prefs, color, flash, len);
+				
+				color = Math.max(0, Math.min(color,255));
+				Generator.draw(g, prefs, new Color(255-color, color, 0), flash, len);
 			}
 		});
 	}
@@ -85,7 +87,7 @@ public class Generator implements Equipment, XYTSource {
 	}
 
 	public void physicsTickPostForce() {
-		ship.power.contribute(17);
+		ship.power.contribute(powerPerTick);
 	}
 
 	public void triggerSynchronizedEvent(char id, int cyclesAgo) {

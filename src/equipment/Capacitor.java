@@ -30,12 +30,12 @@ public class Capacitor implements Equipment, XYTSource {
 	public static RenderNode makeIndependantPart(Body base) {
 		return new BodyRenderNode(base) {
 			public void draw(Graphics2D g, RenderPreferences prefs) {
-				Capacitor.draw(g, prefs, 255, false);
+				Capacitor.draw(g, prefs, Color.green, false);
 			}
 		};
 	}
 	
-	private static void draw(Graphics2D g, RenderPreferences prefs, int color, boolean flash) {
+	public static void draw(Graphics2D g, RenderPreferences prefs, Color bar, boolean flash) {
 		int scale = 15;
 		int podheight = 7;
 		g.setColor(prefs.borderColor());
@@ -63,8 +63,8 @@ public class Capacitor implements Equipment, XYTSource {
 		}
 		
 		g.drawArc(-podheight/2, -podheight/2, podheight, podheight, 0, 360);
-		color = Math.max(0, Math.min(color,255));
-		g.setColor(new Color(255-color, color, 0));
+		
+		g.setColor(bar);
 		g.fillArc(-podheight/2, -podheight/2, podheight, podheight, 0, 360);
 		
 	}
@@ -75,7 +75,8 @@ public class Capacitor implements Equipment, XYTSource {
 			public void draw(Graphics2D g, RenderPreferences prefs) {
 				int color = (int) (ship.power.getPower() * 255 / ship.power.getCapacity());
 				boolean flash = ship.getCpuFreeze() > 0 && System.currentTimeMillis()%500 < 250;
-				Capacitor.draw(g, prefs, color, flash);
+				color = Math.max(0, Math.min(color,255));
+				Capacitor.draw(g, prefs, new Color(255-color, color, 0), flash);
 			}
 		});
 	}
