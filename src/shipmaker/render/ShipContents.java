@@ -20,7 +20,6 @@ import shipmaker.EditorShip;
 import shipmaker.EditorShip.EditorShipPart;
 import shipmaker.EditorShip.ShipWatcher;
 import shipmaker.partplacer.BlueprintPositionEditor;
-import ships.Ship;
 import env.Entity;
 import env.Space;
 

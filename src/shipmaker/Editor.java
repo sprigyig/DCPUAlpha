@@ -2,11 +2,16 @@ package shipmaker;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 
 import javax.swing.JFrame;
 
 import render.BlueprintPrefs;
+import render.MouseEventType;
 import render.RenderNode;
 import render.RenderPreferences;
 import render.SpaceViewPanel;
@@ -19,7 +24,7 @@ import env.Space;
 public class Editor {
 	
 	public static void main(String[] args) {		
-		EditorShip es = new EditorShip();
+		final EditorShip es = new EditorShip();
 		
 		final Space s = new Space();
 		
@@ -57,6 +62,23 @@ public class Editor {
 					};
 				}
 				return vis;
+			}
+		});
+		
+		svp.overlays().topRight().addChild(new XYTRenderNode(-250, 0, 0) {
+			public void draw(Graphics2D g, RenderPreferences prefs) {
+				g.setColor(Color.white);
+				g.setFont(new Font("SansSerif", Font.BOLD, 12));
+				g.drawString("Test", 0, 20);
+			}
+
+			public boolean interacted(AffineTransform root, MouseEvent e, MouseEventType t) {
+				Point2D.Float pt = RenderNode.reverse(root, e);
+				
+				if (pt.x > 0 && pt.x < 40 && pt.y > 0 && pt.y < 40) {
+					demo.Main.main(es.makeShip());
+				}
+				return false;
 			}
 		});
 	}

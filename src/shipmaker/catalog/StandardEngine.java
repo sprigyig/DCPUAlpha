@@ -61,7 +61,7 @@ public class StandardEngine implements CatalogPartType {
 			
 			public void applyToShip(BlueprintLocation location, Ship s, float centerMassX, float centerMassY) {
 				location.convertToRTT(centerMassX, centerMassY);
-				s.addEquipment(new Engine(location.r, location.t1, location.t2, 10, 100, hwid));
+				s.addEquipment(new Engine(location.r, location.t1, location.t2, 5000000, 10, hwid));
 			}
 		};
 	}
@@ -71,7 +71,7 @@ public class StandardEngine implements CatalogPartType {
 	}
 
 	public float mass() {
-		return 300;
+		return 3000;
 	}
 
 	public float rotationalInertia() {

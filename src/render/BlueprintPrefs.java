@@ -11,7 +11,7 @@ public class BlueprintPrefs implements RenderPreferences {
 	private Dimension window;
 
 	public BlueprintPrefs() {
-		this.bg = new Color(70, 50, 170);
+		this.bg = new Color(100,100,180);
 		this.trans = new Color(0,0,0,0);
 		this.fg = new Color(130, 110, 240);
 	}

@@ -55,7 +55,7 @@ public class BasicCapacitor implements CatalogPartType {
 	}
 
 	public float mass() {
-		return 200;
+		return 2000;
 	}
 
 	public float rotationalInertia() {
