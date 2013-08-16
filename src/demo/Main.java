@@ -9,6 +9,8 @@ import java.awt.BorderLayout;
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -73,8 +75,10 @@ public class Main {
 			if (timeout!=null) {
 				timeout.cancel();
 			}
-			timeout = new Timeout(5000);
-			timeout.start();
+			if (!"".equals(text)) {
+				timeout = new Timeout(5000);
+				timeout.start();
+			}
 		}
 	}
 	
@@ -83,7 +87,7 @@ public class Main {
 	public static void main(final Ship ship) {
 		System.out.println(String.format("%04x\n", (int)ASSEMBLE(ADV, HWI, REG_A)));
 		final PowerGrid grid = ship.power;
-		JFrame jf = new JFrame();
+		final JFrame jf = new JFrame();
 		jf.getContentPane().setLayout(new BorderLayout());
 		final Space s = new Space();
 		
@@ -91,7 +95,7 @@ public class Main {
 		jf.add(bar = new StatusBar(), BorderLayout.SOUTH);
 		jf.setVisible(true);
 		jf.setSize(400, 400);
-		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 		final SpaceViewPanel jp = new SpaceViewPanel(s);
 		jp.overlays().topLeft().addChild(new XYTRenderNode(10, 10, 0) {
 			public void draw(Graphics2D g, RenderPreferences prefs) {
@@ -168,6 +172,37 @@ public class Main {
 		
 		
 		bar.setStatus("Right Click to load DCPU Binary");
+		jf.addWindowListener(new WindowListener() {
+			public void windowOpened(WindowEvent e) {
+			}
+			
+			public void windowIconified(WindowEvent e) {
+			}
+			
+			public void windowDeiconified(WindowEvent e) {
+			}
+			
+			public void windowDeactivated(WindowEvent e) {
+			}
+			
+			public void windowClosing(WindowEvent e) {
+				s.stop();
+				jp.stop();
+				jf.dispose();
+			}
+			
+			@Override
+			public void windowClosed(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowActivated(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 	
 	public static void main(String[] args) {

@@ -25,6 +25,7 @@ public class SpaceViewPanel extends JPanel {
 	private RenderNode rootWindow;
 	public RenderPreferences prefs;
 	public boolean lockPosition;
+	private Timer timer;
 	
 	public SpaceViewPanel(Space sp) {
 		super(new BorderLayout());
@@ -45,11 +46,12 @@ public class SpaceViewPanel extends JPanel {
 		rootWindow.addChild(vp);
 		
 		rootWindow.addChild(overlays);
-		new Timer(15, new ActionListener() {
+		timer = new Timer(15, new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				repaint();
 			}
-		}).start();
+		});
+		timer.start();
 		this.addMouseListener(new MouseAdapter() {
 			public void mouseReleased(MouseEvent e) {
 				AffineTransform cart = new AffineTransform();
@@ -194,5 +196,9 @@ public class SpaceViewPanel extends JPanel {
 	
 	public OverlayManager overlays() {
 		return overlays;
+	}
+
+	public void stop() {
+		timer.stop();
 	}
 }

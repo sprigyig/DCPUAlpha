@@ -55,7 +55,7 @@ public class StandardGenerator implements CatalogPartType {
 	}
 
 	public float mass() {
-		return 8000;
+		return 2000;
 	}
 
 	public float rotationalInertia() {

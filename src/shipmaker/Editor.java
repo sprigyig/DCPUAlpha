@@ -16,6 +16,12 @@ import render.RenderNode;
 import render.RenderPreferences;
 import render.SpaceViewPanel;
 import render.XYTRenderNode;
+import shipmaker.EditorShip.EditorShipPart;
+import shipmaker.catalog.BasicCapacitor;
+import shipmaker.catalog.PositionSensor;
+import shipmaker.catalog.StandardEngine;
+import shipmaker.catalog.StandardGenerator;
+import shipmaker.catalog.Synchronizer;
 import shipmaker.render.CatalogSelector;
 import shipmaker.render.ShipContents;
 import env.Entity;
@@ -25,6 +31,37 @@ public class Editor {
 	
 	public static void main(String[] args) {		
 		final EditorShip es = new EditorShip();
+		
+		
+		EditorShipPart sp;
+		sp = es.addPart(new StandardEngine());
+		sp.location.r = 100;
+		sp.location.t1 = (float) (Math.PI/8);
+		sp.location.t2 = (float) (Math.PI/2);
+		
+		sp = es.addPart(new StandardEngine());
+		sp.location.r = 100;
+		sp.location.t1 = (float) -(Math.PI/8);
+		sp.location.t2 = (float) -(Math.PI/2);
+		
+		sp = es.addPart(new StandardEngine());
+		sp.location.r = 100;
+		sp.location.t1 = (float) (9*Math.PI/8);
+		sp.location.t2 = (float) (Math.PI/2);
+		
+		sp = es.addPart(new StandardEngine());
+		sp.location.r = 100;
+		sp.location.t1 = (float) (7*Math.PI/8);
+		sp.location.t2 = (float) -(Math.PI/2);
+		
+		sp = es.addPart(new StandardGenerator());
+		sp = es.addPart(new BasicCapacitor());
+		sp.location.x = 50;
+		sp = es.addPart(new BasicCapacitor());
+		sp.location.x = -50;
+		
+		sp = es.addPart(new Synchronizer());
+		sp = es.addPart(new PositionSensor());
 		
 		final Space s = new Space();
 		
@@ -73,6 +110,7 @@ public class Editor {
 			}
 
 			public boolean interacted(AffineTransform root, MouseEvent e, MouseEventType t) {
+				if (t!=MouseEventType.MOUSE_PRESS) return false;
 				Point2D.Float pt = RenderNode.reverse(root, e);
 				
 				if (pt.x > 0 && pt.x < 40 && pt.y > 0 && pt.y < 40) {
@@ -81,5 +119,7 @@ public class Editor {
 				return false;
 			}
 		});
+		
+		
 	}
 }

@@ -128,8 +128,16 @@ public class Space {
 	public void removeKeyListener(KeyListener kl) {
 		keylisteners.remove(kl);
 	}
-	public Runnable removeEntityAction(EditorShipPart part) {
-		return new CollectionRemoval<Entity>(entities, part);
+	public Runnable removeEntityAction(final EditorShipPart part) {
+		return new Runnable() {
+			public void run() {
+				entities.remove(part);
+				rendities.remove(part.getVisuals());
+			}
+		};
+	}
+	public void stop() {
+		die=true;
 	}
 	
 }

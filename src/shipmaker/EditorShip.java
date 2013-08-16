@@ -15,6 +15,8 @@ import ships.Ship;
 
 public class EditorShip {
 	
+	private static final float RI_DISTANCE_DIVIDER = 5f;
+	
 	private static class BPLPreview extends XYTRenderNode implements XYTSource {
 
 		private BlueprintLocation bpl;
@@ -126,6 +128,9 @@ public class EditorShip {
 			ri += pt.part.type().rotationalInertia();
 			float dx = massCenterX - pt.location.effectiveX();
 			float dy = massCenterY - pt.location.effectiveY();
+			
+			dx /= RI_DISTANCE_DIVIDER;
+			dy /= RI_DISTANCE_DIVIDER;
 			
 			ri += pt.part.type().mass() * (dy* dy + dx * dx);
 		}
