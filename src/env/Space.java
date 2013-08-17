@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
-import render.CollectionRemoval;
 import render.RenderNode;
 import shipmaker.EditorShip.EditorShipPart;
 

@@ -12,9 +12,11 @@ import java.util.Collection;
 public abstract class RenderNode {
 	protected Image img;
 	protected Collection<RenderNode> children;
+	protected Collection<RenderNode> bgChildren;
 	
 	public RenderNode() {
 		children = new ArrayList<RenderNode>();
+		bgChildren = new ArrayList<RenderNode>();
 	}
 
 	public RenderNode(Image i) {
@@ -36,6 +38,10 @@ public abstract class RenderNode {
 		graphics.setTransform(root);
 		draw(graphics, prefs);
 
+		for (RenderNode r : bgChildren) {
+			r.render(graphics, (AffineTransform) root.clone(), prefs);
+		}
+		
 		for (RenderNode r : children) {
 			r.render(graphics, (AffineTransform) root.clone(), prefs);
 		}
@@ -70,6 +76,15 @@ public abstract class RenderNode {
 	public void removeChild(RenderNode r) {
 		children.remove(r);
 	}
+
+	public void addBgChild(RenderNode r) {
+		bgChildren.add(r);
+	}
+
+	public void removeBgChild(RenderNode r) {
+		bgChildren.remove(r);
+	}
+	
 	
 	public int layer() {
 		return 1;

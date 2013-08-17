@@ -24,7 +24,6 @@ public class DemoSensor implements Equipment {
 			}
 			
 			public void plugged_in(Dcpu parent, char id) {
-				System.out.println("sensor id" + ((int)id));
 			}
 			
 			public void interrupted(Dcpu parent) {

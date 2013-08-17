@@ -4,6 +4,8 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import com.google.gson.annotations.Expose;
+
 import demo.equipment.DemoSensor;
 import physics.Body;
 import render.OverlayManager;
@@ -18,49 +20,58 @@ import ships.Ship;
 
 public class PositionSensor implements CatalogPartType {
 
-	public CatalogPart create() {
-		return new CatalogPart() {
-			private PropertyTable table;
-			private int hwid;
+	@Expose private static final String name = "Debug Position Sensor";
+	
+	private static final class PositionSensorPart implements CatalogPart {
+		private PropertyTable table;
+		@Expose private int hwid;
+		@Expose private PositionSensor type;
 
-			public CatalogPartType type() {
-				return PositionSensor.this;
+		public PositionSensorPart(PositionSensor type) {
+			this.type = type;
+		}
+
+		public CatalogPartType type() {
+			return type;
+		}
+
+		public RenderNode getRenderRagdoll(Body base) {
+			return null;
+		}
+
+		public RenderNode getOptionsOverlay(OverlayManager om, BlueprintLocation bpl) {
+			if (table == null) {
+				table = new PropertyTable(0, 0, 0, 100, 100, om);
+				table.new TableName(type.name());
+				table.new TableSetProp("Hardware ID", new HexTextControl(4) {
+					
+					public boolean drawIcon(Graphics2D g, RenderPreferences prefs) {
+						return false;
+					}
+					
+					protected void set(int x) {
+						hwid = x;
+					}
+					
+					protected int get() {
+						return hwid;
+					}
+				}, om);
 			}
-			
-			public RenderNode getRenderRagdoll(Body base) {
-				return null;
-			}
-			
-			public RenderNode getOptionsOverlay(OverlayManager om, BlueprintLocation bpl) {
-				if (table == null) {
-					table = new PropertyTable(0, 0, 0, 100, 100, om);
-					table.new TableName(name());
-					table.new TableSetProp("Hardware ID", new HexTextControl(4) {
-						
-						public boolean drawIcon(Graphics2D g, RenderPreferences prefs) {
-							return false;
-						}
-						
-						protected void set(int x) {
-							hwid = x;
-						}
-						
-						protected int get() {
-							return hwid;
-						}
-					}, om);
-				}
-				return table;
-			}
-			
-			public void applyToShip(BlueprintLocation location, Ship s, float centerMassX, float centerMassY) {
-				s.addEquipment(new DemoSensor((char)hwid));
-			}
-		};
+			return table;
+		}
+
+		public void applyToShip(BlueprintLocation location, Ship s, float centerMassX, float centerMassY) {
+			s.addEquipment(new DemoSensor((char)hwid));
+		}
+	}
+
+	public CatalogPart create(final BlueprintLocation pbpl) {
+		return new PositionSensorPart(this);
 	}
 
 	public String name() {
-		return "Debug Position Sensor";
+		return name;
 	}
 
 	public float mass() {

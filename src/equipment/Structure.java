@@ -22,7 +22,7 @@ public class Structure implements Equipment {
 	}
 	
 	public void addedTo(Ship s) {
-		s.addRenderNode(new XYTRenderNode(0,0,0){
+		s.addBgRenderNode(new XYTRenderNode(0,0,0){
 			public void draw(Graphics2D g, RenderPreferences prefs) {
 				int scale = 25;
 				int[] x = new int[]{-1,-1,1,1,-1,1,-1,1};
@@ -77,7 +77,6 @@ public class Structure implements Equipment {
 	}
 
 	public void triggerSynchronizedEvent(char id, int cyclesAgo) {
-		// TODO Auto-generated method stub
 		
 	}
 	

@@ -2,8 +2,10 @@ package shipmaker;
 
 import java.awt.geom.Point2D;
 
+import com.google.gson.annotations.Expose;
+
 public class BlueprintLocation {
-	public float x, y, t1, t2, r;
+	@Expose public float x, y, t1, t2, r;
 
 	public float effectiveX() {
 		return (float) (x + Math.cos(t1) * r);
@@ -59,4 +61,5 @@ public class BlueprintLocation {
 		
 		return ret;
 	}
+	
 }

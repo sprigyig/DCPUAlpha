@@ -21,6 +21,7 @@ public class OverlayManager extends RenderNode implements KeyListener {
 	public Runnable lowPriorityInteraction;
 	public Runnable nonproductiveClick;
 	public ArrayList<Runnable> afterInteraction;
+	private XYTRenderNode topCenter;
 	
 	public OverlayManager() {
 		this.listeners = new ArrayList<KeyListener>();
@@ -45,6 +46,19 @@ public class OverlayManager extends RenderNode implements KeyListener {
 			}
 			public float position_x() {
 				return 0;
+			}
+			
+			public float alignment_theta() {
+				return 0;
+			}
+		}));
+		addChild(topCenter = new XYTRenderNode(new XYTSource() {
+			public float position_y() {
+				return 0;
+			}
+			
+			public float position_x() {
+				return dimension.width/2;
 			}
 			
 			public float alignment_theta() {
@@ -76,6 +90,10 @@ public class OverlayManager extends RenderNode implements KeyListener {
 	
 	public RenderNode topRight() {
 		return right;
+	}
+	
+	public RenderNode topCenter() {
+		return topCenter;
 	}
 	
 	public RenderNode bottomLeft() {

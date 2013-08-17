@@ -14,50 +14,61 @@ import shipmaker.partplacer.HexTextControl;
 import shipmaker.render.PropertyTable;
 import ships.Ship;
 
+import com.google.gson.annotations.Expose;
+
 public class Synchronizer implements CatalogPartType {
 
-	public CatalogPart create() {
-		return new CatalogPart() {
-			private char hwid;
-			private PropertyTable table;
+	@Expose private static final String name= "Synchronizer";
 
-			public CatalogPartType type() {
-				return Synchronizer.this;
+	private static final class SynchronizerPart implements CatalogPart {
+		@Expose private char hwid;
+		private PropertyTable table;
+		private Synchronizer type;
+
+		public SynchronizerPart(Synchronizer type) {
+			this.type = type;
+		}
+
+		public CatalogPartType type() {
+			return type;
+		}
+
+		public RenderNode getRenderRagdoll(Body base) {
+			return null;
+		}
+
+		public RenderNode getOptionsOverlay(OverlayManager om, BlueprintLocation bpl) {
+			if (table == null) {
+				table = new PropertyTable(0, 0, 0, 100, 100, om);
+				table.new TableName(type.name());
+				table.new TableSetProp("Hardware ID", new HexTextControl(4) {
+					public boolean drawIcon(Graphics2D g, RenderPreferences prefs) {
+						return false;
+					}
+					
+					protected void set(int x) {
+						hwid = (char)x;
+					}
+					protected int get() {
+						return (int)hwid;
+					}
+				}, om);
 			}
-			
-			public RenderNode getRenderRagdoll(Body base) {
-				return null;
-			}
-			
-			public RenderNode getOptionsOverlay(OverlayManager om, BlueprintLocation bpl) {
-				if (table == null) {
-					table = new PropertyTable(0, 0, 0, 100, 100, om);
-					table.new TableName(name());
-					table.new TableSetProp("Hardware ID", new HexTextControl(4) {
-						public boolean drawIcon(Graphics2D g, RenderPreferences prefs) {
-							return false;
-						}
-						
-						protected void set(int x) {
-							hwid = (char)x;
-						}
-						protected int get() {
-							return (int)hwid;
-						}
-					}, om);
-				}
-				return table;
-			}
-			
-			public void applyToShip(BlueprintLocation location, Ship s,
-					float centerMassX, float centerMassY) {
-				s.addEquipment(new equipment.Synchronizer(hwid));
-			}
-		};
+			return table;
+		}
+
+		public void applyToShip(BlueprintLocation location, Ship s,
+				float centerMassX, float centerMassY) {
+			s.addEquipment(new equipment.Synchronizer(hwid));
+		}
+	}
+
+	public CatalogPart create(final BlueprintLocation pbpl) {
+		return new SynchronizerPart(this);
 	}
 
 	public String name() {
-		return "Synchronizer";
+		return name;
 	}
 
 	public float mass() {

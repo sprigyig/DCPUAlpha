@@ -10,6 +10,9 @@ import java.awt.geom.Point2D;
 
 import javax.swing.JFrame;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import render.BlueprintPrefs;
 import render.MouseEventType;
 import render.RenderNode;
@@ -114,6 +117,11 @@ public class Editor {
 				Point2D.Float pt = RenderNode.reverse(root, e);
 				
 				if (pt.x > 0 && pt.x < 40 && pt.y > 0 && pt.y < 40) {
+					GsonBuilder gb = new GsonBuilder();
+					gb.excludeFieldsWithoutExposeAnnotation();
+					
+					Gson g = gb.create();
+					System.out.println(g.toJson(es));
 					demo.Main.main(es.makeShip());
 				}
 				return false;

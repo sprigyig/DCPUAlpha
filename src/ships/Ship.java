@@ -67,6 +67,9 @@ public class Ship implements Entity {
 	public void addRenderNode(RenderNode rn) {
 		renderParts.addChild(rn);
 	}
+	public void addBgRenderNode(RenderNode rn) {
+		renderParts.addBgChild(rn);
+	}
 	public void addPluginHardware(char id, Hardware hw) {
 		cpu.addHardware(id, hw);
 	}

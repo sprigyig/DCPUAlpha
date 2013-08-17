@@ -136,7 +136,4 @@ public class DcpuConstants {
 		return d;
 	}
 	
-	public static void main(String[] args) {
-		System.out.printf("%04x\n",(int)ASSEMBLE(ADV, HWQ, SHORT_LIT(7)	));
-	}
 }

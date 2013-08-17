@@ -3,7 +3,6 @@ package shipmaker.catalog;
 import java.awt.Graphics2D;
 
 import physics.Body;
-import equipment.Capacitor;
 import render.OverlayManager;
 import render.RenderNode;
 import render.RenderPreferences;
@@ -13,45 +12,60 @@ import shipmaker.CatalogPartType;
 import shipmaker.render.PropertyTable;
 import ships.Ship;
 
+import com.google.gson.annotations.Expose;
+
+import equipment.Capacitor;
+
 public class BasicCapacitor implements CatalogPartType {
+	
+	@Expose private static final String name = "Basic Capacitor";
 
-	public CatalogPart create() {
-		return new CatalogPart() {
-			
-			private PropertyTable table;
+	private static final class BasicCapacitorPart implements CatalogPart {
+		private PropertyTable table;
+		@Expose private BasicCapacitor type;
 
-			public CatalogPartType type() {
-				return BasicCapacitor.this;
+		public BasicCapacitorPart(BlueprintLocation pbpl, BasicCapacitor type) {
+			this.type = type;
+		}
+
+		public CatalogPartType type() {
+			return type;
+		}
+
+		public RenderNode getRenderRagdoll(Body base) {
+			return null;
+		}
+
+		public RenderNode getOptionsOverlay(OverlayManager om, BlueprintLocation bpl) {
+			if (table == null) {
+				table = new PropertyTable(0, 0, 0, 100, 100, om);
+				table.new TableName(type.name());
+				table.new TableFixedProp("Capacity", "400");
+				table.new TableFixedProp("Rot Inertia", ""+type.rotationalInertia());
+				table.new TableFixedProp("mass", ""+type.mass());
+				table.addPosition(bpl, om);
+				
 			}
-			
-			public RenderNode getRenderRagdoll(Body base) {
-				return null;
-			}
-			
-			public RenderNode getOptionsOverlay(OverlayManager om, BlueprintLocation bpl) {
-				if (table == null) {
-					table = new PropertyTable(0, 0, 0, 100, 100, om);
-					table.new TableName(name());
-					table.new TableFixedProp("Capacity", "400");
-					table.new TableFixedProp("Rot Inertia", ""+rotationalInertia());
-					table.new TableFixedProp("mass", ""+mass());
-					table.addPosition(bpl, om);
-					
-				}
-				return table;
-			}
-			
-			public void applyToShip(BlueprintLocation location, Ship s,
-					float centerMassX, float centerMassY) {
-				s.power.capacityAdded(400);
-				location.convertToXYT(centerMassX, centerMassY);
-				s.addEquipment(new Capacitor(location.x, location.y, location.t2));
-			}
-		};
+			return table;
+		}
+
+		public void applyToShip(BlueprintLocation location, Ship s,
+				float centerMassX, float centerMassY) {
+			s.power.capacityAdded(400);
+			location.convertToXYT(centerMassX, centerMassY);
+			s.addEquipment(new Capacitor(location.x, location.y, location.t2));
+		}
+	}
+
+
+
+
+	public CatalogPart create(final BlueprintLocation pbpl) {
+		return new BasicCapacitorPart(pbpl, this);
 	}
 
 	public String name() {
-		return "Basic Capacitor";
+		return name;
 	}
 
 	public float mass() {
@@ -73,5 +87,4 @@ public class BasicCapacitor implements CatalogPartType {
 	public boolean deletable() {
 		return true;
 	}
-
 }

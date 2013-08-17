@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 import render.RenderPreferences;
 
 public interface CatalogPartType {
-	public CatalogPart create();
+	public CatalogPart create(BlueprintLocation pbpl);
 	public String name();
 	public float mass();
 	public float rotationalInertia();
