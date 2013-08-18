@@ -41,11 +41,12 @@
  set z, 0xc
 
  ifu y, [rotspeed_target]
- set z, 0xa
-
- ifa y, [rotspeed_target]
  set z, 0xb
 
+ ifa y, [rotspeed_target]
+ set z, 0xa
+
+ set a, 4
  hwi 8
  set pc, loop
 
