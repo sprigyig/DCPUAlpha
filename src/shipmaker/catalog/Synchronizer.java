@@ -14,16 +14,17 @@ import shipmaker.partplacer.HexTextControl;
 import shipmaker.render.PropertyTable;
 import ships.Ship;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
 public class Synchronizer implements CatalogPartType {
 
-	@Expose private static final String name= "Synchronizer";
+	@Expose private final String name= "Synchronizer";
 
 	private static final class SynchronizerPart implements CatalogPart {
-		@Expose private char hwid;
+		@Expose private int hwid;
 		private PropertyTable table;
-		private Synchronizer type;
+		@Expose private Synchronizer type;
 
 		public SynchronizerPart(Synchronizer type) {
 			this.type = type;
@@ -47,10 +48,10 @@ public class Synchronizer implements CatalogPartType {
 					}
 					
 					protected void set(int x) {
-						hwid = (char)x;
+						hwid = x;
 					}
 					protected int get() {
-						return (int)hwid;
+						return hwid;
 					}
 				}, om);
 			}
@@ -59,7 +60,12 @@ public class Synchronizer implements CatalogPartType {
 
 		public void applyToShip(BlueprintLocation location, Ship s,
 				float centerMassX, float centerMassY) {
-			s.addEquipment(new equipment.Synchronizer(hwid));
+			s.addEquipment(new equipment.Synchronizer((char)hwid));
+		}
+		
+		public void loadOptions(JsonObject jobj) {
+			hwid = jobj.get("hwid").getAsInt();
+			System.out.println("Made hwid" + hwid);
 		}
 	}
 

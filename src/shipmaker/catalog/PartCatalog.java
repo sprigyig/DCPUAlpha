@@ -7,11 +7,9 @@ import java.util.Collections;
 import shipmaker.CatalogPartType;
 
 public class PartCatalog {
-	private static ArrayList<CatalogPartType> types;
+	private static ArrayList<CatalogPartType> types = new ArrayList<CatalogPartType>();
+	private static boolean ready = false;
 	public static void registerType(CatalogPartType t) {
-		if (types!=null) {
-			types = new ArrayList<CatalogPartType>();
-		}
 		types.add(t);
 	}
 	
@@ -19,4 +17,35 @@ public class PartCatalog {
 		return Collections.unmodifiableList(types);
 	}
 
+	static {
+		synchronized(types) {
+			types.add(new BasicCapacitor());
+			types.add(new PositionSensor());
+			types.add(new PowerGrid());
+			types.add(new StandardEngine());
+			types.add(new StandardGenerator());
+			types.add(new Synchronizer());
+			ready = true;
+		} 
+	}
+
+	private static void ready() {
+		synchronized(types) {
+			while (!ready)
+				try {
+					types.wait();
+				} catch (InterruptedException e) {}
+		}
+	}
+	
+	public static CatalogPartType getTypeByName(String name) {
+		ready();
+		for (CatalogPartType t : types) {
+			if (t.name().equals(name)) {
+				return t;
+			}
+		}
+		return null;
+	}
+	
 }

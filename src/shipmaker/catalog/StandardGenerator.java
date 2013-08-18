@@ -12,13 +12,14 @@ import shipmaker.CatalogPartType;
 import shipmaker.render.PropertyTable;
 import ships.Ship;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
 import equipment.Generator;
 
 public class StandardGenerator implements CatalogPartType {
 
-	@Expose private static final String name = "Generator";
+	@Expose private final String name = "Generator";
 	
 	private static final class StandardGeneratorPart implements CatalogPart {
 		private PropertyTable table;
@@ -54,6 +55,10 @@ public class StandardGenerator implements CatalogPartType {
 			
 			s.addEquipment(new Generator((int)location.x, (int)location.y, (int)location.t2, 17));
 			s.power.capacityAdded(200);
+		}
+		
+		public void loadOptions(JsonObject jobj) {
+			//nothing to load
 		}
 	}
 

@@ -11,7 +11,6 @@ import render.RenderNode;
 import render.RenderPreferences;
 import render.XYTRenderNode;
 import shipmaker.catalog.PartCatalog;
-import shipmaker.catalog.PowerGrid;
 import ships.Ship;
 
 import com.google.gson.GsonBuilder;
@@ -95,7 +94,6 @@ public class EditorShip {
 	public EditorShip() {
 		parts = new ArrayList<EditorShip.EditorShipPart>();
 		watchers = new ArrayList<ShipWatcher>();
-		addPart(new PowerGrid());
 	}
 
 	public EditorShipPart addPart(CatalogPartType type) {
@@ -182,9 +180,9 @@ public class EditorShip {
 		watchers.remove(w);
 	}
 
-	public static void main(String[] args) {
-		String json = "{\"part\":{\"hwid\":2,\"type\":{\"name\":\"Standard Engine\"}},\"location\":"
-				+ "{\"x\":0.0,\"y\":0.0,\"t1\":-0.3926991,\"t2\":-1.5707964,\"r\":100.0}}";
+	public static EditorShip fromJson(String json) {
+		EditorShip ship;
+		
 		GsonBuilder gb = new GsonBuilder();
 		gb.registerTypeAdapter(EditorShipPart.class,
 				new JsonDeserializer<EditorShipPart>() {
@@ -193,11 +191,22 @@ public class EditorShip {
 							Type type, JsonDeserializationContext ctx)
 							throws JsonParseException {
 						BlueprintLocation bpl = ctx.deserialize(obj.getAsJsonObject().get("location"), BlueprintLocation.class);
-						System.out.println(bpl.t1);
-						System.out.println(obj.getAsJsonObject().get("part").getAsJsonObject().get("type").getAsJsonObject().get("name").getAsString());
+						System.out.println(obj.toString());
+						String types = obj.getAsJsonObject().get("part").getAsJsonObject().get("type").getAsJsonObject().get("name").getAsString();
+						try {
+							CatalogPartType tp = PartCatalog.getTypeByName(types);
+							CatalogPart part = tp.create(bpl);
+							part.loadOptions(obj.getAsJsonObject().get("part").getAsJsonObject());
+							return new EditorShipPart(part, bpl);
+						} catch (Throwable e) {
+							e.printStackTrace();
+						}
+						
 						return null;
 					}
 				});
-		gb.create().fromJson(json, EditorShipPart.class);
+		ship = gb.create().fromJson(json, EditorShip.class);
+		
+		return ship;
 	}
 }

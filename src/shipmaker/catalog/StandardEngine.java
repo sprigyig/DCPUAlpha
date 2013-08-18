@@ -2,6 +2,7 @@ package shipmaker.catalog;
 
 import java.awt.Graphics2D;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
 import physics.Body;
@@ -18,7 +19,7 @@ import equipment.Engine;
 
 public class StandardEngine implements CatalogPartType {
 
-	@Expose private static final String name = "Standard Engine";
+	@Expose private final String name = "Standard Engine";
 	
 	private static final class StandardEnginePart implements CatalogPart {
 		RenderNode ragdoll;
@@ -70,6 +71,10 @@ public class StandardEngine implements CatalogPartType {
 		public void applyToShip(BlueprintLocation location, Ship s, float centerMassX, float centerMassY) {
 			location.convertToRTT(centerMassX, centerMassY);
 			s.addEquipment(new Engine(location.r, location.t1, location.t2, 500, 10, (char)hwid));
+		}
+		
+		public void loadOptions(JsonObject jobj) {
+			hwid = jobj.get("hwid").getAsInt();
 		}
 	}
 

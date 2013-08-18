@@ -12,13 +12,14 @@ import shipmaker.CatalogPartType;
 import shipmaker.render.PropertyTable;
 import ships.Ship;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
 import equipment.Capacitor;
 
 public class BasicCapacitor implements CatalogPartType {
 	
-	@Expose private static final String name = "Basic Capacitor";
+	@Expose private final String name = "Basic Capacitor";
 
 	private static final class BasicCapacitorPart implements CatalogPart {
 		private PropertyTable table;
@@ -54,6 +55,10 @@ public class BasicCapacitor implements CatalogPartType {
 			s.power.capacityAdded(400);
 			location.convertToXYT(centerMassX, centerMassY);
 			s.addEquipment(new Capacitor(location.x, location.y, location.t2));
+		}
+
+		public void loadOptions(JsonObject jobj) {
+			//nothing to load
 		}
 	}
 

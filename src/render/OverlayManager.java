@@ -134,4 +134,20 @@ public class OverlayManager extends RenderNode implements KeyListener {
 		afterInteraction.clear();
 		return result;
 	}
+
+	public void clear() {
+		left.bgChildren.clear();
+		left.children.clear();
+		right.bgChildren.clear();
+		right.children.clear();
+		bottomLeft.children.clear();
+		bottomLeft.bgChildren.clear();
+		topCenter.bgChildren.clear();
+		topCenter.children.clear();
+		setFocused(null);
+		listeners.clear();
+		lowPriorityInteraction = null;
+		nonproductiveClick = null;
+		afterInteraction.clear();
+	}
 }

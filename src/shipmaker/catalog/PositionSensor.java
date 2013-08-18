@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
 import demo.equipment.DemoSensor;
@@ -20,7 +21,7 @@ import ships.Ship;
 
 public class PositionSensor implements CatalogPartType {
 
-	@Expose private static final String name = "Debug Position Sensor";
+	@Expose private final String name = "Debug Position Sensor";
 	
 	private static final class PositionSensorPart implements CatalogPart {
 		private PropertyTable table;
@@ -63,6 +64,10 @@ public class PositionSensor implements CatalogPartType {
 
 		public void applyToShip(BlueprintLocation location, Ship s, float centerMassX, float centerMassY) {
 			s.addEquipment(new DemoSensor((char)hwid));
+		}
+		
+		public void loadOptions(JsonObject jobj) {
+			hwid = jobj.get("hwid").getAsInt();
 		}
 	}
 

@@ -2,6 +2,7 @@ package shipmaker.catalog;
 
 import java.awt.Graphics2D;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
 import physics.Body;
@@ -17,7 +18,7 @@ import ships.Ship;
 
 public class PowerGrid implements CatalogPartType {
 
-	@Expose private static final String name = "Power Grid";
+	@Expose private final String name = "Power Grid";
 	
 	private static final class PowerGridPart implements CatalogPart {
 		private PropertyTable table;
@@ -60,6 +61,10 @@ public class PowerGrid implements CatalogPartType {
 
 		public void applyToShip(BlueprintLocation location, Ship s, float centerMassX, float centerMassY) {
 			s.power.setHwid((char)hwid);
+		}
+		
+		public void loadOptions(JsonObject jobj) {
+			hwid = jobj.get("hwid").getAsInt();
 		}
 	}
 
