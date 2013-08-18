@@ -1,0 +1,109 @@
+;Setup command #0xA (slot 1) to go right by turning 1 and 3 engines on
+ SET A, 1
+ SET C, 0xA
+ SET B, 0xffff
+ HWI 1
+ HWI 3
+ SET B, 0
+ HWI 2
+ HWI 4
+
+;Setup command #0xB (slot 2) to go left by turning 2 and 4 engines on
+ SET A, 2
+ SET C, 0xB
+ SET B, 0xffff
+ HWI 2
+ HWI 4
+ SET B, 0
+ HWI 1
+ HWI 3
+
+;Setup command #0xC (slot 3) to turn everything off
+ SET A, 3
+ SET C, 0xC
+ set B, 0x0
+ HWI 1
+ HWI 2
+ HWI 3
+ HWI 4
+
+;Setup the generic irq handler
+ IAS generic_irq
+ IAQ 0
+
+;Set the timer irq mesage
+ set a, 3
+ set b, timer_irq_struct
+ hwi 8
+
+:loop
+ hwi 7
+ set z, 0xc
+
+ ifu y, [rotspeed_target]
+ set z, 0xa
+
+ ifa y, [rotspeed_target]
+ set z, 0xb
+
+ hwi 8
+ set pc, loop
+
+
+:rotspeed_target
+dat 0
+
+
+;IRQ messages should be pointers to:
+; struct irqhandler {
+;   void (*handler)(u16 data);
+;   u16 data;
+; }
+:generic_irq
+ set push, ex
+ set push, [a]
+ set a, [a+1]
+ jsr pop
+ set ex, pop
+ rfi 0
+
+:timer_lsb
+dat 0
+:timer_msb
+dat 0
+
+:add_5secs
+add [timer_lsb], 0xa120
+adx [timer_msb], 0x7
+ret
+
+:push_time
+set push, a
+set push, z
+set push, x
+set push, y
+
+set a, 1
+set x, [timer_msb]
+set y, [timer_lsb]
+set z, 0
+hwi 8
+
+set y, pop
+set x, pop
+set z, pop
+set a, pop
+set pc, pop
+
+:timer_irq_fired
+ set [rotspeed_target], a
+ mul [timer_irq_data], 0xffff
+ jsr add_5secs
+ jsr push_time
+ ret
+
+:timer_irq_struct
+:timer_irq_func
+dat timer_irq_fired
+:timer_irq_data
+dat 30
