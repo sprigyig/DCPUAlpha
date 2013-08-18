@@ -28,7 +28,7 @@ import equipment.StructureNode;
 
 public class EditorShip {
 
-	private static final float RI_DISTANCE_DIVIDER = 5f;
+	private static final float RI_DISTANCE_DIVIDER = 10f;
 
 	private static class BPLPreview extends XYTRenderNode implements XYTSource {
 
