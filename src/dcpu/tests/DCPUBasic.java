@@ -317,7 +317,7 @@ public class DCPUBasic {
 		d.step(); //set sp, 1
 		
 		d.cyclecnt = 0;
-		d.step(); //set a, pick 12 => set a, [1+12] => set a, 11
+		d.step(); //set a, pick 11 => set a, [1+11] => set a, [12]
 		assertEquals(11, d.regs.gp[REG_A]);
 		assertEquals(2, d.cyclecnt);
 		
@@ -350,7 +350,7 @@ public class DCPUBasic {
 	@Test
 	public void literal_indirect() {
 		Dcpu d = mkcpu(
-			ASSEMBLE(ADD, LIT_IND, LIT_IND), 1, 2	
+			ASSEMBLE(ADD, LIT_IND, LIT_IND), 2, 1	
 		);
 		d.step();
 		assertEquals(4, d.cyclecnt);
@@ -429,7 +429,20 @@ public class DCPUBasic {
 		assertEquals((char)0x200, d.regs.gp[REG_J]);
 		assertEquals(4, d.cyclecnt);
 		
+	}
+	
+	@Test
+	public void ind_add() {
+		Dcpu d = mkcpu(
+				ASSEMBLE(ADD, LIT_IND, LONG_LIT), 0xa120, 0x5
+		);
+		for (int i=0; i<3; i++) {
+			System.out.printf("%04x ", (int)d.memory.get((char)i));
+		}
 		
+		d.memory.set((char)0x5, (char)0xa120);
+		d.step();
 		
+		assertEquals((char)(0xa120*2), d.memory.get((char)0x5));
 	}
 }

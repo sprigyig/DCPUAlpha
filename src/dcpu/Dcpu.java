@@ -106,7 +106,7 @@ public class Dcpu {
 				char a_pc = regs.pc;
 				int afrag = inst.a();
 				IOperand target = operands[afrag];
-				char a = target.fetch(afrag, false);
+				char a = target.fetch(afrag, true);
 				
 				IAdvOperation op = advops[inst.b()];
 				if (op != null) {
@@ -116,13 +116,14 @@ public class Dcpu {
 				}
 				
 			} else {
+				
+				int afrag = inst.a();
+				char a = operands[afrag].fetch(afrag, true);
+				
 				char b_pc = regs.pc;
 				int bfrag = inst.b();
 				IOperand target = operands[bfrag];
 				char b = target.fetch(bfrag, false);
-				int afrag = inst.a();
-				char a = operands[afrag].fetch(afrag, true);
-				
 				IOperation op = operations[inst.opcode()];
 				
 				if (op != null) {
