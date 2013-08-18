@@ -59,6 +59,8 @@ public class Engine implements Equipment, ForceSource, CpuWatcher, Hardware {
 	
 	public static void draw(Graphics2D g, RenderPreferences prefs, float renderOnness) {
 		int t = prefs.borderThickness();
+		g.translate(14, 0);
+		
 		g.setStroke(new BasicStroke(t));
 		g.setColor(prefs.borderColor());
 		g.drawRect(-25, -15, 20, 30);

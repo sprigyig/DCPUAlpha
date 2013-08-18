@@ -35,6 +35,7 @@ public class XYTRenderNode extends RenderNode {
 	
 	protected void transform(AffineTransform root) {
 		if (src!=null) {
+			
 			root.translate(src.position_x(), src.position_y());
 			root.rotate(src.alignment_theta());
 		} else {

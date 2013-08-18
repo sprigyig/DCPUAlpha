@@ -22,6 +22,8 @@ import shipmaker.EditorShip.ShipWatcher;
 import shipmaker.partplacer.BlueprintPositionEditor;
 import env.Entity;
 import env.Space;
+import equipment.Structure;
+import equipment.StructureNode;
 
 public class ShipContents extends XYTRenderNode implements ShipWatcher {
 	private static final int ROW_HEIGHT = 20;
@@ -122,7 +124,7 @@ public class ShipContents extends XYTRenderNode implements ShipWatcher {
 			partAdded(p);
 		}
 		
-		final XYTRenderNode centerMass = new XYTRenderNode(new XYTSource() {
+		XYTSource cmass = new XYTSource() {
 			public float position_y() {
 				return ship.massCenterY();
 			}
@@ -134,7 +136,8 @@ public class ShipContents extends XYTRenderNode implements ShipWatcher {
 			public float alignment_theta() {
 				return 0;
 			}
-		}) {
+		};
+		final XYTRenderNode centerMass = new XYTRenderNode(cmass) {
 			public void draw(Graphics2D g, RenderPreferences prefs) {
 				g.setColor(Color.white);
 				g.setStroke(new BasicStroke(1));
@@ -147,11 +150,68 @@ public class ShipContents extends XYTRenderNode implements ShipWatcher {
 			}
 			
 			public void tickInternals(int msPerTick) {
-				
+
 			}
 			
 			public RenderNode getVisuals() {
 				return centerMass;
+			}
+		});
+		final RenderNode structNode = new XYTRenderNode(0,0,0) {
+			public void draw(Graphics2D g, RenderPreferences prefs) {
+				if (ship.editingStructure)
+				Structure.draw(g, prefs, ship.structLocations());
+				
+				g.setColor(prefs.overlayTextColor());
+				
+				if (ship.editingStructure)
+				for (StructureNode node : ship.structLocations()) {
+					for (int dx = -1; dx <= 1; dx++) for (int dy = -1; dy <= 1; dy++)
+						if ((dx ==0 ^ dy==0) ||( dx==0 && dy==0)) {
+							g.fillRect(Structure.STRUCT_SIZE*(node.x+dx)-2, 
+									Structure.STRUCT_SIZE*(node.y+dy)-2, 
+									4, 4);
+						}
+				}
+				
+			}
+			public boolean interacted(AffineTransform root, MouseEvent e, MouseEventType t) {
+				if (t!=MouseEventType.MOUSE_PRESS) return false;
+				
+				Point2D.Float pt = RenderNode.reverse(root, e);
+				
+				float nx = Math.round(pt.x/Structure.STRUCT_SIZE)*Structure.STRUCT_SIZE;
+				float ny = Math.round(pt.y/Structure.STRUCT_SIZE)*Structure.STRUCT_SIZE;
+				
+				if (Math.abs(nx - pt.x)<5 && Math.abs(ny - pt.y)<5) {
+					StructureNode node = new StructureNode(Math.round(pt.x/Structure.STRUCT_SIZE), Math.round(pt.y/Structure.STRUCT_SIZE));
+					if (ship.structLocations().contains(node)) {
+						ship.structLocations().remove(node);
+						if (!ship.validateStructureContinuity()) ship.structLocations().add(node);
+					} else {
+						ship.structLocations().add(node);
+						if (!ship.validateStructureContinuity()) ship.structLocations().remove(node);
+					}
+					return true;
+				}
+				
+				return false;
+			}
+			public int layer() {
+				return 2;
+			}
+		};
+		space.addEntity(new Entity() {
+			public void tickPhysics(int msPerTick) {
+				
+			}
+			
+			public void tickInternals(int msPerTick) {
+				
+			}
+			
+			public RenderNode getVisuals() {
+				return structNode;
 			}
 		});
 	}

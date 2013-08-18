@@ -2,6 +2,7 @@ package shipmaker;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,6 +30,7 @@ import com.google.gson.GsonBuilder;
 
 import env.Entity;
 import env.Space;
+import equipment.StructureNode;
 
 public class Editor {
 	
@@ -51,7 +53,7 @@ public class Editor {
 	}
 	
 	private void addSaveLoadUI() {
-		svp.overlays().topCenter().addChild(new Button(0, 20, "Test Ship", new Runnable() {
+		svp.overlays().topCenter().addChild(new Button(-10, 20, "Test Ship", new Runnable() {
 			public void run() {
 				demo.Main.main(es.makeShip());
 			}
@@ -99,21 +101,32 @@ public class Editor {
 				}
 			}
 		}));
+		svp.overlays().topCenter().addChild(new Button(-10, 54, "Structure Mode", new Runnable() {
+			public void run() {
+				es.editingStructure = !es.editingStructure;
+			}
+		}));
 	}
 	
 	public SpaceViewPanel panel() {
 		return svp;
 	}
 	
-	public void setShip(EditorShip es) {
+	public void setShip(EditorShip pes) {
 		s.clearEntities();
 		svp.overlays().clear();
-		this.es = es;
-		selector = new CatalogSelector(svp.overlays(), es);
-		contents = new ShipContents(es, s, svp.overlays());
+		this.es = pes;
+		selector = new CatalogSelector(svp.overlays(), pes);
+		contents = new ShipContents(pes, s, svp.overlays());
 		svp.overlays().topRight().addChild(contents);
 		svp.overlays().bottomLeft().addChild(selector);
-		
+		svp.overlays().bottomRight().addChild(new XYTRenderNode(-200, -50, 0) {
+			public void draw(Graphics2D g, RenderPreferences prefs) {
+				g.setFont(new Font("SansSerif", Font.BOLD, 14));
+				g.drawString("Mass:"+es.massTotal(), 10, 20);
+				g.drawString("Rot Inertia:"+es.riTotal(), 10, 40);
+			}
+		});
 		
 		s.addEntity(new Entity() {
 			private RenderNode vis;
@@ -144,6 +157,7 @@ public class Editor {
 	public static void main(String[] args) {		
 		final EditorShip es = new EditorShip();
 		es.addPart(new PowerGrid());
+		es.structLocations().add(new StructureNode());
 		
 		Editor e = new Editor(es);
 		

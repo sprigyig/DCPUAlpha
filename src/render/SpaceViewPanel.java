@@ -33,7 +33,7 @@ public class SpaceViewPanel extends JPanel {
 		overlays = new OverlayManager();
 		
 		space = sp;
-		vp = new Viewport(200, -200, 0, 1d);
+		vp = new Viewport(0, 0, 0, 1d);
 		ViewportMouseDrag md = new ViewportMouseDrag();
 		this.addMouseMotionListener(md);
 		this.addMouseListener(md);
@@ -97,16 +97,17 @@ public class SpaceViewPanel extends JPanel {
 		}
 		public void transform(AffineTransform at) {
 			super.transform(at);
+			at.translate(getWidth()/2, -getHeight()/2);
 			at.scale(zoom, zoom);
 			
 		}
 		public void zoom(double amt, double x, double y) {
 			amt = amt/Math.abs(amt);
-			double oldworldx = (x-this.x)/zoom;
-			double oldworldy = (y-this.y)/zoom;
+			double oldworldx = (x-this.x-getWidth()/2)/zoom;
+			double oldworldy = (y-this.y+getHeight()/2)/zoom;
 			zoom += amt * (zoom/10);
-			double newworldx = (x-this.x)/zoom;
-			double newworldy = (y-this.y)/zoom;
+			double newworldx = (x-this.x-getWidth()/2)/zoom;
+			double newworldy = (y-this.y+getHeight()/2)/zoom;
 			
 			
 			this.x -= (oldworldx-newworldx)*zoom;

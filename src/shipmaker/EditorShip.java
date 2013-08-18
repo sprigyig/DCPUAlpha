@@ -5,6 +5,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
 
 import physics.XYTSource;
 import render.RenderNode;
@@ -21,6 +23,8 @@ import com.google.gson.JsonParseException;
 import com.google.gson.annotations.Expose;
 
 import env.Entity;
+import equipment.Structure;
+import equipment.StructureNode;
 
 public class EditorShip {
 
@@ -89,10 +93,14 @@ public class EditorShip {
 
 	@Expose
 	private ArrayList<EditorShipPart> parts;
+	@Expose private HashSet<StructureNode> structParts;
 	private ArrayList<ShipWatcher> watchers;
 
+	public boolean editingStructure = false;
+	
 	public EditorShip() {
 		parts = new ArrayList<EditorShip.EditorShipPart>();
+		structParts = new HashSet<StructureNode>();
 		watchers = new ArrayList<ShipWatcher>();
 	}
 
@@ -126,7 +134,45 @@ public class EditorShip {
 		}
 		return massY / massTotal;
 	}
+	
+	public float massTotal() {
+		float total = 0f;
+		
+		for (EditorShipPart pt : parts) {
+			total += pt.part.type().mass();
+		}
+		
+		return total;
+	}
 
+	public float riTotal() {
+		float massX = 0f, massY = 0f, massTotal = 0f;
+
+		for (EditorShipPart pt : parts) {
+			massX += pt.part.type().mass() * pt.location.effectiveX();
+			massY += pt.part.type().mass() * pt.location.effectiveY();
+			massTotal += pt.part.type().mass();
+
+		}
+
+		float massCenterX = massX / massTotal;
+		float massCenterY = massY / massTotal;
+
+		float ri = 0;
+		for (EditorShipPart pt : parts) {
+			if (pt.part.type().placeable()) {
+				ri += pt.part.type().rotationalInertia();
+				float dx = massCenterX - pt.location.effectiveX();
+				float dy = massCenterY - pt.location.effectiveY();
+	
+				dx /= RI_DISTANCE_DIVIDER;
+				dy /= RI_DISTANCE_DIVIDER;
+	
+				ri += pt.part.type().mass() * (dy * dy + dx * dx);
+			}
+		}
+		return ri;
+	}
 	public Ship makeShip() {
 		float massX = 0f, massY = 0f, massTotal = 0f;
 
@@ -157,6 +203,12 @@ public class EditorShip {
 		for (EditorShipPart pt : parts) {
 			pt.part.applyToShip(pt.location, s, massCenterX, massCenterY);
 		}
+		
+		Structure st = new Structure();
+		for (StructureNode sn : structParts) {
+			st.addLocation(sn.x, sn.y);
+		}
+		s.addEquipment(st);
 		return s;
 
 	}
@@ -172,6 +224,10 @@ public class EditorShip {
 		return Collections.unmodifiableList(parts);
 	}
 
+	public Collection<StructureNode> structLocations() {
+		return structParts;
+	}
+	
 	public void addWatcher(ShipWatcher w) {
 		watchers.add(w);
 	}
@@ -209,4 +265,29 @@ public class EditorShip {
 		
 		return ship;
 	}
+
+	public boolean validateStructureContinuity() {
+		if (structParts.isEmpty()) return false;
+		
+		HashSet<StructureNode> visited = new HashSet<>();
+		LinkedList<StructureNode> queue = new LinkedList<>();
+
+		queue.add(structParts.iterator().next());
+		
+		while (!queue.isEmpty()) {
+			StructureNode node = queue.poll();
+			if (!visited.contains(node))
+			for (int dx=-1;dx<=1;dx++) for (int dy=-1;dy<=1;dy++)
+				if (dx == 0 ^ dy==0) {
+					StructureNode newNode = new StructureNode(node.x+dx, node.y+dy);
+					if (structParts.contains(newNode)) {
+						queue.add(newNode);
+					}
+				}
+			visited.add(node);
+		}
+		
+		return visited.size() == structParts.size();
+	}
+	
 }

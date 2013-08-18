@@ -44,7 +44,6 @@ public class Space {
 	public void addEntity(Entity e) {
 		entities.add(e);
 		rendities.add(e.getVisuals());
-		System.out.println(entities.size());
 	}
 	
 	public void removeEntity(Entity e) {
