@@ -20,11 +20,12 @@ public class PartCatalog {
 	static {
 		synchronized(types) {
 			types.add(new BasicCapacitor());
-			types.add(new PositionSensor());
+			types.add(new FHBL_1_08());
 			types.add(new PowerGrid());
 			types.add(new StandardEngine());
 			types.add(new StandardGenerator());
 			types.add(new Synchronizer());
+			types.add(new PositionSensor());
 			ready = true;
 		} 
 	}

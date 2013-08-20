@@ -13,5 +13,5 @@ public interface CatalogPart {
 	public RenderNode getOptionsOverlay(OverlayManager om, BlueprintLocation bpl);
 	public CatalogPartType type();
 	public void loadOptions(JsonObject jobj);
-	
+	public int partRadius();
 }

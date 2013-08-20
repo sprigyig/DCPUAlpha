@@ -60,6 +60,10 @@ public class BasicCapacitor implements CatalogPartType {
 		public void loadOptions(JsonObject jobj) {
 			//nothing to load
 		}
+
+		public int partRadius() {
+			return 20;
+		}
 	}
 
 

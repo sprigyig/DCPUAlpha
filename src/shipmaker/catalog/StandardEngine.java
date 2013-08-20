@@ -76,6 +76,10 @@ public class StandardEngine implements CatalogPartType {
 		public void loadOptions(JsonObject jobj) {
 			hwid = jobj.get("hwid").getAsInt();
 		}
+
+		public int partRadius() {
+			return 20;
+		}
 	}
 
 	public CatalogPart create(final BlueprintLocation pbpl) {

@@ -60,6 +60,15 @@ public class Body {
 		this.mass = mass;
 		this.ri = ri;
 	}
+	
+	public Body predictNextState() {
+		return new Body(x + xs, y + ys, rot + rots, mass, ri);
+	}
+	
+	public float headingTo(Body b) {
+		return (float) Math.atan2(b.x-x, b.y-y) - rot;
+	}
+	
 	public void reset() {
 		rot = x = y = xnrg = ynrg = rotnrg = 0f;
 	}

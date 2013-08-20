@@ -12,6 +12,7 @@ import render.RenderPreferences;
 import dcpu.Dcpu;
 import dcpu.Hardware;
 import env.Entity;
+import env.Space;
 import equipment.PowerGrid;
 
 public class Ship implements Entity {
@@ -22,6 +23,7 @@ public class Ship implements Entity {
 	public Body me;
 	public PowerGrid power;
 	int cpu_freeze;
+	public Space space;
 	
 	public Ship(float mass, float ri) {
 		me = new Body(0, 0, 0, mass, ri);
@@ -100,5 +102,9 @@ public class Ship implements Entity {
 	
 	public int getCpuFreeze() {
 		return cpu_freeze;
+	}
+
+	public void in(Space s) {
+		this.space = s;
 	}
 }

@@ -1,0 +1,17 @@
+    No Comments Necessary 450: Integer Rotation Description
+    
+    Far Horizons Exploration company has defined the following format for 
+    the description of angular heading and velocity in two 16-bit integers.
+    
+    Angular velocities are to be expressed in angle the rotation
+    that would result in one second of motion at the present rate. 
+    
+    Two bytes are used to express the angle. Their concatenations forms a 
+    32-bit signed integer. The LSB of this integer represents 
+    1/(2**16) * 90 degrees.   
+    	
+    Examples:
+    	0x0000, 0x0000 represents 0 degrees
+    	0x0000, 0x8000 represents 45 degrees
+    	0xFFFF, 0x8000 represents -45 degrees
+    	0x0002, 0x0000 represents 180 degrees

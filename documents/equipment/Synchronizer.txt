@@ -19,7 +19,7 @@
    The NSA-SY-03 is a free running clock module that accepts the host DCPU's
    as the base clock. Current count values can be atomically retrieved, and
    a single synchronous command word can be schedule for the future at a
-   given count. See Document NSANCR08478 for a description of the synchronous
+   given count. See Document NCN-203 for a description of the synchronous
    command bus (SCB).
    
    Hardware Interrupt Interface:

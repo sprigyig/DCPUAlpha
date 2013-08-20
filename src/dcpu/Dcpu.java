@@ -714,4 +714,14 @@ public class Dcpu {
 		cpuTodo.clear();
 		cyclecntLim = cyclecnt = 0;
 	}
+	
+	public void queryResult(int vendor, int hardware, int version) {
+		regs.gp[REG_B] = (char) (hardware>>16);
+		regs.gp[REG_A] = (char) (hardware);
+		
+		regs.gp[REG_C] = (char) (version);
+		
+		regs.gp[REG_Y] = (char) (vendor>>16);
+		regs.gp[REG_X] = (char) (vendor);
+	}
 }

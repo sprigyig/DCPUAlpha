@@ -284,7 +284,8 @@ public class ShipContents extends XYTRenderNode implements ShipWatcher {
 				g.setColor(new Color(255, 255, 255, 20));
 				g.setStroke(new BasicStroke(1f, BasicStroke.CAP_ROUND,
 						BasicStroke.JOIN_MITER, 10, new float[] { 5 }, 0));
-				g.drawArc(-20, -20, 40, 40, 0, 360);
+				g.drawArc(-p.part.partRadius(), -p.part.partRadius(), 
+						2*p.part.partRadius(), 2*p.part.partRadius(), 0, 360);
 			}
 		});
 

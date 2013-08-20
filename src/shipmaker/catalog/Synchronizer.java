@@ -67,6 +67,10 @@ public class Synchronizer implements CatalogPartType {
 			hwid = jobj.get("hwid").getAsInt();
 			System.out.println("Made hwid" + hwid);
 		}
+
+		public int partRadius() {
+			return 0;
+		}
 	}
 
 	public CatalogPart create(final BlueprintLocation pbpl) {

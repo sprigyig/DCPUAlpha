@@ -4,11 +4,11 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.util.List;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
 
 import render.FocusableOverlay;
 import render.MouseEventType;
@@ -18,15 +18,11 @@ import render.RenderPreferences;
 import render.XYTRenderNode;
 import shipmaker.CatalogPartType;
 import shipmaker.EditorShip;
-import shipmaker.catalog.BasicCapacitor;
-import shipmaker.catalog.PositionSensor;
-import shipmaker.catalog.StandardEngine;
-import shipmaker.catalog.StandardGenerator;
-import shipmaker.catalog.Synchronizer;
+import shipmaker.catalog.PartCatalog;
 
 public class CatalogSelector extends XYTRenderNode implements FocusableOverlay {
 	
-	private ArrayList<CatalogPartType> types;
+	private List<CatalogPartType> types;
 	private int scrollPoint;
 	private OverlayManager om;
 	private CatalogPartType selectedType;
@@ -98,13 +94,7 @@ public class CatalogSelector extends XYTRenderNode implements FocusableOverlay {
 		this.ship = es;
 		
 		scrollPoint = 0;
-		types = new ArrayList<CatalogPartType>();
-		types.add(new StandardEngine());
-		types.add(new StandardGenerator());
-		types.add(new BasicCapacitor());
-		types.add(new PositionSensor());
-		types.add(new Synchronizer());
-		
+		types = PartCatalog.allTypes();
 		
 		XYTRenderNode list = new XYTRenderNode(0, 0, 0);
 		for (int i=0; i<ROWS; i++) {

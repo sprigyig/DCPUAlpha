@@ -1,0 +1,110 @@
+   Copyright 1986-1989 - Far Horizon Exploration Co. All rights Reserved
+                        '
+                       ~ ~ ~'
+                      ~ ~ ~ ~ ~'                   
+                       ~ ~ ~ ~ ~ '                 
+                      ~ ~ ~ ~ ~'   '     -' '-\\-\\
+                       '-~ ~ '       ' /       \\ \\
+                         '~ ~ '               () ) ) )
+                          '~ ~ ~'~-            / \\ \\
+                        ' ~ ~ ~ ~ ~'     -. .-    \\-\\
+                      '~ ~ ~ ~- '        '         
+                      ~ ~ ~'              '        
+
+              Far Horizon Exploration Co. - A Light in The Black
+              
+   Product Code: FHBL-XX-XX
+   Product Name: Far Horizons Beacon Locator
+   Product Description:
+      The FHBL series is a product line of quality transponder detectors. They
+      can provide both heading data for all visible beacons, as well as angular
+      velocity data for explicitly tracked beacons.
+   
+   Variants:
+      FHBL-X-XX
+           | |__Signal Sensitivity
+           |____Tracking Capacity
+            
+      Signal Sensitivity: Code representing the sensitivity of the sensor. This
+                      will determine how far away you can detect a weak beacon.
+                      Codes can vary from 03 (local scale) to 24 
+                      (solar system scale.) Note that the quality of the
+                      emitter will also factor into what beacons can be seen. 
+                      
+      Tracking Capacity: Code representing the quantity of beacons that the
+                         sensor is capable of continuously tracking. Users
+                         can dynamically ask the tracking co-processor to keep
+                         up-to-date information on a limited number of beacon
+                         id's, vastly reducing the amount of time taken to
+                         perform a detailed query.
+                         
+      Standard Variants: Product Code    Hardware ID       Manufacturer ID
+                         FHBL-0-03       0x32610003        0xEA9C6232
+                         FHBL-0-05       0x32610005        0xEA9C6232
+                         FHBL-1-08       0x32610108        0xEA9C6232
+                         FHBL-1-13       0x3261010D        0xEA9C6232
+                         FHBL-2-20       0x32610214        0xEA9C6232
+                         FHBL-3-20       0x32610306        0xEA9C6232
+                         
+      Ask your local Far Horizons sales representative if you desire a more
+      specialized variant.
+   
+   Error Codes:
+      0x1 E_NOTFOUND The beacon requested could not be seen
+      0x2 E_TOOWEAK  The beacon requested is too weak to get any information 
+      0x4 E_NOTSLOT  The tracking slot requested does not exist in this device
+      
+   Interrupt Behaviors:
+   +---+------+------------------------------------------------------------+
+   | A | Cost | Description                                                |
+   +---+------+------------------------------------------------------------+
+   | 0 |  20+ | Full Scan:                                                 |
+   |   |      | In descending order of perceived beacon strength, up to B  |
+   |   |      | beacons will have their data stored at memory region       |
+   |   |      | pointed to by C. The record format will be the signal      |
+   |   |      | strength, beacon ID, heading.                              |
+   |   |      | This action will delay the CPU by 50 extra cycles per      |
+   |   |      | beacon scanned.                                            |
+   +---+------+------------------------------------------------------------+
+   | 1 |  *   | Beacon Detail:                                             |
+   |   |      | The scanner will attempt to gain all possible information  |
+   |   |      | about the beacon broadcasting with ID B. The information   |
+   |   |      | will be stored at the address pointed to by C. The format  |
+   |   |      | of the data is: Broadcasting strength octet, perceived     |
+   |   |      | strength octet, heading, angular velocity, error codes     |
+   |   |      | A tracked beacon will take 4 total cycles to complete,     |
+   |   |      | an untracked beacon will take 40.                          |
+   +---+------+------------------------------------------------------------+
+   | 2 |  4   | Begin Beacon Track:                                        |
+   |   |      | Assign tracking slot C to track beacon with ID B. Records  |
+   |   |      | error codes in A. Note 40 CPU cycles must pass before the  |
+   |   |      | speed benefit from having the beacon tracked will be in    |
+   |   |      | effect.                                                    |
+   +---+------+------------------------------------------------------------+
+   
+   All angles and angular velocities will be reported in NCN-450 format.
+   
+   Broadcast Strength vs Perceived Strength:
+      The strength you perceive a beacon as broadcasting as is:
+      
+      Broadcast Strength + Sensor Sensitivity - Orders of magnitude distance
+      
+      So long as the perceived strength is 0 or more, you will pick up the 
+      beacon on a full scan. If you specifically as for detail of a beacon ID,
+      you will be able to at least see that it is present for strength -1, or
+      have full information for strength 0 or greater.
+      
+      Since beacons also broadcast their original strength as data, receivers 
+      can estimate the order of magnitude of the distance away without using 
+      any additional hardware. If you would like a more accurate distance 
+      reading, ask your local Far Horizons representative about our quality 
+      range-finding equipment.
+   Power Usage:
+      A full scan will take 10 units of power per item scanned.
+
+      A detail listing of a beacon will cost 15 power units, unless the
+      beacon is actively being tracked.
+      
+      Beacon trackers will incur a power overhead equal to 50 units per second
+      for each beacon they are capable of tracking.
+      

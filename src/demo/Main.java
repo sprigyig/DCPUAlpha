@@ -1,10 +1,5 @@
 package demo;
 
-import static dcpu.DcpuConstants.ADV;
-import static dcpu.DcpuConstants.ASSEMBLE;
-import static dcpu.DcpuConstants.HWI;
-import static dcpu.DcpuConstants.REG_A;
-
 import java.awt.BorderLayout;
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
@@ -85,11 +80,12 @@ public class Main {
 	
 
 	public static void main(final Ship ship) {
-		System.out.println(String.format("%04x\n", (int)ASSEMBLE(ADV, HWI, REG_A)));
+		
 		final PowerGrid grid = ship.power;
 		final JFrame jf = new JFrame();
 		jf.getContentPane().setLayout(new BorderLayout());
 		final Space s = new Space();
+		ship.in(s);
 		
 		final StatusBar bar;
 		jf.add(bar = new StatusBar(), BorderLayout.SOUTH);
