@@ -1,9 +1,15 @@
 package dcpu;
 
 import static dcpu.DcpuConstants.*;
-import java.util.*;
 
-public class Dcpu {
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+public class Dcpu implements WorldPauser {
 	public long debug = 0;
 	public Registers regs;
 	public IOperand[] operands;
@@ -20,9 +26,18 @@ public class Dcpu {
 	public boolean wfi;
 	private long cyclecntLim;
 	
+	private boolean paused;
+	private Object pausedMonitor;
+	
+	private long cpuid = 0;
 	
 	long tally;
+	public final long id;
 	public Dcpu() {
+		synchronized(Dcpu.class) {
+			this.id = cpuid;
+			cpuid+=1;
+		}
 		regs = new Registers();
 		operands = new IOperand[0x40];
 		operations = new IOperation[0x20];
@@ -38,6 +53,9 @@ public class Dcpu {
 		fill_operand_extractors();
 		fill_operation_executors();
 		fill_adv_operation_executors();
+		
+		pausedMonitor = new Object();
+		paused = false;
 	}
 
 	public void runInCpuThread(Runnable r) {
@@ -46,16 +64,42 @@ public class Dcpu {
 		}
 	}
 	
+	public void pause() {
+		synchronized(pausedMonitor) {
+			paused = true;
+			pausedMonitor.notifyAll();
+		}
+	}
+	
+	public void unpause() {
+		synchronized(pausedMonitor) {
+			paused = false;
+			pausedMonitor.notifyAll();
+		}
+	}
+	
+	public void waitForUnpause() {
+		synchronized(pausedMonitor) {
+			while (paused) try { pausedMonitor.wait(); } catch(InterruptedException e) {}
+		}
+	}
+	
 	//run for at least cycles cp cycles, leaving the extra
 	//to shorten the next run
-	public void step_cycles(long cycles) {
+	public void step_cycles(long cycles, WorldPauseHandler handler) {
 		cyclecntLim += cycles;
 		synchronized(cpuTodo) {
 			while(!cpuTodo.isEmpty()) {
 				cpuTodo.poll().run();
 			}
 		}
+		
 		while (cyclecntLim - cyclecnt > cycles) {
+			synchronized(pausedMonitor) {
+				if (paused) {
+					handler.woldPaused(this);
+				}
+			}
 			step();
 		}
 	}
@@ -713,6 +757,7 @@ public class Dcpu {
 		queue_interrupts = true;
 		cpuTodo.clear();
 		cyclecntLim = cyclecnt = 0;
+		debug = 60;
 	}
 	
 	public void queryResult(int vendor, int hardware, int version) {

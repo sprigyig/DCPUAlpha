@@ -9,10 +9,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+import dcpu.Dcpu;
+import dcpu.WorldPauseHandler;
+import dcpu.WorldPauser;
 import render.RenderNode;
 import shipmaker.EditorShip.EditorShipPart;
 
-public class Space {
+public class Space implements WorldPauseHandler {
 	HashSet<Entity> entities;
 	TreeSet<RenderNode> rendities;
 	private boolean die;
@@ -22,6 +25,7 @@ public class Space {
 	Object blockLock;
 	private ArrayList<KeyListener> keylisteners;
 	private ArrayList<Beacon> beacons;
+	private ArrayList<Dcpu> cpus;
 	
 	public static final int MS_PER_TICK = 20;
 	
@@ -41,7 +45,13 @@ public class Space {
 		canBlock = false;
 		blockLock = new Object();
 		beacons = new ArrayList<Beacon>();
+		cpus = new ArrayList<>();
 	}
+	
+	public Collection<Dcpu> cpus() {
+		return cpus;
+	}
+	
 	public Set<RenderNode> rendities() {
 		return rendities;
 	}
@@ -67,11 +77,11 @@ public class Space {
 	public void tickFrame(int ms) {
 		//TODO: make all of this stuff multi-threaded later
 		for (Entity e: entities) {
-			e.tickInternals(ms);
+			e.tickInternals(ms, this);
 		}
 		
 		for (Entity e: entities) {
-			e.tickPhysics(ms);
+			e.tickPhysics(ms, this);
 		}
 	}
 	
@@ -151,5 +161,17 @@ public class Space {
 	
 	public Collection<Beacon>beacons() {
 		return beacons;
+	}
+
+	public void woldPaused(WorldPauser pauser) {
+		System.out.println("PAUSED");
+		synchronized(blockLock) {
+			canBlock = true;
+			blockLock.notifyAll();
+		}
+		pauser.waitForUnpause();
+		synchronized(blockLock) {
+			canBlock = false;
+		}
 	}
 }

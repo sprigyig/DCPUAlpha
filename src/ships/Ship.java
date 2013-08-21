@@ -9,6 +9,7 @@ import physics.BodyForce;
 import render.BodyRenderNode;
 import render.RenderNode;
 import render.RenderPreferences;
+import dcpu.WorldPauseHandler;
 import dcpu.Dcpu;
 import dcpu.Hardware;
 import env.Entity;
@@ -47,15 +48,15 @@ public class Ship implements Entity {
 		return renderParts;
 	}
 
-	public void tickInternals(int msPerTick) {
+	public void tickInternals(int msPerTick, WorldPauseHandler handler) {
 		if (cpu_freeze <= 0) {
-			cpu.step_cycles(msPerTick*50);
+			cpu.step_cycles(msPerTick*50, handler);
 		} else {
 			cpu_freeze -=1;
 		}
 	}
 
-	public void tickPhysics(int msPerTick) {
+	public void tickPhysics(int msPerTick, WorldPauseHandler handler) {
 		for (Equipment e : equipment) {
 			e.physicsTickPreForce();
 		}
@@ -106,5 +107,6 @@ public class Ship implements Entity {
 
 	public void in(Space s) {
 		this.space = s;
+		s.cpus().add(cpu);
 	}
 }

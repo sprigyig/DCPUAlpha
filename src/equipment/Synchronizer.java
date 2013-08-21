@@ -33,8 +33,8 @@ public class Synchronizer implements Equipment, Hardware, CpuWatcher {
 	public void addedTo(Ship s) {
 		s.addPluginHardware(hwid, this);
 		this.ship = s;
-		syncTriggerTime = 100001;
-		syncTriggerNum = 'x';
+		syncTriggerTime = 0;
+		syncTriggerNum = (char)0;
 	}
 
 	public void reset() {
@@ -82,6 +82,7 @@ public class Synchronizer implements Equipment, Hardware, CpuWatcher {
 			break;
 		case TRIG_SYNC:
 			parent.cyclecnt+=1;
+			System.out.printf("fire event: %x\n", parent.regs.gp[REG_Z]+0);
 			ship.triggerSynchronizedEvent(parent.regs.gp[REG_Z], 0);
 			break;
 		}

@@ -22,6 +22,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.annotations.Expose;
 
+import dcpu.WorldPauseHandler;
 import env.Entity;
 import equipment.Structure;
 import equipment.StructureNode;
@@ -74,10 +75,10 @@ public class EditorShip {
 		@Expose
 		public BlueprintLocation location;
 
-		public void tickInternals(int msPerTick) {
+		public void tickInternals(int msPerTick, WorldPauseHandler handler) {
 		}
 
-		public void tickPhysics(int msPerTick) {
+		public void tickPhysics(int msPerTick, WorldPauseHandler handler) {
 		}
 
 		public RenderNode getVisuals() {

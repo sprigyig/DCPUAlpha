@@ -15,13 +15,16 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import physics.Body;
 import render.RenderPreferences;
 import render.SpaceViewPanel;
 import render.XYTRenderNode;
 import ships.Equipment;
 import ships.Ship;
+import debug.DebugServer;
 import demo.equipment.DemoSensor;
 import env.Asteroid;
+import env.Beacon;
 import env.Space;
 import equipment.Capacitor;
 import equipment.Engine;
@@ -87,6 +90,8 @@ public class Main {
 		final Space s = new Space();
 		ship.in(s);
 		
+		s.beacons().add(new Beacon(new Body(10000, 10000, 0, 0, 0), (char)1, 10));
+		
 		final StatusBar bar;
 		jf.add(bar = new StatusBar(), BorderLayout.SOUTH);
 		jf.setVisible(true);
@@ -150,6 +155,7 @@ public class Main {
 									for (int i =0;i<30;i++) {
 										System.out.printf("%03d:%04x\n", i,(int)image[i]);
 									}
+									System.out.println(";ahjlrejhglaehrg");
 									reset(ship, image);
 									fis.close();
 									
@@ -199,6 +205,7 @@ public class Main {
 				
 			}
 		});
+		new DebugServer(s.cpus());
 	}
 	
 	public static void main(String[] args) {

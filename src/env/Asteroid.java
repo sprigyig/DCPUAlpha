@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Random;
 
+import dcpu.WorldPauseHandler;
 import physics.Body;
 import physics.BodyForce;
 import render.BodyRenderNode;
@@ -72,11 +73,11 @@ public class Asteroid implements Entity {
 
 	}
 	
-	public void tickInternals(int msPerTick) {
+	public void tickInternals(int msPerTick, WorldPauseHandler handler) {
 		
 	}
 
-	public void tickPhysics(int msPerTick) {
+	public void tickPhysics(int msPerTick, WorldPauseHandler handler) {
 		bod.apply(new ArrayList<BodyForce>(), msPerTick);
 	}
 

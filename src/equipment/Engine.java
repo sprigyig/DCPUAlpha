@@ -118,6 +118,7 @@ public class Engine implements Equipment, ForceSource, CpuWatcher, Hardware {
 	}
 
 	public void triggerSynchronizedEvent(char id, int cyclesAgo) {
+		System.out.printf("synch event: %x", id+0);
 		for (int i=0;i<commands.length;i++) {
 			if (id == commands[i]) {
 				
@@ -165,6 +166,7 @@ public class Engine implements Equipment, ForceSource, CpuWatcher, Hardware {
 		} else if (parent.regs.gp[REG_A]-1 < commands.length) {
 			commands[parent.regs.gp[REG_A]-1] = parent.regs.gp[REG_C];
 			setpoints[parent.regs.gp[REG_A]-1] = parent.regs.gp[REG_B];
+			System.out.printf("hwid: %x cmd: %x set: %x\n", hwid+0, parent.regs.gp[REG_C]+0, parent.regs.gp[REG_B]+0);
 		}
 	}
 

@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
+import dcpu.WorldPauseHandler;
 import physics.XYTSource;
 import render.RenderNode;
 import render.RenderPreferences;
@@ -157,11 +158,11 @@ public class BlueprintPositionEditor implements Entity {
 		base = new BPLBaseNode();
 	}
 
-	public void tickInternals(int msPerTick) {
+	public void tickInternals(int msPerTick, WorldPauseHandler handler) {
 		
 	}
 
-	public void tickPhysics(int msPerTick) {
+	public void tickPhysics(int msPerTick, WorldPauseHandler handler) {
 
 	}
 

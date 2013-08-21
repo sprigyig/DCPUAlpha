@@ -21,7 +21,7 @@ import shipmaker.render.PropertyTable;
 import ships.Ship;
 
 public class FHBL_1_08 implements CatalogPartType {
-
+	public final String name = "FHBL-1-08";
 	public static class FHBL_1_08Part implements CatalogPart {
 		@Expose private FHBL_1_08 type;
 		@Expose private int hwid;
@@ -82,7 +82,7 @@ public class FHBL_1_08 implements CatalogPartType {
 	}
 
 	public String name() {
-		return "FHBL-1-08";
+		return name;
 	}
 
 	public float mass() {

@@ -9,6 +9,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
+import dcpu.WorldPauseHandler;
 import physics.XYTSource;
 import render.CollectionRemoval;
 import render.MouseEventType;
@@ -146,10 +147,10 @@ public class ShipContents extends XYTRenderNode implements ShipWatcher {
 			}
 		};
 		space.addEntity(new Entity() {
-			public void tickPhysics(int msPerTick) {
+			public void tickPhysics(int msPerTick, WorldPauseHandler handler) {
 			}
 			
-			public void tickInternals(int msPerTick) {
+			public void tickInternals(int msPerTick, WorldPauseHandler handler) {
 
 			}
 			
@@ -202,11 +203,11 @@ public class ShipContents extends XYTRenderNode implements ShipWatcher {
 			}
 		};
 		space.addEntity(new Entity() {
-			public void tickPhysics(int msPerTick) {
+			public void tickPhysics(int msPerTick, WorldPauseHandler handler) {
 				
 			}
 			
-			public void tickInternals(int msPerTick) {
+			public void tickInternals(int msPerTick, WorldPauseHandler handler) {
 				
 			}
 			

@@ -28,6 +28,7 @@ import shipmaker.render.ShipContents;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import dcpu.WorldPauseHandler;
 import env.Entity;
 import env.Space;
 import equipment.StructureNode;
@@ -130,10 +131,10 @@ public class Editor {
 		
 		s.addEntity(new Entity() {
 			private RenderNode vis;
-			public void tickPhysics(int msPerTick) {
+			public void tickPhysics(int msPerTick, WorldPauseHandler handler) {
 			}
 			
-			public void tickInternals(int msPerTick) {
+			public void tickInternals(int msPerTick, WorldPauseHandler handler) {
 			}
 			
 			public RenderNode getVisuals() {
