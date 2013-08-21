@@ -57,13 +57,17 @@ public class Space implements WorldPauseHandler {
 	}
 	
 	public void addEntity(Entity e) {
-		entities.add(e);
-		rendities.add(e.getVisuals());
+		synchronized(entities) {
+			entities.add(e);
+			rendities.add(e.getVisuals());
+		}
 	}
 	
 	public void removeEntity(Entity e) {
-		entities.remove(e);
-		rendities.remove(e.getVisuals());
+		synchronized(entities) {
+			entities.remove(e);
+			rendities.remove(e.getVisuals());
+		}
 	}
 	
 	public Runnable removeEntityLater(final Entity e) {
@@ -76,12 +80,14 @@ public class Space implements WorldPauseHandler {
 	
 	public void tickFrame(int ms) {
 		//TODO: make all of this stuff multi-threaded later
-		for (Entity e: entities) {
-			e.tickInternals(ms, this);
-		}
-		
-		for (Entity e: entities) {
-			e.tickPhysics(ms, this);
+		synchronized(entities) {
+			for (Entity e: entities) {
+				e.tickInternals(ms, this);
+			}
+			
+			for (Entity e: entities) {
+				e.tickPhysics(ms, this);
+			}
 		}
 	}
 	
@@ -155,8 +161,10 @@ public class Space implements WorldPauseHandler {
 	}
 	
 	public void clearEntities() {
-		entities.clear();
-		rendities.clear();
+		synchronized(entities) {
+			entities.clear();
+			rendities.clear();
+		}
 	}
 	
 	public Collection<Beacon>beacons() {
