@@ -52,7 +52,7 @@ public enum DebugCommandType {
 
 			return resp;
 		}
-	}),  	CPUREGS(new DebugCommandAction() {
+	}), CPUREGS(new DebugCommandAction() {
 		public DebugResponse run(Collection<Dcpu> cpus, long[] params,
 				DebugClientServer debugClientServer) {
 			Dcpu c = null;
@@ -139,6 +139,34 @@ public enum DebugCommandType {
 			c.unpause();
 			return new DebugResponse(CommandStatus.PASS, "cpu stepping",
 					new long[] {});
+		}
+
+	}), LISTMEM(new DebugCommandAction() {
+		public DebugResponse run(Collection<Dcpu> cpus, long[] params,
+				DebugClientServer debugClientServer) {
+			DebugResponse ret = new DebugResponse();
+
+			if (params.length < 3 || params[1] > params[2]
+					|| params[2] > 0xFFFF || params[1] < 0) {
+				return new DebugResponse(CommandStatus.FAIL,
+						"Invalid Address Range", new long[] {});
+			}
+
+			Dcpu c = CPUForId(cpus, params[0]);
+			if (c == null) {
+				return new DebugResponse(CommandStatus.FAIL, "cpu not found",
+						new long[] {});
+			}
+
+			ret.userAlert = "";
+			ret.status = CommandStatus.PASS;
+			ret.payload = new long[(int) (params[1] - params[0])];
+
+			for (int i = 0; i < params[1]; i++) {
+				ret.payload[i] = c.memory.get((char) (i + params[0]));
+			}
+
+			return ret;
 		}
 
 	});
