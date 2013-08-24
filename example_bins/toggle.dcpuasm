@@ -36,6 +36,10 @@
  set b, timer_irq_struct
  hwi 8
 
+;set a timer for 5 seconds
+ jsr add_5secs
+ jsr push_time
+ 
 :loop
  hwi 7
  set z, 0xc
