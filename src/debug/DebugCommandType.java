@@ -107,7 +107,7 @@ public enum DebugCommandType {
 
 	}), STEP(new DebugCommandAction() {
 		public DebugResponse run(Collection<Dcpu> cpus, long[] params,
-				DebugClientServer debugClientServer) {
+				final DebugClientServer debugClientServer) {
 			if (params.length < 1) {
 				return new DebugResponse(CommandStatus.FAIL,
 						"not enough parameters", new long[] {});
@@ -131,9 +131,15 @@ public enum DebugCommandType {
 					cpu.runInCpuThread(new Runnable() {
 						public void run() {
 							cpu.removeWatcher(that);
+							DebugResponse resp = new DebugResponse();
+							resp.userAlert = "Stepped";
+							resp.payload = new long[]{};
+							resp.status = CommandStatus.UNSOLICITED;
+							debugClientServer.sendResponse(resp);
 						}
 
 					});
+					
 				}
 			});
 			c.unpause();
@@ -146,8 +152,11 @@ public enum DebugCommandType {
 				DebugClientServer debugClientServer) {
 			DebugResponse ret = new DebugResponse();
 
-			if (params.length < 3 || params[1] > params[2]
-					|| params[2] > 0xFFFF || params[1] < 0) {
+			int start = (int) params[1];
+			int len = (int) params[2];
+			
+			if (params.length < 3 || start < 0
+					|| start+len > 0x10000 ) {
 				return new DebugResponse(CommandStatus.FAIL,
 						"Invalid Address Range", new long[] {});
 			}
@@ -160,10 +169,10 @@ public enum DebugCommandType {
 
 			ret.userAlert = "";
 			ret.status = CommandStatus.PASS;
-			ret.payload = new long[(int) (params[1] - params[0])];
+			ret.payload = new long[len];
 
-			for (int i = 0; i < params[1]; i++) {
-				ret.payload[i] = c.memory.get((char) (i + params[0]));
+			for (int i = 0; i < len; i++) {
+				ret.payload[i] = c.memory.get((char) (i + start));
 			}
 
 			return ret;
@@ -214,6 +223,7 @@ public enum DebugCommandType {
 						if (cpu.regs.pc == caddr) {
 							if (bpmap.contains(caddr)) {
 								cpu.pause();
+								debugClientServer.sendResponse(new DebugResponse(CommandStatus.UNSOLICITED, "breakpoint reached", new long[]{}));
 							} else {
 								cpu.runInCpuThread(new Runnable() {
 									public void run() {

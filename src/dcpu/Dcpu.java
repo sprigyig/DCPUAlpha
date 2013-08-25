@@ -88,13 +88,14 @@ public class Dcpu implements WorldPauser {
 	//to shorten the next run
 	public void step_cycles(long cycles, WorldPauseHandler handler) {
 		cyclecntLim += cycles;
-		synchronized(cpuTodo) {
-			while(!cpuTodo.isEmpty()) {
-				cpuTodo.poll().run();
-			}
-		}
+		
 		
 		while (cyclecntLim - cyclecnt > cycles) {
+			synchronized(cpuTodo) {
+				while(!cpuTodo.isEmpty()) {
+					cpuTodo.poll().run();
+				}
+			}
 			synchronized(pausedMonitor) {
 				if (paused) {
 					handler.woldPaused(this);

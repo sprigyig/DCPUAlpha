@@ -66,9 +66,11 @@ public class Synchronizer implements Equipment, Hardware, CpuWatcher {
 			parent.cyclecnt+=2;
 			break;
 		case SET_ALARM:
+			
 			syncTriggerTime = ((int)parent.regs.gp[REG_X])<<16 | parent.regs.gp[REG_Y];
 			syncTriggerNum = parent.regs.gp[REG_Z];
 			parent.cyclecnt+=3;
+			System.out.printf("Set alarm to "+syncTriggerTime);
 			break;
 		case SET_ROLL_IRQ:
 			rolloverIrq = parent.regs.gp[REG_B];
@@ -76,6 +78,7 @@ public class Synchronizer implements Equipment, Hardware, CpuWatcher {
 			break;
 		case SET_FIRE_IRQ:
 			alarmIrq = parent.regs.gp[REG_B];
+			System.out.println("IRQ set to "+(int)alarmIrq);
 			parent.cyclecnt+=1;
 			break;
 		case TRIG_SYNC:
@@ -94,6 +97,7 @@ public class Synchronizer implements Equipment, Hardware, CpuWatcher {
 				ship.triggerSynchronizedEvent(syncTriggerNum, count-syncTriggerTime);
 			}
 			if (alarmIrq!=0) {
+				System.out.println("alarm IRQ");
 				cpu.interrupts.add(alarmIrq);
 				cpu.debug = 10;
 			}
