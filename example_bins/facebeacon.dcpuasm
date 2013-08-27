@@ -1,0 +1,163 @@
+;Ship Design:
+;Engine HWID 1 & 3 are pure torque to turn clockwise
+;Engine HWID 2 & 4 are pure torque to turn anti-clockwise
+;Synchronizer is HWID 5
+;Beacon Locator is HWID 6
+
+;setup tracking of beacon 1 in the first tracking slot
+  set a, 2
+  set b, 1
+  set c, 0
+  hwi 6
+
+;Setup the generic irq handler
+  IAS generic_irq
+  IAQ 0
+
+;Set the timer irq mesage
+  set a, 3
+  set b, synch_irq_handler
+  hwi 5
+  
+;Set the initial time
+  jsr bump_time
+
+
+  sub pc, 1
+
+
+;Param A: signed int - turn strength, positive is anti-clockwise
+;Munges: B, C
+;Commands Used: 0xA
+;Engine Command Slot used: 4
+:set_turn
+  ifu a, 0
+  set pc, set_turn_neg
+  
+  set b, a
+  shl b, 1
+  set c, 0xA
+  set a, 4
+  hwi 2
+  hwi 4
+  set b, 0
+  hwi 1
+  hwi 3
+  ret
+  
+:set_turn_neg
+  mul a, 0xFFFF
+  set b, a
+  shl b, 1
+  set c, 0xA
+  set a, 4
+  hwi 1
+  hwi 3
+  set b, 0
+  hwi 2
+  hwi 4
+  ret
+  
+:synch_irq_handler
+  dat periodic, 0  
+
+:periodic
+  jsr bump_time
+  jsr engine_tick
+  ret
+  
+;IRQ messages should be pointers to:
+; struct irqhandler {
+;   void (*handler)(u16 data);
+;   u16 data;
+; }
+:generic_irq
+  set push, ex
+  set push, [a]
+  set a, [a+1]
+  jsr pop
+  set ex, pop
+  rfi 0  
+  
+:bump_time
+  add [timer_lsb], 0x2710
+  add [timer_msb], ex
+  
+  set push, a
+  set push, z
+  set push, x
+  set push, y
+
+  set a, 1
+  set x, [timer_msb]
+  set y, [timer_lsb]
+  set z, [synch_command]
+  hwi 5
+
+  set y, pop
+  set x, pop
+  set z, pop
+  set a, pop
+  
+  set pc, pop
+
+:engine_tick
+  set push, a
+  set push, b
+  set push, c
+  set push, x
+  set push, y
+  set push, z
+  set push, i
+  set push, j
+  
+;fetch heading/angular velocity of beacon 1
+  set a, 1
+  set b, 1
+  set c, beacon_read
+  hwi 6
+  
+;divide the angular velocity by 16
+  shr [beacon_av_msb], 4
+  set a, ex
+  shr [beacon_av_lsb], 4
+  shl a, 12
+  bor [beacon_av_lsb], a
+  
+;subtract that from the heading difference
+  sub [beacon_heading_lsb], [beacon_av_lsb]
+  set a, [beacon_av_lsb]
+  jsr set_turn
+  
+  set j, pop
+  set i, pop
+  set z, pop
+  set y, pop
+  set x, pop
+  set c, pop
+  set b, pop
+  set a, pop
+  ret
+  
+:synch_command
+  dat 0xA  
+  
+:timer_msb
+  dat 0
+:timer_lsb
+  dat 0
+  
+:beacon_read
+:beacon_str
+  dat 0  
+:beacon_heading_msb
+  dat 0
+:beacon_heading_lsb
+  dat 0
+:beacon_av_msb
+  dat 0
+:beacon_av_lsb
+  dat 0
+:beacon_errors
+  dat 0
+  
