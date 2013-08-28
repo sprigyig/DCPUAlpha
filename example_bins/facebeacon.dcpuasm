@@ -117,16 +117,22 @@
   set c, beacon_read
   hwi 6
   
-;divide the angular velocity by 16
-  shr [beacon_av_msb], 4
-  set a, ex
-  shr [beacon_av_lsb], 4
-  shl a, 12
-  bor [beacon_av_lsb], a
+;multiply the heading difference by 4096
+  mul [beacon_heading_msb], 4096
+  mul [beacon_heading_lsb], 4096
+  add [beacon_heading_msb], ex
+
+;multiply the velocity by -1
+  mul [beacon_av_msb], -1
+  mul [beacon_av_lsb], -1
+  add [beacon_av_msb], ex
   
-;subtract that from the heading difference
-  sub [beacon_heading_lsb], [beacon_av_lsb]
-  set a, [beacon_av_lsb]
+;add the two together
+  add [beacon_heading_lsb], [beacon_av_lsb]
+  adx [beacon_heading_msb], [beacon_av_msb]
+
+;use the upper word as a strength of direction
+  set a, [beacon_heading_msb]
   jsr set_turn
   
   set j, pop
@@ -160,4 +166,3 @@
   dat 0
 :beacon_errors
   dat 0
-  
